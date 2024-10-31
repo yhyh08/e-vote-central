@@ -38,9 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Assets.images.logo.image(
-                  //   width: MediaQuery.of(context).size.width / 1.7,
-                  // ),
+                  Assets.images.logo.image(
+                    width: MediaQuery.of(context).size.width / 1.7,
+                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 60, vertical: 10),
@@ -53,15 +53,15 @@ class _SplashScreenState extends State<SplashScreen> {
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'Copyright 2023',
-                style: Theme.of(context).textTheme.labelSmall,
-                textAlign: TextAlign.center,
-              ),
-            )
+            // Container(
+            //   alignment: Alignment.bottomCenter,
+            //   padding: const EdgeInsets.only(bottom: 20),
+            //   child: Text(
+            //     'Copyright 2023',
+            //     style: Theme.of(context).textTheme.labelSmall,
+            //     textAlign: TextAlign.center,
+            //   ),
+            // )
           ],
         ),
       ),

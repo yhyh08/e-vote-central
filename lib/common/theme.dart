@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 final ThemeData theme = ThemeData.light().copyWith(
-  scaffoldBackgroundColor: const Color(0xFFF0F2F6),
-  secondaryHeaderColor: Colors.green,
+  scaffoldBackgroundColor: const Color(0xFF7A1CAC),
+  secondaryHeaderColor: const Color(0xFF910A67),
   primaryColorLight: Colors.white,
   primaryColorDark: Colors.black,
-  primaryColor: const Color(0xFFFD0019),
+  primaryColor: const Color(0xFFAD49E1),
   dialogBackgroundColor: const Color(0xFF3E3E3E),
   dividerColor: const Color(0xFFC5C5C5),
   highlightColor: const Color(0xFF1C1C1C),
@@ -47,50 +47,56 @@ final ThemeData theme = ThemeData.light().copyWith(
       color: Color(0xFF4F4F4F),
     ),
     titleMedium: TextStyle(
-      fontSize: 16,
+      fontSize: 18,
       color: Colors.white,
       fontWeight: FontWeight.w500,
     ),
     titleSmall: TextStyle(
-      fontSize: 12,
+      fontSize: 16,
       color: Colors.white,
       fontWeight: FontWeight.bold,
     ),
     labelLarge: TextStyle(
-      fontSize: 18,
+      fontSize: 20,
       color: Color(0xFF4F4F4F),
     ),
     labelMedium: TextStyle(
-      fontSize: 16,
+      fontSize: 18,
       color: Color(0xFF4F4F4F),
     ),
     labelSmall: TextStyle(
-      fontSize: 11,
+      fontSize: 14,
       color: Color(0xFFAAAAAA),
     ),
     bodyLarge: TextStyle(
-      fontSize: 20,
+      fontSize: 16,
       color: Colors.white,
     ),
     bodyMedium: TextStyle(
-      fontSize: 16,
+      fontSize: 14,
       color: Color(0xFF1C1C1C),
     ),
     bodySmall: TextStyle(
-      fontSize: 14,
+      fontSize: 12,
       color: Color(0xFF949494),
     ),
   ).apply(fontFamily: 'SF Pro Display'),
 );
 
-final boxDeco = BoxDecoration(
-  border: Border.all(color: Colors.black),
-  borderRadius: BorderRadius.circular(15),
-);
+// final boxDeco = BoxDecoration(
+//   border: Border.all(color: Colors.black),
+//   borderRadius: BorderRadius.circular(15),
+// );
 
-const boxShadow = BoxShadow(
-  color: Color.fromARGB(22, 0, 0, 28),
-  spreadRadius: 2,
-  blurRadius: 15,
-  offset: Offset(0, 2),
-);
+// const boxShadow = BoxShadow(
+//   color: Color.fromARGB(22, 0, 0, 28),
+//   spreadRadius: 2,
+//   blurRadius: 15,
+//   offset: Offset(0, 2),
+// );
+
+// 00FFD0A2F7
+// 00FFDCBFFF
+// 00FFEBD3F8
+// 00FFF1EAFF
+// 00FFF6DEF6

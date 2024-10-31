@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../routes/route.dart';
 import '../gen/assets.gen.dart';
@@ -72,9 +71,9 @@ class _LoginState extends State<Login> {
           MediaQuery.of(context).size.height / 4,
         ),
         child: const WCFormTitle(
-          title: 'Signin',
-          subtitle: 'Welcome Back',
-          descr: 'An OTP will sent to this mobile number',
+          title: 'Hello',
+          subtitle: 'Enter 6-digit OTP',
+          descr: 'An OTP will sent to this mobile number for verification',
         ),
       ),
       body: SingleChildScrollView(
@@ -115,42 +114,6 @@ class _LoginState extends State<Login> {
                               });
                             },
                           ),
-                          //const SizedBox(height: 30),
-                          // TextFormField(
-                          //   style: Theme.of(context).textTheme.bodyMedium,
-                          //   decoration: InputDecoration(
-                          //     border: const OutlineInputBorder(
-                          //       borderRadius:
-                          //           BorderRadius.all(Radius.circular(5.0)),
-                          //     ),
-                          //     labelText: 'Password',
-                          //     labelStyle:
-                          //         Theme.of(context).textTheme.labelLarge,
-                          //     // show and hide password
-                          //     suffixIcon: IconButton(
-                          //       icon: _isObscure
-                          //           ? SvgPicture.asset(Assets.svg.eyeOpen)
-                          //           : SvgPicture.asset(Assets.svg.eyeClose),
-                          //       onPressed: () {
-                          //         setState(() {
-                          //           _isObscure = !_isObscure;
-                          //         });
-                          //       },
-                          //     ),
-                          //   ),
-                          //   obscureText: _isObscure,
-                          //   onSaved: (value) {
-                          //     setState(() {
-                          //       passwords = value;
-                          //     });
-                          //   },
-                          //   validator: (value) {
-                          //     if (value == null || value.isEmpty) {
-                          //       return 'Enter Password';
-                          //     }
-                          //     return null;
-                          //   },
-                          // ),
                         ],
                       ),
                     ),
@@ -160,7 +123,7 @@ class _LoginState extends State<Login> {
                         Navigator.of(context)
                             .pushReplacementNamed(RouteList.register);
                       },
-                      btnText: 'Continue',
+                      btnText: 'Sign In',
                     ),
                     const SizedBox(height: 40),
                     GestureDetector(

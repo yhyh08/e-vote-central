@@ -26,47 +26,41 @@ class _WelcomeState extends State<Welcome> {
 
 Widget content(BuildContext context) {
   return Container(
-    // decoration: BoxDecoration(
-    //   color: Theme.of(context).primaryColorDark,
-    //   image: DecorationImage(
-    //     image: Assets.images.logo.image().image,
-    //     opacity: 0.9,
-    //     fit: BoxFit.cover,
-    //   ),
-    // ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image(
-            image: Assets.images.logo.image().image,
-            width: MediaQuery.of(context).size.width / 3.8,
+    color: Theme.of(context).primaryColorLight,
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+    child: Column(
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: Assets.images.logo.image().image,
+                width: MediaQuery.of(context).size.width / 1.4,
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: Text(
-              'Welcome To SUC Service',
-              style: Theme.of(context).textTheme.displayMedium,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedBtn(
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed(RouteList.login);
+              },
+              btnText: 'Signin',
             ),
-          ),
-          ElevatedBtn(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.login);
-            },
-            btnText: 'Signin',
-          ),
-          const SizedBox(height: 20),
-          ElevatedBtn(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.register);
-            },
-            btnText: 'Singup',
-            btnColorWhite: false,
-          ),
-        ],
-      ),
+            const SizedBox(height: 20),
+            ElevatedBtn(
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed(RouteList.register);
+              },
+              btnText: 'Singup',
+              btnColorWhite: false,
+            ),
+          ],
+        ),
+      ],
     ),
   );
 }

@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.10+1
   pin_code_fields: ^8.0.1
+  shared_preferences: ^2.3.3
+  flutter_gen_runner: ^5.8.0
 
 dev_dependencies:
   flutter_test:
@@ -48,7 +50,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  flutter_gen_runner: ^5.8.0
   build_runner: ^2.4.13
 
 # For information on the generic Dart part of this file, see the
@@ -66,7 +67,7 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
-    - assets/fonts/
+    # - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

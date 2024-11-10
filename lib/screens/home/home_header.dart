@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../gen/assets.gen.dart';
 import '../../../routes/route.dart';
 
 class Homeheader extends StatelessWidget {
@@ -14,18 +13,15 @@ class Homeheader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Theme.of(context).secondaryHeaderColor,
       child: Container(
         height: 180,
         padding: const EdgeInsets.only(top: 30),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: Assets.images.backImage.image().image,
-            fit: BoxFit.cover,
-            opacity: 0.8,
-          ),
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(30),
+            bottomLeft: Radius.circular(40),
+            bottomRight: Radius.circular(40),
           ),
         ),
         child: Padding(
@@ -34,30 +30,49 @@ class Homeheader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.account_circle_rounded,
+                      size: 50,
+                    ),
+                    onPressed: () {
+                      // Navigator.of(context).pushNamed(RouteList.account);
+                    },
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome to SUC service',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                        'Welcome to E-Vote',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 15),
                       Text(
                         username,
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineLarge
+                            ?.copyWith(color: Colors.white),
                       )
                     ],
                   ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.account_circle_rounded,
-                      size: 28,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.notifications_none_outlined,
+                          size: 28,
+                        ),
+                        onPressed: () {
+                          // Navigator.of(context).pushNamed(RouteList.account);
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(RouteList.account);
-                    },
                   ),
                 ],
               ),

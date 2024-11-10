@@ -17,18 +17,24 @@ class ElevatedBtn extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        // if button no color white show color red
         backgroundColor: (btnColorWhite)
             ? Theme.of(context).primaryColor
-            : Theme.of(context).focusColor,
+            : Theme.of(context).primaryColorLight,
+        side: BorderSide(
+            width: (btnColorWhite) ? 0 : 2, color: const Color(0xFF7A1CAC)),
         minimumSize: const Size.fromHeight(60),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
       ),
       child: Text(
         btnText,
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: (btnColorWhite)
+            ? Theme.of(context).textTheme.bodyLarge
+            : Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: const Color(0xFF7A1CAC)),
       ),
     );
   }

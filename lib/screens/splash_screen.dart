@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: Center(
         child: Column(
           children: [
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Assets.images.logo.image(
-                    width: MediaQuery.of(context).size.width / 1.7,
+                    width: MediaQuery.of(context).size.width / 1.5,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -50,18 +50,13 @@ class _SplashScreenState extends State<SplashScreen> {
                       minHeight: 5,
                     ),
                   ),
+                  Text(
+                    "Loading...",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ],
               ),
             ),
-            // Container(
-            //   alignment: Alignment.bottomCenter,
-            //   padding: const EdgeInsets.only(bottom: 20),
-            //   child: Text(
-            //     'Copyright 2023',
-            //     style: Theme.of(context).textTheme.labelSmall,
-            //     textAlign: TextAlign.center,
-            //   ),
-            // )
           ],
         ),
       ),

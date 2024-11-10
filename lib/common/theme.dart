@@ -2,30 +2,36 @@ import 'package:flutter/material.dart';
 
 final ThemeData theme = ThemeData.light().copyWith(
   scaffoldBackgroundColor: const Color(0xFF7A1CAC),
-  secondaryHeaderColor: const Color(0xFF910A67),
-  primaryColorLight: Colors.white,
+  secondaryHeaderColor: Colors.white,
+  primaryColorLight: const Color(0xFFDDE0F8),
   primaryColorDark: Colors.black,
   primaryColor: const Color(0xFFAD49E1),
   dialogBackgroundColor: const Color(0xFF3E3E3E),
-  dividerColor: const Color(0xFFC5C5C5),
+  dividerColor: const Color.fromARGB(255, 209, 209, 209),
   highlightColor: const Color(0xFF1C1C1C),
   hintColor: const Color(0xFFFF4154),
   focusColor: Colors.white.withOpacity(0.2),
   shadowColor: Colors.grey.withOpacity(0.1),
+  splashColor: Colors.white,
   iconTheme: const IconThemeData(
     color: Color(0xFFC5C5C5),
     size: 20,
   ),
   textTheme: const TextTheme(
+    displayLarge: TextStyle(
+      fontSize: 36,
+      color: Colors.black,
+      height: 1.2,
+    ),
     displayMedium: TextStyle(
       fontSize: 34,
-      color: Colors.white,
+      color: Colors.black,
       height: 1.2,
+      fontWeight: FontWeight.w800,
     ),
     displaySmall: TextStyle(
       fontSize: 32,
-      color: Colors.white,
-      fontWeight: FontWeight.w600,
+      color: Colors.black,
     ),
     headlineLarge: TextStyle(
       fontSize: 26,
@@ -34,7 +40,7 @@ final ThemeData theme = ThemeData.light().copyWith(
     ),
     headlineMedium: TextStyle(
       fontSize: 26,
-      color: Colors.white,
+      color: Colors.black,
       fontWeight: FontWeight.bold,
     ),
     headlineSmall: TextStyle(
@@ -44,16 +50,16 @@ final ThemeData theme = ThemeData.light().copyWith(
     ),
     titleLarge: TextStyle(
       fontSize: 20,
-      color: Color(0xFF4F4F4F),
+      color: Color(0xFF949494),
     ),
     titleMedium: TextStyle(
       fontSize: 18,
-      color: Colors.white,
+      color: Colors.black,
       fontWeight: FontWeight.w500,
     ),
     titleSmall: TextStyle(
       fontSize: 16,
-      color: Colors.white,
+      color: Colors.black,
       fontWeight: FontWeight.bold,
     ),
     labelLarge: TextStyle(
@@ -77,8 +83,8 @@ final ThemeData theme = ThemeData.light().copyWith(
       color: Color(0xFF1C1C1C),
     ),
     bodySmall: TextStyle(
-      fontSize: 12,
-      color: Color(0xFF949494),
+      fontSize: 14,
+      color: Color(0xFFAD49E1),
     ),
   ).apply(fontFamily: 'SF Pro Display'),
 );
@@ -95,8 +101,11 @@ final ThemeData theme = ThemeData.light().copyWith(
 //   offset: Offset(0, 2),
 // );
 
-// 00FFD0A2F7
-// 00FFDCBFFF
-// 00FFEBD3F8
-// 00FFF1EAFF
-// 00FFF6DEF6
+// 0xFFD0A2F7
+// 0xFFDCBFFF
+// 0xFFEBD3F8
+// 0xFFF1EAFF
+// 0xFFF6DEF6
+// 0xFF910A67
+
+// 0xFF6d31ed

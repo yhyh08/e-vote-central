@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../routes/route.dart';
-import '../common/theme.dart';
 
 class BottomNavigation extends StatefulWidget {
   final int currentIndex;
@@ -25,8 +24,7 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           topLeft: Radius.circular(20.0),
           topRight: Radius.circular(20.0),
         ),
-        color: Theme.of(context).primaryColorDark,
-        boxShadow: const [boxShadow],
+        color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -57,19 +55,19 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.myMap);
+              // Navigator.of(context).pushReplacementNamed(RouteList.election);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.location_pin,
+                  Icons.how_to_vote_rounded,
                   color: widget.currentIndex == 1
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).dividerColor,
                 ),
                 Text(
-                  'Maps',
+                  'Election',
                   style: TextStyle(
                     color: widget.currentIndex == 1
                         ? Theme.of(context).primaryColor
@@ -81,19 +79,19 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.booking);
+              // Navigator.of(context).pushReplacementNamed(RouteList.result);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.calendar_month,
+                  Icons.bar_chart_rounded,
                   color: widget.currentIndex == 2
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).dividerColor,
                 ),
                 Text(
-                  'Bookings',
+                  'Result',
                   style: TextStyle(
                     color: widget.currentIndex == 2
                         ? Theme.of(context).primaryColor
@@ -105,21 +103,45 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.account);
+              // Navigator.of(context).pushReplacementNamed(RouteList.apply);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.settings,
+                  Icons.book_outlined,
                   color: widget.currentIndex == 3
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).dividerColor,
+                ),
+                Text(
+                  'Apply',
+                  style: TextStyle(
+                    color: widget.currentIndex == 3
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).dividerColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              // Navigator.of(context).pushReplacementNamed(RouteList.account);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.account_circle_outlined,
+                  color: widget.currentIndex == 4
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).dividerColor,
                 ),
                 Text(
                   'Account',
                   style: TextStyle(
-                    color: widget.currentIndex == 3
+                    color: widget.currentIndex == 4
                         ? Theme.of(context).primaryColor
                         : Theme.of(context).dividerColor,
                   ),

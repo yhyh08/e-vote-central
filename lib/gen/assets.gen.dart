@@ -23,8 +23,20 @@ class $AssetsImagesGen {
   AssetGenImage get sitelogo =>
       const AssetGenImage('assets/images/sitelogo.png');
 
+  /// File path: assets/images/userlogo.jpg
+  AssetGenImage get userlogo =>
+      const AssetGenImage('assets/images/userlogo.jpg');
+
+  /// File path: assets/images/voteday.jpg
+  AssetGenImage get voteday => const AssetGenImage('assets/images/voteday.jpg');
+
+  /// File path: assets/images/voteday1.jpg
+  AssetGenImage get voteday1 =>
+      const AssetGenImage('assets/images/voteday1.jpg');
+
   /// List of all assets
-  List<AssetGenImage> get values => [logo, logohoritext, sitelogo];
+  List<AssetGenImage> get values =>
+      [logo, logohoritext, sitelogo, userlogo, voteday, voteday1];
 }
 
 class $AssetsSvgGen {

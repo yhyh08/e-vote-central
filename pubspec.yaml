@@ -41,6 +41,7 @@ dependencies:
   flutter_gen_runner: ^5.8.0
   custom_sliding_segmented_control: ^1.8.4
   standard_searchbar: ^2.1.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

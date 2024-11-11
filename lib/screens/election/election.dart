@@ -6,6 +6,7 @@ import 'package:standard_searchbar/new/standard_search_anchor.dart';
 import 'package:standard_searchbar/new/standard_search_bar.dart';
 import 'package:standard_searchbar/new/standard_suggestion.dart';
 import 'package:standard_searchbar/new/standard_suggestions.dart';
+import 'package:intl/intl.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../routes/route.dart';
@@ -21,6 +22,9 @@ class Election extends StatefulWidget {
 }
 
 class ElectionState extends State<Election> {
+  DateTime now = DateTime.now();
+  // String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+
   @override
   Widget build(BuildContext context) {
     return TopBar(

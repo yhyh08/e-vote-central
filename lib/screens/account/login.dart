@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../routes/route.dart';
-import '../gen/assets.gen.dart';
+import '../../routes/route.dart';
+import '../../gen/assets.gen.dart';
 // import '../providers/auth.dart';
-import '../widgets/elevated_button.dart';
-import '../widgets/wc_form_title.dart';
+import '../../widgets/elevated_button.dart';
+import '../../widgets/wc_form_title.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

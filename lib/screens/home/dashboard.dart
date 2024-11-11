@@ -203,38 +203,6 @@ class DashboardState extends State<Dashboard> {
             onPressed: () {},
           ),
         ),
-        const Divider(),
-        ListTile(
-          leading: Image(
-            image: Assets.images.logo.image().image,
-            width: 70,
-          ),
-          title: Text(
-            'Election 5',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          subtitle: Text(
-            '1 day ago',
-            style: Theme.of(context).textTheme.labelSmall,
-          ),
-          trailing: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).splashColor,
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              side: BorderSide(
-                color: Theme.of(context).primaryColor,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-            child: Text(
-              'View',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onPressed: () {},
-          ),
-        ),
       ],
     );
   }

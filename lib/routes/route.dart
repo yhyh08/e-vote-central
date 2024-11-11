@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../screens/election/election.dart';
 import '../screens/home/dashboard.dart';
-import '../screens/login_pin.dart';
-import '../screens/register_pin.dart';
+import '../screens/account/login_pin.dart';
+import '../screens/account/register_pin.dart';
 import '../screens/welcome.dart';
-import '../screens/login.dart';
-import '../screens/register.dart';
+import '../screens/account/login.dart';
+import '../screens/account/register.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -25,6 +26,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const RegisterPin());
       case RouteList.dashboard:
         return MaterialPageRoute(builder: (_) => const Dashboard());
+      case RouteList.election:
+        return MaterialPageRoute(builder: (_) => const Election());
       default:
         return MaterialPageRoute(builder: (_) => const MyApp());
     }
@@ -38,4 +41,5 @@ class RouteList {
   static const String register = '/Register';
   static const String registerPin = '/RegisterPin';
   static const String dashboard = '/Dashboard';
+  static const String election = '/Election';
 }

@@ -68,7 +68,8 @@ final ThemeData theme = ThemeData.light().copyWith(
     ),
     labelMedium: TextStyle(
       fontSize: 18,
-      color: Color(0xFF4F4F4F),
+      color: Colors.white,
+      fontWeight: FontWeight.w700,
     ),
     labelSmall: TextStyle(
       fontSize: 14,

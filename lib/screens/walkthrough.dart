@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_walkthrough_screen/flutter_walkthrough_screen.dart';
-import 'package:e_vote/screens/login.dart';
+import 'package:e_vote/screens/account/login.dart';
 
 class TestScreen extends StatelessWidget {
   final List<OnbordingData> list = [

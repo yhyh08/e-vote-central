@@ -2,17 +2,10 @@ import 'package:e_vote/widgets/top_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-import 'package:standard_searchbar/new/standard_search_anchor.dart';
-import 'package:standard_searchbar/new/standard_search_bar.dart';
-import 'package:standard_searchbar/new/standard_suggestion.dart';
-import 'package:standard_searchbar/new/standard_suggestions.dart';
 import 'package:intl/intl.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../routes/route.dart';
-import '../../widgets/elevated_button.dart';
-import '../../widgets/title_btn.dart';
-import '../../../widgets/bottom_navigation.dart';
 
 class Election extends StatefulWidget {
   const Election({super.key});
@@ -22,8 +15,20 @@ class Election extends StatefulWidget {
 }
 
 class ElectionState extends State<Election> {
-  DateTime now = DateTime.now();
-  // String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+  List<DataSample> electionData = [
+    DataSample('2024 General Election: Your Voice, Your Choice 1'),
+    DataSample('Shape Tomorrow: Cast Your Vote!'),
+    DataSample('2024 Election: Defining Our Nation Next Chapter'),
+  ];
+  List<DataSample> filteredData = [];
+
+  Future<void> afterBuildFunction(BuildContext context) async {
+    setState(() {
+      filteredData = electionData;
+    });
+  }
+
+  final DateTime now = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +40,35 @@ class ElectionState extends State<Election> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             customSliding(),
-            // https://www.youtube.com/watch?v=ZHdg2kfKmjI
-            // const StandardSearchAnchor(
-            //   searchBar: StandardSearchBar(
-            //     bgColor: Color.fromARGB(255, 218, 211, 211),
-            //   ),
-            //   suggestions: StandardSuggestions(
-            //     suggestions: [
-            //       StandardSuggestion(text: 'Suggestion 1'),
-            //       StandardSuggestion(text: 'Suggestion 2'),
-            //     ],
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.of(context).pushNamed(RouteList.electionSearch);
+            //   },
+            //   icon: Icon(
+            //     Icons.search_rounded,
+            //     color: Theme.of(context).primaryColorDark,
             //   ),
             // ),
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RouteList.electionSearch);
+            searchBar(),
+            // electionCard(),
+            Container(
+              // margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: GridView.builder(
+                // padding: const EdgeInsets.fromLTRB(10, 5, 10, 30),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1.3,
+                  crossAxisCount: 1,
+                  // crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                ),
+                itemCount: filteredData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return electionCard(filteredData[index]);
                 },
-                icon: Icon(
-                  Icons.search_rounded,
-                  color: Theme.of(context).primaryColorDark,
-                )),
-            electionCard(),
-            a(),
+              ),
+            ),
           ],
         ),
       ),
@@ -108,92 +120,125 @@ class ElectionState extends State<Election> {
     );
   }
 
-  Widget electionCard() {
+  Widget searchBar() {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorDark,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 2,
+        TextField(
+          style: TextStyle(color: Theme.of(context).primaryColorDark),
+          cursorColor: Theme.of(context).primaryColor,
+          decoration: InputDecoration(
+              suffixIcon: Icon(
+                Icons.search_rounded,
+                color: Theme.of(context).primaryColorDark,
               ),
-            ),
-            child: Column(
-              children: [
-                Image(
-                  image: Assets.images.voteday.image().image,
-                  // width: 400,
-                  height: 150,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '2024 General Election: Your Voice, Your Choice',
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'View More',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        )
+              hintText: 'Search',
+              hintStyle: Theme.of(context).textTheme.labelMedium,
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                      color: Color.fromARGB(255, 212, 212, 212))),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                      color: Color.fromARGB(255, 212, 212, 212)))),
+          onChanged: (String searchText) {
+            debugPrint(searchText);
+            setState(
+              () {
+                filteredData = electionData
+                    .where((data) => data.title
+                        .toLowerCase()
+                        .contains(searchText.toLowerCase()))
+                    .toList();
+              },
+            );
+          },
+        ),
       ],
     );
   }
 
-  Widget a() {
+  Widget electionCard(DataSample data) {
+    String formattedDate = DateFormat('dd-MM-yyyy , hh:mm a').format(now);
+
     return Container(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: InkWell(
-          onTap: () => print("ciao"),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
-                ),
-                child: Image.network('https://placeimg.com/640/480/any',
-                    // width: 300,
-                    height: 150,
-                    fit: BoxFit.fill),
-              ),
-              ListTile(
-                title: Text('Pub 1'),
-                subtitle: Text('Location 1'),
-              ),
-            ],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
           ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(5.0),
+                topRight: Radius.circular(5.0),
+              ),
+              child: Image(
+                image: Assets.images.voteday.image().image,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      data.title,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColorLight,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    child: Text(
+                      'View More',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15, bottom: 15),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.calendar_month_outlined,
+                    color: Theme.of(context).iconTheme.color,
+                    size: 18,
+                  ),
+                  Text(
+                    '$formattedDate - $formattedDate',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class DataSample {
+  DataSample(
+    this.title,
+  );
+
+  final String title;
 }

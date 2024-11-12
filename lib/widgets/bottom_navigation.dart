@@ -18,7 +18,7 @@ class BottomNavigationStatus extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 65,
+      height: 75,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20.0),

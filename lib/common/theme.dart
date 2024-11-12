@@ -14,7 +14,7 @@ final ThemeData theme = ThemeData.light().copyWith(
   shadowColor: Colors.grey.withOpacity(0.1),
   splashColor: Colors.white,
   iconTheme: const IconThemeData(
-    color: Color(0xFFC5C5C5),
+    color: Color(0xFF808080),
     size: 20,
   ),
   textTheme: const TextTheme(
@@ -72,7 +72,7 @@ final ThemeData theme = ThemeData.light().copyWith(
       fontWeight: FontWeight.w700,
     ),
     labelSmall: TextStyle(
-      fontSize: 14,
+      fontSize: 12,
       color: Color(0xFFAAAAAA),
     ),
     bodyLarge: TextStyle(

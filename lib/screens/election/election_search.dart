@@ -1,11 +1,7 @@
 import 'package:e_vote/widgets/top_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../gen/assets.gen.dart';
-import '../../routes/route.dart';
-import '../../widgets/title_btn.dart';
-import '../../../widgets/bottom_navigation.dart';
 
 class ElectionSearch extends StatefulWidget {
   const ElectionSearch({super.key});

@@ -36,18 +36,27 @@ class ElectionState extends State<Election> {
           children: [
             customSliding(),
             // https://www.youtube.com/watch?v=ZHdg2kfKmjI
-            const StandardSearchAnchor(
-              searchBar: StandardSearchBar(
-                bgColor: Color.fromARGB(255, 218, 211, 211),
-              ),
-              suggestions: StandardSuggestions(
-                suggestions: [
-                  StandardSuggestion(text: 'Suggestion 1'),
-                  StandardSuggestion(text: 'Suggestion 2'),
-                ],
-              ),
-            ),
+            // const StandardSearchAnchor(
+            //   searchBar: StandardSearchBar(
+            //     bgColor: Color.fromARGB(255, 218, 211, 211),
+            //   ),
+            //   suggestions: StandardSuggestions(
+            //     suggestions: [
+            //       StandardSuggestion(text: 'Suggestion 1'),
+            //       StandardSuggestion(text: 'Suggestion 2'),
+            //     ],
+            //   ),
+            // ),
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(RouteList.electionSearch);
+                },
+                icon: Icon(
+                  Icons.search_rounded,
+                  color: Theme.of(context).primaryColorDark,
+                )),
             electionCard(),
+            a(),
           ],
         ),
       ),
@@ -108,6 +117,10 @@ class ElectionState extends State<Election> {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColorDark,
               borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 2,
+              ),
             ),
             child: Column(
               children: [
@@ -150,19 +163,37 @@ class ElectionState extends State<Election> {
         )
       ],
     );
-    // Container(
-    //   width: 350,
-    //   height: 150,
-    //   decoration: BoxDecoration(
-    //     color: Theme.of(context).primaryColorDark,
-    //     borderRadius: BorderRadius.circular(5),
-    //     image: DecorationImage(
-    //       image: Assets.images.voteday.image().image,
-    //       // opacity: 0.5,
-    //       fit: BoxFit.cover,
-    //     ),
-    //   ),
-    //   child: Text('data'),
-    // );
+  }
+
+  Widget a() {
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        child: InkWell(
+          onTap: () => print("ciao"),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+                child: Image.network('https://placeimg.com/640/480/any',
+                    // width: 300,
+                    height: 150,
+                    fit: BoxFit.fill),
+              ),
+              ListTile(
+                title: Text('Pub 1'),
+                subtitle: Text('Location 1'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

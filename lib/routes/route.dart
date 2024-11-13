@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../screens/election/election detail/election_detail.dart';
 import '../screens/election/election.dart';
-import '../screens/election/election_search.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/account/login_pin.dart';
 import '../screens/account/register_pin.dart';
@@ -29,9 +29,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Dashboard());
       case RouteList.election:
         return MaterialPageRoute(builder: (_) => const Election());
-
-      case RouteList.electionSearch:
-        return MaterialPageRoute(builder: (_) => const ElectionSearch());
+      case RouteList.electionDetail:
+        return MaterialPageRoute(builder: (_) => const ElectionDetail());
       default:
         return MaterialPageRoute(builder: (_) => const MyApp());
     }
@@ -46,5 +45,5 @@ class RouteList {
   static const String registerPin = '/RegisterPin';
   static const String dashboard = '/Dashboard';
   static const String election = '/Election';
-  static const String electionSearch = '/ElectionSearch';
+  static const String electionDetail = '/ElectionDetail';
 }

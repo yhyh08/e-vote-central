@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:e_vote/widgets/top_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +18,18 @@ class Election extends StatefulWidget {
 
 class ElectionState extends State<Election> {
   List<DataSample> electionData = [
-    DataSample('2024 General Election: Your Voice, Your Choice 1'),
+    DataSample('2024 General Election: Your Voice, Your Choice'),
     DataSample('Shape Tomorrow: Cast Your Vote!'),
     DataSample('2024 Election: Defining Our Nation Next Chapter'),
   ];
   List<DataSample> filteredData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => afterBuildFunction(context));
+  }
 
   Future<void> afterBuildFunction(BuildContext context) async {
     setState(() {
@@ -40,34 +49,19 @@ class ElectionState extends State<Election> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             customSliding(),
-            // IconButton(
-            //   onPressed: () {
-            //     Navigator.of(context).pushNamed(RouteList.electionSearch);
-            //   },
-            //   icon: Icon(
-            //     Icons.search_rounded,
-            //     color: Theme.of(context).primaryColorDark,
-            //   ),
-            // ),
             searchBar(),
-            // electionCard(),
-            Container(
-              // margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                // padding: const EdgeInsets.fromLTRB(10, 5, 10, 30),
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 1.3,
-                  crossAxisCount: 1,
-                  // crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                ),
-                itemCount: filteredData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return electionCard(filteredData[index]);
-                },
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 1.2,
+                crossAxisCount: 1,
+                mainAxisSpacing: 10,
               ),
+              itemCount: filteredData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return electionCard(filteredData[index]);
+              },
             ),
           ],
         ),
@@ -78,7 +72,7 @@ class ElectionState extends State<Election> {
   Widget customSliding() {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: CustomSlidingSegmentedControl<int>(
         initialValue: 1,
         fixedWidth: 150,
@@ -97,17 +91,14 @@ class ElectionState extends State<Election> {
           borderRadius: BorderRadius.circular(5),
         ),
         thumbDecoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).secondaryHeaderColor,
           borderRadius: BorderRadius.circular(5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(.3),
               blurRadius: 4.0,
               spreadRadius: 1.0,
-              offset: const Offset(
-                0.0,
-                2.0,
-              ),
+              offset: const Offset(0.0, 2.0),
             ),
           ],
         ),
@@ -123,43 +114,51 @@ class ElectionState extends State<Election> {
   Widget searchBar() {
     return Column(
       children: [
-        TextField(
-          style: TextStyle(color: Theme.of(context).primaryColorDark),
-          cursorColor: Theme.of(context).primaryColor,
-          decoration: InputDecoration(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: TextField(
+            style: TextStyle(color: Theme.of(context).primaryColorDark),
+            cursorColor: Theme.of(context).primaryColor,
+            decoration: InputDecoration(
               suffixIcon: Icon(
                 Icons.search_rounded,
-                color: Theme.of(context).primaryColorDark,
+                color: Theme.of(context).dialogBackgroundColor,
               ),
-              hintText: 'Search',
-              hintStyle: Theme.of(context).textTheme.labelMedium,
+              hintText: 'Search...',
+              hintStyle: Theme.of(context).textTheme.bodyMedium,
               focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 212, 212, 212))),
+                borderRadius: BorderRadius.circular(7.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 212, 212, 212)))),
-          onChanged: (String searchText) {
-            debugPrint(searchText);
-            setState(
-              () {
-                filteredData = electionData
-                    .where((data) => data.title
-                        .toLowerCase()
-                        .contains(searchText.toLowerCase()))
-                    .toList();
-              },
-            );
-          },
+                borderRadius: BorderRadius.circular(7.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).dividerColor,
+                ),
+              ),
+            ),
+            onChanged: (String searchText) {
+              debugPrint(searchText);
+              setState(
+                () {
+                  filteredData = electionData
+                      .where((data) => data.title
+                          .toLowerCase()
+                          .contains(searchText.toLowerCase()))
+                      .toList();
+                },
+              );
+            },
+          ),
         ),
       ],
     );
   }
 
   Widget electionCard(DataSample data) {
-    String formattedDate = DateFormat('dd-MM-yyyy , hh:mm a').format(now);
+    String formattedDate = DateFormat('dd/MM/yy , hh:mm a').format(now);
 
     return Container(
       margin: const EdgeInsets.all(8.0),
@@ -190,6 +189,7 @@ class ElectionState extends State<Election> {
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
                       data.title,
+                      maxLines: 2,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
@@ -204,9 +204,15 @@ class ElectionState extends State<Election> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
-                    child: Text(
-                      'View More',
-                      style: Theme.of(context).textTheme.bodySmall,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(RouteList.electionDetail);
+                      },
+                      child: Text(
+                        'View More',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ),
                   ),
                 ),

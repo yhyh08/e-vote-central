@@ -8,7 +8,12 @@ import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
 
 class LoginPin extends StatefulWidget {
-  const LoginPin({super.key});
+  const LoginPin({
+    required this.phoneNum,
+    super.key,
+  });
+
+  final String phoneNum;
 
   @override
   State<LoginPin> createState() => _LoginPinState();
@@ -87,11 +92,11 @@ class _LoginPinState extends State<LoginPin> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const WCFormTitle(
+                      WCFormTitle(
                         title: 'Hello.',
                         subtitle: ' Enter 6-digit OTP',
                         descr:
-                            'An OTP will sent to this mobile number for verification',
+                            'An OTP will sent to this ${widget.phoneNum} mobile number for verification',
                       ),
                       const SizedBox(height: 20),
                       PinCodeTextField(

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../routes/route.dart';
-import '../../gen/assets.gen.dart';
 // import '../providers/auth.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
+import 'login_pin.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,7 +16,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  // bool _isObscure = true;
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +109,7 @@ class _LoginState extends State<Login> {
                                   phoneNumber = value;
                                 });
                               },
+                              controller: _controller,
                             ),
                           ],
                         ),
@@ -117,7 +117,15 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 30),
                       ElevatedBtn(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(RouteList.loginPin);
+                          // Navigator.of(context).pushNamed(RouteList.loginPin);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (builder) => LoginPin(
+                                phoneNum: _controller.text,
+                              ),
+                            ),
+                          );
                         },
                         btnText: 'Continue',
                       ),

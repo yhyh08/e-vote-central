@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../routes/route.dart';
-import '../../gen/assets.gen.dart';
-// import '../providers/auth.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
+import 'auth_controller.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,53 +14,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  // bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     String? phoneNumber;
-
-    // login check user identity if correct show success on bottom else show invalid
-    void conditionLogin(context) async {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState?.save();
-
-        // bool isLoggined = await fetchUserData(phoneNumber, passwords);
-
-        // if (isLoggined) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       backgroundColor: Theme.of(context).secondaryHeaderColor,
-        //       duration: const Duration(seconds: 2),
-        //       content: Container(
-        //         padding: const EdgeInsets.all(8),
-        //         child: Text(
-        //           'Login Successfully',
-        //           style: Theme.of(context).textTheme.labelLarge,
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        //   Future.delayed(const Duration(seconds: 3), () {
-        //     Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
-        //   });
-        // } else {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       backgroundColor: Theme.of(context).hintColor,
-        //       duration: const Duration(seconds: 2),
-        //       content: Container(
-        //         padding: const EdgeInsets.all(8),
-        //         child: Text(
-        //           'Invalid Phone Num or Password',
-        //           style: Theme.of(context).textTheme.titleMedium,
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        // }
-      }
-    }
+    AuthController controller = AuthController();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -88,20 +43,21 @@ class _LoginState extends State<Login> {
                         child: Column(
                           children: [
                             TextFormField(
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
+                              keyboardType: TextInputType.phone,
                               style: Theme.of(context).textTheme.bodyMedium,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
                                 labelText: 'Phone',
                                 labelStyle:
                                     Theme.of(context).textTheme.labelLarge,
+                                hintText: '+60xxxxxxxxx',
+                                hintStyle:
+                                    Theme.of(context).textTheme.labelSmall,
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Enter Phone';
+                              controller: controller.authController,
+                              validator: (String? number) {
+                                if (number == null || number.isEmpty) {
+                                  return "Enter a valid phone number";
                                 }
                                 return null;
                               },
@@ -117,7 +73,11 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 30),
                       ElevatedBtn(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(RouteList.loginPin);
+                          if (_formKey.currentState != null &&
+                              _formKey.currentState!.validate()) {
+                            controller.sendSMS();
+                            Navigator.of(context).pushNamed(RouteList.loginPin);
+                          }
                         },
                         btnText: 'Continue',
                       ),

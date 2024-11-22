@@ -55,7 +55,8 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(RouteList.election);
+              Navigator.of(context)
+                  .pushReplacementNamed(RouteList.electionDetail);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -79,8 +80,7 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(RouteList.electionDetail);
+              Navigator.of(context).pushReplacementNamed(RouteList.result);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +104,8 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           ),
           InkWell(
             onTap: () {
-              // Navigator.of(context).pushReplacementNamed(RouteList.apply);
+              Navigator.of(context)
+                  .pushReplacementNamed(RouteList.resultDetail);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

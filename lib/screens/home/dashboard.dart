@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../gen/assets.gen.dart';
-import '../../routes/route.dart';
-import '../../widgets/elevated_button.dart';
 import '../../widgets/title_btn.dart';
 import 'home_header.dart';
 // import '../trending.dart';

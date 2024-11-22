@@ -1,13 +1,12 @@
-import 'package:e_vote/widgets/top_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../gen/assets.gen.dart';
-import '../../../routes/route.dart';
-import '../../../widgets/elevated_button.dart';
-import '../../../widgets/title_btn.dart';
-import '../../../../widgets/bottom_navigation.dart';
+import '../../../widgets/top_bar.dart';
+import '../../../models/candidate_card.dart';
+import 'election_info.dart';
+import 'election_organization.dart';
+import 'election_position.dart';
 
 class ElectionDetail extends StatefulWidget {
   const ElectionDetail({super.key});
@@ -16,22 +15,91 @@ class ElectionDetail extends StatefulWidget {
   ElectionDetailState createState() => ElectionDetailState();
 }
 
-class ElectionDetailState extends State<ElectionDetail> {
+class ElectionDetailState extends State<ElectionDetail>
+    with SingleTickerProviderStateMixin {
   final DateTime now = DateTime.now();
+  late TabController _tabController;
+  final List<CandidateDetail> candidates = [
+    CandidateDetail(
+      name: 'Daniel Jackson',
+      title: 'Software Engineer',
+      address: '1789 North Street, San Antonio, TX 78201',
+      candidateImage: Assets.images.voteday.image().image,
+    ),
+    CandidateDetail(
+      name: 'Christina Eng',
+      title: 'Teacher',
+      address: '1789 North Street, San Antonio, TX 78201',
+      candidateImage: Assets.images.voteday.image().image,
+    ),
+  ];
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 3, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TopBar(
-      text: 'Election Detail',
+      title: 'Election Detail',
       index: 1,
-      body: SingleChildScrollView(
+      body: Container(
+        alignment: Alignment.center,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             top(),
             topText(),
             const Divider(),
-            // tabBar(),
+            TabBar(
+              unselectedLabelColor: Theme.of(context).primaryColorDark,
+              labelColor: Theme.of(context).hintColor,
+              tabs: [
+                Tab(
+                  child: Text(
+                    'Info',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Organization',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Position',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                )
+              ],
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  const ElectionInfo(),
+                  ElectionOrganization(),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: candidates.length,
+                    itemBuilder: (context, index) {
+                      return ElectionPosition(candidate: candidates[index]);
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -58,7 +126,7 @@ class ElectionDetailState extends State<ElectionDetail> {
     String formattedDate = DateFormat('dd/MM/yy , hh:mm a').format(now);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       child: Row(
         children: [
           Image(
@@ -116,39 +184,6 @@ class ElectionDetailState extends State<ElectionDetail> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget tabBar() {
-    return const Column(
-      children: [
-        TabBar(
-          tabs: <Widget>[
-            Tab(
-              icon: Icon(Icons.cloud_outlined),
-            ),
-            Tab(
-              icon: Icon(Icons.beach_access_sharp),
-            ),
-            Tab(
-              icon: Icon(Icons.brightness_5_sharp),
-            ),
-          ],
-        ),
-        TabBarView(
-          children: <Widget>[
-            Center(
-              child: Text("It's cloudy here"),
-            ),
-            Center(
-              child: Text("It's rainy here"),
-            ),
-            Center(
-              child: Text("It's sunny here"),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

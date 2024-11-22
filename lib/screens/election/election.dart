@@ -1,13 +1,11 @@
-import 'dart:ui';
-
-import 'package:e_vote/widgets/top_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:intl/intl.dart';
+import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../routes/route.dart';
+import '../../widgets/top_bar.dart';
 
 class Election extends StatefulWidget {
   const Election({super.key});
@@ -42,7 +40,7 @@ class ElectionState extends State<Election> {
   @override
   Widget build(BuildContext context) {
     return TopBar(
-      text: 'Election',
+      title: 'Election',
       index: 1,
       body: SingleChildScrollView(
         child: Column(

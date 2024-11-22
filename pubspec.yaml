@@ -35,13 +35,20 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^1.1.2
   pin_code_fields: ^8.0.1
   shared_preferences: ^2.3.3
   flutter_gen_runner: ^5.8.0
   custom_sliding_segmented_control: ^1.8.4
   standard_searchbar: ^2.1.1
   intl: ^0.19.0
+  logger: ^2.4.0
+  # twilio_phone_verify: ^2.0.0
+  http: ^0.13.5
+  twilio_flutter: ^0.0.9
+  fluttertoast: ^8.1.2
+  get: ^4.6.5
+  
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../routes/route.dart';
-import '../gen/assets.gen.dart';
-
 class WCFormTitle extends StatelessWidget {
   final String title;
   final String subtitle;

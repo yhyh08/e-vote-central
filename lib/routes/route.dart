@@ -24,7 +24,10 @@ class RouteGenerator {
       case RouteList.login:
         return MaterialPageRoute(builder: (_) => const Login());
       case RouteList.loginPin:
-        return MaterialPageRoute(builder: (_) => const LoginPin());
+        return MaterialPageRoute(
+            builder: (_) => const LoginPin(
+                  phoneNum: '',
+                ));
       case RouteList.register:
         return MaterialPageRoute(builder: (_) => const Register());
       case RouteList.registerPin:

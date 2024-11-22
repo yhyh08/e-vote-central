@@ -7,7 +7,12 @@ import '../../widgets/wc_form_title.dart';
 import 'auth_controller.dart';
 
 class LoginPin extends StatefulWidget {
-  const LoginPin({super.key});
+  const LoginPin({
+    required this.phoneNum,
+    super.key,
+  });
+
+  final String phoneNum;
 
   @override
   State<LoginPin> createState() => _LoginPinState();

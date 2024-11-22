@@ -25,6 +25,10 @@ class AuthController extends GetxController {
   sendSMS() {
     twilioFlutter = TwilioFlutter(
         accountSid: 'x', authToken: 'x', twilioNumber: '+15103300932');
+    //  twilioFlutter = TwilioFlutter(
+    // accountSid: 'ACd71d933d211fe37d288c1878567def95',
+    // authToken: '4bf42b5778027816584a58be99734ae8',
+    // twilioNumber: '+15103300932');
 
     var rnd = Random();
 

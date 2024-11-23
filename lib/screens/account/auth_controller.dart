@@ -2,12 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
-import '../../routes/route.dart';
-
-class AuthController extends GetxController {
+class AuthController extends ChangeNotifier {
   TextEditingController authController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -17,10 +14,10 @@ class AuthController extends GetxController {
 
   var sentOTP = 0;
 
-  showInvisibleWidgets() {
-    isCodeSent = true;
-    update();
-  }
+  // showInvisibleWidgets() {
+  //   isCodeSent = true;
+  //   update();
+  // }
 
   sendSMS() {
     twilioFlutter = TwilioFlutter(
@@ -34,8 +31,6 @@ class AuthController extends GetxController {
 
     sentOTP = digits;
 
-    // lets print otp as well
-
     print(sentOTP);
 
     twilioFlutter.sendSMS(
@@ -46,10 +41,14 @@ class AuthController extends GetxController {
   verifyOTP(BuildContext context) {
     if (sentOTP.toString() == otpController.text) {
       Fluttertoast.showToast(
-          msg: "OTP Verified SuccessFully!", backgroundColor: Colors.green);
+        msg: "OTP Verified SuccessFully!",
+        backgroundColor: Theme.of(context).focusColor,
+      );
     } else {
       Fluttertoast.showToast(
-          msg: "OTP didn't match!", backgroundColor: Colors.red);
+        msg: "OTP didn't match!",
+        backgroundColor: Theme.of(context).hintColor,
+      );
     }
   }
 }

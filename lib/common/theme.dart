@@ -10,7 +10,7 @@ final ThemeData theme = ThemeData.light().copyWith(
   dividerColor: const Color.fromARGB(255, 209, 209, 209),
   highlightColor: const Color(0xFF1C1C1C),
   hintColor: const Color(0xFFFF4154),
-  focusColor: Colors.white.withOpacity(0.2),
+  focusColor: Colors.green[400],
   shadowColor: Colors.grey.withOpacity(0.1),
   splashColor: Colors.white,
   iconTheme: const IconThemeData(

@@ -38,7 +38,7 @@ class TestScreen extends StatelessWidget {
         Colors.red,
       ],
       pageRoute: MaterialPageRoute(
-        builder: (context) => Login(),
+        builder: (context) => const Login(),
       ),
       nextButton: Text(
         "Next",

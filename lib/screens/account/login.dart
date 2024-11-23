@@ -4,9 +4,12 @@ import '../../routes/route.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
 import 'auth_controller.dart';
+import 'login_pin.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({
+    super.key,
+  });
 
   @override
   State<Login> createState() => _LoginState();
@@ -14,11 +17,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  AuthController controller = AuthController();
 
   @override
   Widget build(BuildContext context) {
-    String? phoneNumber;
-    AuthController controller = AuthController();
+    String phoneNum;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -30,58 +33,64 @@ class _LoginState extends State<Login> {
             children: [
               Expanded(
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const WCFormTitle(
-                        title: 'Hello.',
-                        subtitle: 'Welcome Back',
-                        descr: 'An OTP will sent to this mobile number',
-                      ),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              keyboardType: TextInputType.phone,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Phone',
-                                labelStyle:
-                                    Theme.of(context).textTheme.labelLarge,
-                                hintText: '+60xxxxxxxxx',
-                                hintStyle:
-                                    Theme.of(context).textTheme.labelSmall,
-                              ),
-                              controller: controller.authController,
-                              validator: (String? number) {
-                                if (number == null || number.isEmpty) {
-                                  return "Enter a valid phone number";
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                setState(() {
-                                  phoneNumber = value;
-                                });
-                              },
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const WCFormTitle(
+                      title: 'Hello.',
+                      subtitle: 'Welcome Back',
+                      descr: 'An OTP will sent to this mobile number',
+                    ),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            keyboardType: TextInputType.phone,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: 'Phone',
+                              labelStyle:
+                                  Theme.of(context).textTheme.labelLarge,
+                              hintText: '+60xxxxxxxxx',
+                              hintStyle: Theme.of(context).textTheme.labelSmall,
                             ),
-                          ],
-                        ),
+                            controller: controller.authController,
+                            validator: (String? number) {
+                              if (number == null || number.isEmpty) {
+                                return "Enter a valid phone number";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                var phoneNum = value;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 30),
-                      ElevatedBtn(
-                        onPressed: () {
-                          if (_formKey.currentState != null &&
-                              _formKey.currentState!.validate()) {
-                            controller.sendSMS();
-                            Navigator.of(context).pushNamed(RouteList.loginPin);
-                          }
-                        },
-                        btnText: 'Continue',
-                      ),
-                    ]),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedBtn(
+                      onPressed: () {
+                        if (_formKey.currentState != null &&
+                            _formKey.currentState!.validate()) {
+                          phoneNum = controller.authController.text;
+                          controller.sendSMS();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LoginPin(phoneNum: phoneNum),
+                            ),
+                          );
+                        }
+                      },
+                      btnText: 'Continue',
+                    ),
+                  ],
+                ),
               ),
               Column(
                 children: [
@@ -102,7 +111,7 @@ class _LoginState extends State<Login> {
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
-                              ?.copyWith(color: const Color(0xFFAD49E1)),
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],

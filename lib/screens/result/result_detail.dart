@@ -1,8 +1,8 @@
-import 'package:e_vote/widgets/top_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../models/result.dart';
+import '../../widgets/top_bar.dart';
 
 class ResultDetail extends StatefulWidget {
   const ResultDetail({super.key});

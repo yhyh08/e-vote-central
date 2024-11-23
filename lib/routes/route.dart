@@ -9,6 +9,7 @@ import '../screens/election/election.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/account/login_pin.dart';
 import '../screens/account/register_pin.dart';
+import '../screens/result/result.dart';
 import '../screens/result/result_detail.dart';
 import '../screens/welcome.dart';
 import '../screens/account/login.dart';
@@ -42,8 +43,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const CandidateProfile());
       // case RouteList.electionOrganization:
       //   return MaterialPageRoute(builder: (_) => ElectionOrganization());
-      // case RouteList.result:
-      //   return MaterialPageRoute(builder: (_) => const Result());
+      case RouteList.result:
+        return MaterialPageRoute(builder: (_) => const Result());
       case RouteList.resultDetail:
         return MaterialPageRoute(builder: (_) => const ResultDetail());
       default:

@@ -4,11 +4,15 @@ class WCFormTitle extends StatelessWidget {
   final String title;
   final String subtitle;
   final String descr;
+  final String? boldText;
+  final String? descr2;
 
   const WCFormTitle({
     required this.title,
     required this.subtitle,
     required this.descr,
+    this.boldText,
+    this.descr2,
     super.key,
   });
 
@@ -37,10 +41,22 @@ class WCFormTitle extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                  Text(
-                    descr,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  RichText(
+                    text: TextSpan(
+                      text: descr,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: boldText,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        TextSpan(
+                          text: descr2,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

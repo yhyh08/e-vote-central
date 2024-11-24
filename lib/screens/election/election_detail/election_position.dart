@@ -92,7 +92,7 @@ class _ElectionPositionState extends State<ElectionPosition> {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          voteBtn()
+                          viewVoteBtn()
                         ],
                       ),
                     ),
@@ -106,7 +106,7 @@ class _ElectionPositionState extends State<ElectionPosition> {
     );
   }
 
-  Widget voteBtn() {
+  Widget viewVoteBtn() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

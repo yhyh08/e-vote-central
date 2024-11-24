@@ -51,6 +51,7 @@ class ElectionDetailState extends State<ElectionDetail>
     return TopBar(
       title: 'Election Detail',
       index: 1,
+      isBack: true,
       body: Container(
         alignment: Alignment.center,
         child: Column(

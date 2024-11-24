@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../routes/route.dart';
-// import '../providers/auth.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
 

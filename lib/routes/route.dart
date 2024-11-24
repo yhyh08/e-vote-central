@@ -7,7 +7,6 @@ import '../screens/election/election_detail/election_info.dart';
 import '../screens/election/election_detail/election_organization.dart';
 import '../screens/election/election.dart';
 import '../screens/home/dashboard.dart';
-import '../screens/account/login_pin.dart';
 import '../screens/account/register_pin.dart';
 import '../screens/result/result.dart';
 import '../screens/result/result_detail.dart';
@@ -24,11 +23,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Welcome());
       case RouteList.login:
         return MaterialPageRoute(builder: (_) => const Login());
-      case RouteList.loginPin:
-        return MaterialPageRoute(
-            builder: (_) => const LoginPin(
-                  phoneNum: '',
-                ));
+
       case RouteList.register:
         return MaterialPageRoute(builder: (_) => const Register());
       case RouteList.registerPin:
@@ -56,7 +51,6 @@ class RouteGenerator {
 class RouteList {
   static const String welcome = '/Welcome';
   static const String login = '/Login';
-  static const String loginPin = '/LoginPin';
   static const String register = '/Register';
   static const String registerPin = '/RegisterPin';
   static const String dashboard = '/Dashboard';

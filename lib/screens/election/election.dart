@@ -5,6 +5,7 @@ import 'package:custom_sliding_segmented_control/custom_sliding_segmented_contro
 
 import '../../gen/assets.gen.dart';
 import '../../routes/route.dart';
+import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
 
 class Election extends StatefulWidget {
@@ -47,8 +48,7 @@ class ElectionState extends State<Election> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             customSliding(),
-            // searchBar(),
-            SearchBar(
+            SearchCol(
               onChanged: (String searchText) {
                 debugPrint(searchText);
                 setState(
@@ -122,52 +122,6 @@ class ElectionState extends State<Election> {
       ),
     );
   }
-
-  // Widget searchBar() {
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  //         child: TextField(
-  //           style: TextStyle(color: Theme.of(context).primaryColorDark),
-  //           cursorColor: Theme.of(context).primaryColor,
-  //           decoration: InputDecoration(
-  //             suffixIcon: Icon(
-  //               Icons.search_rounded,
-  //               color: Theme.of(context).dialogBackgroundColor,
-  //             ),
-  //             hintText: 'Search...',
-  //             hintStyle: Theme.of(context).textTheme.bodyMedium,
-  //             focusedBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(7.0),
-  //               borderSide: BorderSide(
-  //                 color: Theme.of(context).primaryColor,
-  //               ),
-  //             ),
-  //             enabledBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(7.0),
-  //               borderSide: BorderSide(
-  //                 color: Theme.of(context).dividerColor,
-  //               ),
-  //             ),
-  //           ),
-  //           onChanged: (String searchText) {
-  //             debugPrint(searchText);
-  //             setState(
-  //               () {
-  //                 filteredData = electionData
-  //                     .where((data) => data.title
-  //                         .toLowerCase()
-  //                         .contains(searchText.toLowerCase()))
-  //                     .toList();
-  //               },
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget electionCard(DataSample data) {
     String formattedDate = DateFormat('dd/MM/yy , hh:mm a').format(now);

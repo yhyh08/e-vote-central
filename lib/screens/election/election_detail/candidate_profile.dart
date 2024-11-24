@@ -1,10 +1,16 @@
-import 'package:e_vote/widgets/top_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../gen/assets.gen.dart';
+import '../../../models/candidate_card.dart';
+import '../../../widgets/top_bar.dart';
 
 class CandidateProfile extends StatefulWidget {
-  const CandidateProfile({super.key});
+  // final CandidateDetail candidate;
+
+  const CandidateProfile({
+    super.key,
+    // required this.candidate,
+  });
 
   @override
   CandidateProfileState createState() => CandidateProfileState();
@@ -18,10 +24,57 @@ class CandidateProfileState extends State<CandidateProfile> {
       index: 2,
       isBack: true,
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        // padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0),
+                  ),
+                  child: Image(
+                    image: Assets.images.voteday1.image().image,
+                    height: 85,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
+            ),
+            // Positioned(
+            //   top: 55,
+            //   left: 20,
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       CircleAvatar(
+            //         radius: 35,
+            //         backgroundImage: 'widget.candidate.candidateImage',
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 5),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             Text(
+            //               ' widget.candidate.name',
+            //               style: Theme.of(context).textTheme.titleSmall,
+            //             ),
+            //             const SizedBox(height: 5),
+            //             Text(
+            //               'widget.candidate.titl'e,
+            //               style: Theme.of(context).textTheme.labelSmall,
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

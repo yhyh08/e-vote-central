@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../routes/route.dart';
-// import '../providers/auth.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
 
@@ -15,7 +14,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
-  // bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {

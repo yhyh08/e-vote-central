@@ -21,9 +21,12 @@ class TopBar extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: (isBack)
-            ? Text(
-                title,
-                style: Theme.of(context).textTheme.labelMedium,
+            ? Padding(
+                padding: const EdgeInsets.only(left: 60),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
               )
             : Center(
                 child: Text(
@@ -36,10 +39,12 @@ class TopBar extends StatelessWidget {
         leading: (isBack)
             ? IconButton(
                 icon: Icon(
-                  Icons.arrow_back,
+                  Icons.arrow_back_ios,
                   color: Theme.of(context).secondaryHeaderColor,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               )
             : null,
       ),

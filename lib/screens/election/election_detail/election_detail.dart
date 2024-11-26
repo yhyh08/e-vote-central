@@ -19,20 +19,6 @@ class ElectionDetailState extends State<ElectionDetail>
     with SingleTickerProviderStateMixin {
   final DateTime now = DateTime.now();
   late TabController _tabController;
-  final List<CandidateDetail> candidates = [
-    CandidateDetail(
-      name: 'Daniel Jackson',
-      title: 'Software Engineer',
-      address: '1789 North Street, San Antonio, TX 78201',
-      candidateImage: Assets.images.voteday.image().image,
-    ),
-    CandidateDetail(
-      name: 'Christina Eng',
-      title: 'Teacher',
-      address: '1789 North Street, San Antonio, TX 78201',
-      candidateImage: Assets.images.voteday.image().image,
-    ),
-  ];
 
   @override
   void initState() {

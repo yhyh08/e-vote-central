@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../gen/assets.gen.dart';
 import '../main.dart';
+import '../models/result.dart';
 import '../screens/election/election_detail/candidate_profile.dart';
 import '../screens/election/election_detail/election_detail.dart';
 import '../screens/election/election_detail/election_info.dart';
@@ -9,6 +11,7 @@ import '../screens/election/election.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/account/register_pin.dart';
 import '../screens/result/result.dart';
+import '../screens/result/result_card.dart';
 import '../screens/result/result_detail.dart';
 import '../screens/welcome.dart';
 import '../screens/account/login.dart';
@@ -36,8 +39,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ElectionDetail());
       case RouteList.candidateProfile:
         return MaterialPageRoute(builder: (_) => const CandidateProfile());
-      // case RouteList.electionOrganization:
-      //   return MaterialPageRoute(builder: (_) => ElectionOrganization());
+
       case RouteList.result:
         return MaterialPageRoute(builder: (_) => const Result());
       case RouteList.resultDetail:

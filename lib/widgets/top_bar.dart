@@ -22,7 +22,7 @@ class TopBar extends StatelessWidget {
       appBar: AppBar(
         title: (isBack)
             ? Padding(
-                padding: const EdgeInsets.only(left: 60),
+                padding: const EdgeInsets.only(left: 0),
                 child: Text(
                   title,
                   style: Theme.of(context).textTheme.labelMedium,
@@ -47,6 +47,12 @@ class TopBar extends StatelessWidget {
                 },
               )
             : null,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).secondaryHeaderColor,
       bottomNavigationBar: BottomNavigation(currentIndex: index),

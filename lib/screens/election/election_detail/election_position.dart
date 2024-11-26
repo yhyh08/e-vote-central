@@ -71,7 +71,7 @@ class _ElectionPositionState extends State<ElectionPosition> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            widget.candidate.title,
+                            widget.candidate.role,
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                           const SizedBox(height: 5),

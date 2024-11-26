@@ -21,12 +21,9 @@ class TopBar extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: (isBack)
-            ? Padding(
-                padding: const EdgeInsets.only(left: 0),
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
+            ? Text(
+                title,
+                style: Theme.of(context).textTheme.labelMedium,
               )
             : Center(
                 child: Text(

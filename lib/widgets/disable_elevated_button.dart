@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ElevatedBtn extends StatelessWidget {
+class DisElevatedBtn extends StatelessWidget {
   final void Function() onPressed;
   final String btnText;
-  final bool btnColorWhite;
+  final bool isBtnClick;
   final bool hasSize;
 
-  const ElevatedBtn({
+  const DisElevatedBtn({
     required this.onPressed,
     required this.btnText,
-    this.btnColorWhite = true,
+    this.isBtnClick = true,
     this.hasSize = true,
     super.key,
   });
@@ -18,23 +18,24 @@ class ElevatedBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return hasSize
         ? ElevatedButton(
-            onPressed: onPressed,
+            onPressed: isBtnClick ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: (btnColorWhite)
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).secondaryHeaderColor,
+              backgroundColor: (isBtnClick)
+                  ? Theme.of(context).secondaryHeaderColor
+                  : Theme.of(context).shadowColor,
               side: BorderSide(
-                  width: (btnColorWhite) ? 0 : 2,
-                  color: const Color(0xFF7A1CAC)),
-              minimumSize: const Size.fromHeight(55),
+                width: 1,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
             child: Text(
               btnText,
-              style: (btnColorWhite)
-                  ? Theme.of(context).textTheme.bodyLarge
+              style: (isBtnClick)
+                  ? Theme.of(context).textTheme.titleMedium
                   : Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -42,22 +43,23 @@ class ElevatedBtn extends StatelessWidget {
             ),
           )
         : ElevatedButton(
-            onPressed: onPressed,
+            onPressed: isBtnClick ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: (btnColorWhite)
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).primaryColorLight,
+              backgroundColor: (isBtnClick)
+                  ? Theme.of(context).secondaryHeaderColor
+                  : Theme.of(context).shadowColor,
               side: BorderSide(
-                  width: (btnColorWhite) ? 0 : 2,
-                  color: const Color(0xFF7A1CAC)),
+                width: 1,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
             child: Text(
               btnText,
-              style: (btnColorWhite)
-                  ? Theme.of(context).textTheme.bodyLarge
+              style: (isBtnClick)
+                  ? Theme.of(context).textTheme.bodyMedium
                   : Theme.of(context)
                       .textTheme
                       .bodyLarge

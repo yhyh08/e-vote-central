@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../gen/assets.gen.dart';
 import '../main.dart';
+import '../models/candidate_card.dart';
 import '../models/result.dart';
 import '../screens/election/election_detail/candidate/candidate_profile.dart';
 import '../screens/election/election_detail/candidate/candidate_profile_detail.dart';
@@ -39,7 +40,12 @@ class RouteGenerator {
       case RouteList.electionDetail:
         return MaterialPageRoute(builder: (_) => const ElectionDetail());
       case RouteList.candidateProfile:
-        return MaterialPageRoute(builder: (_) => const CandidateProfile());
+        final CandidateDetail candidate = settings.arguments as CandidateDetail;
+        return MaterialPageRoute(
+          builder: (_) => CandidateProfile(
+            candidate: candidate,
+          ),
+        );
       case RouteList.candidateProfileDetail:
         return MaterialPageRoute(
             builder: (_) => const CandidateProfileDetail());

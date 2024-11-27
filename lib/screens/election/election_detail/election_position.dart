@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../routes/route.dart';
+import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
 import '../../../models/candidate_card.dart';
+import '../voted/vote_confirmation_dialog.dart';
+import '../voted/voted.dart';
 
 class ElectionPosition extends StatefulWidget {
   final CandidateDetail candidate;
@@ -19,6 +23,26 @@ class ElectionPosition extends StatefulWidget {
 
 class _ElectionPositionState extends State<ElectionPosition> {
   bool hasVoted = false;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _loadVoteState();
+  // }
+
+  // Future<void> _loadVoteState() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     hasVoted =
+  //         prefs.getBool('hasVoted') ?? false; // Default to false if not set
+  //   });
+  // }
+
+  // Save the vote state to SharedPreferences
+  // Future<void> _saveVoteState() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setBool('hasVoted', hasVoted);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -114,28 +138,56 @@ class _ElectionPositionState extends State<ElectionPosition> {
           btnText: 'View Profile',
           hasSize: false,
           onPressed: () {
-            Navigator.of(context).pushNamed(RouteList.candidateProfile);
+            print(widget.candidate);
+            Navigator.of(context).pushNamed(
+              RouteList.candidateProfile,
+              arguments: widget.candidate,
+            );
           },
         ),
         const SizedBox(width: 10),
-        ElevatedBtn(
-          btnText: hasVoted ? 'Voted' : 'Vote',
+        DisElevatedBtn(
+          btnText: hasVoted ? 'Vote' : 'Voted',
+          isBtnClick: hasVoted ? true : false,
           hasSize: false,
-          btnColorWhite: false,
           onPressed: hasVoted
-              ? () {}
-              : () {
-                  setState(() {
-                    hasVoted = !hasVoted;
-                  });
-                  // Implement voting functionality
+              ? () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return VoteConfirmationDialog(
+                        title: 'Vote',
+                        message:
+                            'Are you sure you want to vote for this candidate? This action cannot be undone.',
+                        onConfirm: () {
+                          Navigator.of(context).pop();
+                          setState(() {
+                            hasVoted = !hasVoted;
+                          });
+                          print('hasVoted updated to: $hasVoted');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Vote confirmed'),
+                              backgroundColor: Theme.of(context).focusColor,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        onCancel: () {
+                          // Navigator.of(context).pop();
+                          Voted();
+                        },
+                      );
+                    },
+                  );
 
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   const SnackBar(
                   //     content: Text('${'widget.user.name'} marked as voted'),
                   //   ),
                   // );
-                },
+                }
+              : () {},
         ),
       ],
     );

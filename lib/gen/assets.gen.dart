@@ -27,6 +27,10 @@ class $AssetsImagesGen {
   AssetGenImage get userlogo =>
       const AssetGenImage('assets/images/userlogo.jpg');
 
+  /// File path: assets/images/voteSuccess1.png
+  AssetGenImage get voteSuccess1 =>
+      const AssetGenImage('assets/images/voteSuccess1.png');
+
   /// File path: assets/images/voteday.jpg
   AssetGenImage get voteday => const AssetGenImage('assets/images/voteday.jpg');
 
@@ -36,7 +40,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [logo, logohoritext, sitelogo, userlogo, voteday, voteday1];
+      [logo, logohoritext, sitelogo, userlogo, voteSuccess1, voteday, voteday1];
 }
 
 class $AssetsSvgGen {

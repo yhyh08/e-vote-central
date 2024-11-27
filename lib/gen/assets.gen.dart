@@ -42,14 +42,24 @@ class $AssetsImagesGen {
 class $AssetsSvgGen {
   const $AssetsSvgGen();
 
-  /// File path: assets/svg/eye_close.svg
-  String get eyeClose => 'assets/svg/eye_close.svg';
+  /// File path: assets/svg/facebook.svg
+  String get facebook => 'assets/svg/facebook.svg';
 
-  /// File path: assets/svg/eye_open.svg
-  String get eyeOpen => 'assets/svg/eye_open.svg';
+  /// File path: assets/svg/instagram.svg
+  String get instagram => 'assets/svg/instagram.svg';
+
+  /// File path: assets/svg/linkedin.svg
+  String get linkedin => 'assets/svg/linkedin.svg';
+
+  /// File path: assets/svg/telegram.svg
+  String get telegram => 'assets/svg/telegram.svg';
+
+  /// File path: assets/svg/whatsapp.svg
+  String get whatsapp => 'assets/svg/whatsapp.svg';
 
   /// List of all assets
-  List<String> get values => [eyeClose, eyeOpen];
+  List<String> get values =>
+      [facebook, instagram, linkedin, telegram, whatsapp];
 }
 
 class Assets {

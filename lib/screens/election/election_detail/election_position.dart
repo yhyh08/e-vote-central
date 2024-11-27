@@ -91,7 +91,7 @@ class _ElectionPositionState extends State<ElectionPosition> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 10),
                           viewVoteBtn()
                         ],
                       ),

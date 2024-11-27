@@ -104,7 +104,7 @@ class BottomNavigationStatus extends State<BottomNavigation> {
           InkWell(
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(RouteList.resultDetail);
+                  .pushReplacementNamed(RouteList.registerStatus);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

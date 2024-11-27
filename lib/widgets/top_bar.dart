@@ -46,7 +46,10 @@ class TopBar extends StatelessWidget {
             : null,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: Icon(
+              Icons.notifications,
+              color: Theme.of(context).splashColor,
+            ),
             onPressed: () {},
           ),
         ],

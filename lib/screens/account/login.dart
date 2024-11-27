@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../routes/route.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/wc_form_title.dart';
 import 'auth_controller.dart';

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class ElevatedBtn extends StatelessWidget {
   final void Function() onPressed;
   final String btnText;
+  final double width;
   final bool btnColorWhite;
   final bool hasSize;
 
   const ElevatedBtn({
     required this.onPressed,
     required this.btnText,
+    this.width = 100,
     this.btnColorWhite = true,
     this.hasSize = true,
     super.key,
@@ -41,27 +43,30 @@ class ElevatedBtn extends StatelessWidget {
                       ?.copyWith(color: const Color(0xFF7A1CAC)),
             ),
           )
-        : ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: (btnColorWhite)
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).primaryColorLight,
-              side: BorderSide(
-                  width: (btnColorWhite) ? 0 : 2,
-                  color: const Color(0xFF7A1CAC)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+        : SizedBox(
+            width: width,
+            child: ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: (btnColorWhite)
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).primaryColorLight,
+                side: BorderSide(
+                    width: (btnColorWhite) ? 0 : 2,
+                    color: const Color(0xFF7A1CAC)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
-            ),
-            child: Text(
-              btnText,
-              style: (btnColorWhite)
-                  ? Theme.of(context).textTheme.bodyLarge
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: const Color(0xFF7A1CAC)),
+              child: Text(
+                btnText,
+                style: (btnColorWhite)
+                    ? Theme.of(context).textTheme.bodyLarge
+                    : Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: const Color(0xFF7A1CAC)),
+              ),
             ),
           );
   }

@@ -22,7 +22,7 @@ class AuthController extends ChangeNotifier {
   sendSMS() {
     twilioFlutter = TwilioFlutter(
         accountSid: 'ACd71d933d211fe37d288c1878567def95',
-        authToken: '4bf42b5778027816584a58be99734ae8',
+        authToken: '49d14fe845f93a4d3395f37fbac18de2',
         twilioNumber: '+15103300932');
 
     var rnd = Random();

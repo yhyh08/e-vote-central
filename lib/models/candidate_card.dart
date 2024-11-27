@@ -33,4 +33,10 @@ final List<CandidateDetail> candidates = [
     address: '1789 North Street, San Antonio, TX 78201',
     candidateImage: Assets.images.voteday.image().image,
   ),
+  // CandidateDetail(
+  //   name: 'Alice Chin',
+  //   role: 'Lecturer',
+  //   address: '1789 North Street, San Antonio, TX 78201',
+  //   candidateImage: Assets.images.voteday.image().image,
+  // ),
 ];

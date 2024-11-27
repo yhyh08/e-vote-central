@@ -10,6 +10,7 @@ import '../screens/election/election_detail/election_detail.dart';
 import '../screens/election/election_detail/election_info.dart';
 import '../screens/election/election_detail/election_organization.dart';
 import '../screens/election/election.dart';
+import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/account/register_pin.dart';
 import '../screens/result/result.dart';
@@ -51,6 +52,8 @@ class RouteGenerator {
             builder: (_) => const CandidateProfileDetail());
       case RouteList.result:
         return MaterialPageRoute(builder: (_) => const Result());
+      case RouteList.voted:
+        return MaterialPageRoute(builder: (_) => const Voted());
       case RouteList.resultDetail:
         return MaterialPageRoute(builder: (_) => const ResultDetail());
       default:
@@ -70,6 +73,7 @@ class RouteList {
   static const String candidateProfile = '/CandidateProfile';
   static const String candidateProfileDetail = '/CandidateProfileDetail';
   static const String electionOrganization = '/ElectionOrganization';
+  static const String voted = '/Voted';
   static const String result = '/Result';
   static const String resultDetail = '/ResultDetail';
 }

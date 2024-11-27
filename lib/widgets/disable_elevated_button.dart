@@ -9,7 +9,7 @@ class DisElevatedBtn extends StatelessWidget {
   const DisElevatedBtn({
     required this.onPressed,
     required this.btnText,
-    this.isBtnClick = true,
+    this.isBtnClick = false,
     this.hasSize = true,
     super.key,
   });
@@ -18,11 +18,9 @@ class DisElevatedBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return hasSize
         ? ElevatedButton(
-            onPressed: isBtnClick ? null : onPressed,
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: (isBtnClick)
-                  ? Theme.of(context).secondaryHeaderColor
-                  : Theme.of(context).shadowColor,
+              backgroundColor: Theme.of(context).primaryColorLight,
               side: BorderSide(
                 width: 1,
                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -34,20 +32,15 @@ class DisElevatedBtn extends StatelessWidget {
             ),
             child: Text(
               btnText,
-              style: (isBtnClick)
-                  ? Theme.of(context).textTheme.titleMedium
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: const Color(0xFF7A1CAC)),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF7A1CAC),
+                  ),
             ),
           )
         : ElevatedButton(
-            onPressed: isBtnClick ? null : onPressed,
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: (isBtnClick)
-                  ? Theme.of(context).secondaryHeaderColor
-                  : Theme.of(context).shadowColor,
+              backgroundColor: Theme.of(context).primaryColorLight,
               side: BorderSide(
                 width: 1,
                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -58,12 +51,9 @@ class DisElevatedBtn extends StatelessWidget {
             ),
             child: Text(
               btnText,
-              style: (isBtnClick)
-                  ? Theme.of(context).textTheme.bodyMedium
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: const Color(0xFF7A1CAC)),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF7A1CAC),
+                  ),
             ),
           );
   }

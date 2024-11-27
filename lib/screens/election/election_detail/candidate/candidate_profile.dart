@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../../gen/assets.gen.dart';
 import '../../../../models/candidate_card.dart';
+import '../../../../routes/route.dart';
 import '../../../../widgets/disable_elevated_button.dart';
-import '../../../../widgets/elevated_button.dart';
 import '../../../../widgets/top_bar.dart';
 import '../../voted/vote_confirmation_dialog.dart';
 import 'candidate_info.dart';
@@ -89,10 +89,10 @@ class CandidateProfileState extends State<CandidateProfile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: DisElevatedBtn(
-                btnText: hasVoted ? 'Vote' : 'Voted',
-                isBtnClick: hasVoted ? true : false,
+                btnText: hasVoted ? 'Voted' : 'Vote',
                 onPressed: hasVoted
-                    ? () {
+                    ? () {}
+                    : () {
                         showDialog(
                           context: context,
                           builder: (context) {
@@ -105,14 +105,8 @@ class CandidateProfileState extends State<CandidateProfile> {
                                 setState(() {
                                   hasVoted = !hasVoted;
                                 });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Vote confirmed'),
-                                    backgroundColor:
-                                        Theme.of(context).focusColor,
-                                    duration: const Duration(seconds: 2),
-                                  ),
-                                );
+                                Navigator.of(context)
+                                    .pushNamed(RouteList.voted);
                               },
                               onCancel: () {
                                 Navigator.of(context).pop();
@@ -120,8 +114,7 @@ class CandidateProfileState extends State<CandidateProfile> {
                             );
                           },
                         );
-                      }
-                    : () {},
+                      },
               ),
             ),
             const CandidateInfo(

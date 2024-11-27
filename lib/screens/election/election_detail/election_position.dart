@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../routes/route.dart';
@@ -7,7 +6,6 @@ import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
 import '../../../models/candidate_card.dart';
 import '../voted/vote_confirmation_dialog.dart';
-import '../voted/voted.dart';
 
 class ElectionPosition extends StatefulWidget {
   final CandidateDetail candidate;
@@ -23,26 +21,6 @@ class ElectionPosition extends StatefulWidget {
 
 class _ElectionPositionState extends State<ElectionPosition> {
   bool hasVoted = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _loadVoteState();
-  // }
-
-  // Future<void> _loadVoteState() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     hasVoted =
-  //         prefs.getBool('hasVoted') ?? false; // Default to false if not set
-  //   });
-  // }
-
-  // Save the vote state to SharedPreferences
-  // Future<void> _saveVoteState() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setBool('hasVoted', hasVoted);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -147,11 +125,11 @@ class _ElectionPositionState extends State<ElectionPosition> {
         ),
         const SizedBox(width: 10),
         DisElevatedBtn(
-          btnText: hasVoted ? 'Vote' : 'Voted',
-          isBtnClick: hasVoted ? true : false,
+          btnText: hasVoted ? 'Voted' : 'Vote',
           hasSize: false,
           onPressed: hasVoted
-              ? () {
+              ? () {}
+              : () {
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -164,18 +142,10 @@ class _ElectionPositionState extends State<ElectionPosition> {
                           setState(() {
                             hasVoted = !hasVoted;
                           });
-                          print('hasVoted updated to: $hasVoted');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Vote confirmed'),
-                              backgroundColor: Theme.of(context).focusColor,
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(RouteList.voted);
                         },
                         onCancel: () {
-                          // Navigator.of(context).pop();
-                          Voted();
+                          Navigator.of(context).pop();
                         },
                       );
                     },
@@ -186,8 +156,7 @@ class _ElectionPositionState extends State<ElectionPosition> {
                   //     content: Text('${'widget.user.name'} marked as voted'),
                   //   ),
                   // );
-                }
-              : () {},
+                },
         ),
       ],
     );

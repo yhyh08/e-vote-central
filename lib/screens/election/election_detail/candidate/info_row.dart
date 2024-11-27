@@ -20,18 +20,12 @@ class InfoRow extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           "$label: ",
-          style: const TextStyle(
-            fontSize: 14.0,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         Expanded(
           child: Text(
             value,
-            style: TextStyle(
-              fontSize: 14.0,
-              color: Colors.grey[800],
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       ],

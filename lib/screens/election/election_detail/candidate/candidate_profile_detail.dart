@@ -28,6 +28,7 @@ class CandidateProfileDetailState extends State<CandidateProfileDetail> {
               title: 'Short Biographys',
               content:
                   'Daniel Jackson is a dedicated software engineer with 11 years of experience in the tech industry. As a strong advocate',
+              isDetail: true,
             ),
             const Padding(
               padding: EdgeInsets.all(16.0),
@@ -58,6 +59,7 @@ class CandidateProfileDetailState extends State<CandidateProfileDetail> {
               title: 'Election Manifesto',
               content:
                   'Our vision is to create a transparent, efficient, and inclusive society where technology empowers every citizen. We commit to enhancing',
+              isDetail: true,
             ),
           ],
         ),

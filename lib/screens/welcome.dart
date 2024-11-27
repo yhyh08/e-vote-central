@@ -51,13 +51,13 @@ Widget content(BuildContext context) {
               btnText: 'Signin',
             ),
             const SizedBox(height: 20),
-            ElevatedBtn(
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteList.register);
-              },
-              btnText: 'Singup',
-              btnColorWhite: false,
-            ),
+            // ElevatedBtn(
+            //   onPressed: () {
+            //     Navigator.of(context).pushReplacementNamed(RouteList.register);
+            //   },
+            //   btnText: 'Singup',
+            //   btnColorWhite: false,
+            // ),
           ],
         ),
       ],

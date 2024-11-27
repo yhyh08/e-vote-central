@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
 import '../main.dart';
 import '../models/candidate_card.dart';
-import '../models/result.dart';
 import '../screens/election/election_detail/candidate/candidate_profile.dart';
 import '../screens/election/election_detail/candidate/candidate_profile_detail.dart';
 import '../screens/election/election_detail/election_detail.dart';
-import '../screens/election/election_detail/election_info.dart';
-import '../screens/election/election_detail/election_organization.dart';
 import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/account/register_pin.dart';
 import '../screens/result/result.dart';
-import '../screens/result/result_card.dart';
 import '../screens/result/result_detail.dart';
 import '../screens/welcome.dart';
 import '../screens/account/login.dart';
@@ -29,7 +24,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Welcome());
       case RouteList.login:
         return MaterialPageRoute(builder: (_) => const Login());
-
       case RouteList.register:
         return MaterialPageRoute(builder: (_) => const Register());
       case RouteList.registerPin:
@@ -50,10 +44,10 @@ class RouteGenerator {
       case RouteList.candidateProfileDetail:
         return MaterialPageRoute(
             builder: (_) => const CandidateProfileDetail());
-      case RouteList.result:
-        return MaterialPageRoute(builder: (_) => const Result());
       case RouteList.voted:
         return MaterialPageRoute(builder: (_) => const Voted());
+      case RouteList.result:
+        return MaterialPageRoute(builder: (_) => const Result());
       case RouteList.resultDetail:
         return MaterialPageRoute(builder: (_) => const ResultDetail());
       default:

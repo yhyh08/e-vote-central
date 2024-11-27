@@ -92,33 +92,33 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an Account? ",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushReplacementNamed(RouteList.register);
-                        },
-                        child: Text(
-                          " Sign up",
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
+              // Column(
+              //   children: [
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         Text(
+              //           "Don't have an Account? ",
+              //           style: Theme.of(context).textTheme.labelSmall,
+              //         ),
+              //         GestureDetector(
+              //           onTap: () {
+              //             Navigator.of(context)
+              //                 .pushReplacementNamed(RouteList.register);
+              //           },
+              //           child: Text(
+              //             " Sign up",
+              //             style: Theme.of(context)
+              //                 .textTheme
+              //                 .labelSmall
+              //                 ?.copyWith(color: Theme.of(context).primaryColor),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //     const SizedBox(height: 10),
+              //   ],
+              // ),
             ],
           ),
         ),

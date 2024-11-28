@@ -96,18 +96,7 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               btnColorWhite: false,
               width: 160,
               onPressed: () {
-                if (selectedOption != null) {
-                  Navigator.of(context).pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Please select an election.',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ),
-                  );
-                }
+                Navigator.of(context).pop(context);
               },
             ),
             ElevatedBtn(

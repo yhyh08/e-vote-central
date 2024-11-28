@@ -10,7 +10,7 @@ class ElevatedBtn extends StatelessWidget {
   const ElevatedBtn({
     required this.onPressed,
     required this.btnText,
-    this.width = 100,
+    this.width = 130,
     this.btnColorWhite = true,
     this.hasSize = true,
     super.key,

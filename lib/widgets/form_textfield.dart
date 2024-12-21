@@ -8,6 +8,7 @@ class FormTextfield extends StatelessWidget {
   final String? Function(String?)? validator;
   final Function(String? value)? onChanged;
   final Function(String?)? onSaved;
+  final int? maxLines;
 
   const FormTextfield({
     required this.keyboardType,
@@ -17,6 +18,7 @@ class FormTextfield extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.onSaved,
+    this.maxLines,
     super.key,
   });
 
@@ -24,13 +26,14 @@ class FormTextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: keyboardType,
+      maxLines: maxLines,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         // floatingLabelAlignment: FloatingLabelAlignment.center,
         // floatingLabelBehavior: FloatingLabelBehavior.never,
         labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.labelLarge,
+        labelStyle: Theme.of(context).textTheme.labelSmall,
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.labelSmall,
       ),

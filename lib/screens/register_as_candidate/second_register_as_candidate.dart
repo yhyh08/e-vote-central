@@ -72,7 +72,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                                       setState(() {});
                                     },
                                   ),
-                                  const SizedBox(height: 20),
                                   FormTextfield(
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 5,
@@ -88,12 +87,9 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                                       setState(() {});
                                     },
                                   ),
-                                  const SizedBox(height: 20),
                                 ],
                               ))
                           .toList(),
-
-                      // Add nominee button
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: ElevatedButton.icon(
@@ -103,10 +99,14 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                             });
                           },
                           icon: const Icon(Icons.add),
-                          label: const Text('Add Nominee'),
+                          label: Text(
+                            'Add Nominee',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.white,
+                            foregroundColor:
+                                Theme.of(context).primaryColorLight,
                           ),
                         ),
                       ),

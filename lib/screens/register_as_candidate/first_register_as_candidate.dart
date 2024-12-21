@@ -74,7 +74,7 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
                   onPressed: () {
                     if (selectedOption != null) {
                       Navigator.of(context)
-                          .pushNamed(RouteList.registerCandidateSecond);
+                          .pushNamed(RouteList.registerCandidateThird);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

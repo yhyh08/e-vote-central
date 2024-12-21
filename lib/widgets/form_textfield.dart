@@ -24,23 +24,28 @@ class FormTextfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      style: Theme.of(context).textTheme.bodyMedium,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        // floatingLabelAlignment: FloatingLabelAlignment.center,
-        // floatingLabelBehavior: FloatingLabelBehavior.never,
-        labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.labelSmall,
-        hintText: hintText,
-        hintStyle: Theme.of(context).textTheme.labelSmall,
-      ),
-      controller: controller,
-      validator: validator,
-      onChanged: onChanged,
-      onSaved: onSaved,
+    return Column(
+      children: [
+        TextFormField(
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          style: Theme.of(context).textTheme.bodyMedium,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            // floatingLabelAlignment: FloatingLabelAlignment.center,
+            // floatingLabelBehavior: FloatingLabelBehavior.never,
+            labelText: labelText,
+            labelStyle: Theme.of(context).textTheme.labelSmall,
+            hintText: hintText,
+            hintStyle: Theme.of(context).textTheme.labelSmall,
+          ),
+          controller: controller,
+          validator: validator,
+          onChanged: onChanged,
+          onSaved: onSaved,
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

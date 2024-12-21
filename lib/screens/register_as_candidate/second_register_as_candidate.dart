@@ -16,6 +16,7 @@ class RegisterCandidateSecond extends StatefulWidget {
 class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
   String? selectedOption;
   final _formKey = GlobalKey<FormState>();
+  final List<int> nominees = [1]; // Start with one nominee
 
   @override
   Widget build(BuildContext context) {
@@ -38,43 +39,94 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               ),
             ),
             const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'First Nominee',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Email',
-                      labelStyle: Theme.of(context).textTheme.labelLarge,
-                      hintText: 'xxx@gmail.com',
-                      hintStyle: Theme.of(context).textTheme.labelSmall,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Generate nominee fields dynamically
+                    ...nominees
+                        .map((index) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Nominee ${index}',
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    labelText: 'Email',
+                                    labelStyle:
+                                        Theme.of(context).textTheme.labelSmall,
+                                    hintText: 'xxx@gmail.com',
+                                    hintStyle:
+                                        Theme.of(context).textTheme.labelSmall,
+                                  ),
+                                  validator: (String? email) {
+                                    if (email == null ||
+                                        !email.contains('@') ||
+                                        email.isEmpty) {
+                                      return "Enter a valid email address";
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    setState(() {});
+                                  },
+                                ),
+                                const SizedBox(height: 30),
+                                TextFormField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 5,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    labelText: 'Reason',
+                                    labelStyle:
+                                        Theme.of(context).textTheme.labelSmall,
+                                    hintText: 'Enter your reason',
+                                    hintStyle:
+                                        Theme.of(context).textTheme.labelSmall,
+                                  ),
+                                  validator: (String? reason) {
+                                    if (reason == null || reason.isEmpty) {
+                                      return "Enter a valid reason";
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    setState(() {});
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ))
+                        .toList(),
+
+                    // Add nominee button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            nominees.add(nominees.length + 1);
+                          });
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add Nominee'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
                     ),
-                    // controller: ,
-                    validator: (String? number) {
-                      if (number == null || number.isEmpty) {
-                        return "Enter a valid email address";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      setState(() {});
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            const Spacer(),
             bottomBtn(),
           ],
         ),

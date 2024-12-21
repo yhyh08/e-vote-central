@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../routes/route.dart';
 import '../../widgets/elevated_button.dart';
+import '../../widgets/form_textfield.dart';
 import '../../widgets/top_bar.dart';
 import 'step_icon.dart';
 
@@ -38,18 +39,15 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               ),
             ),
             const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'First Nominee',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ),
-            const SizedBox(height: 10),
             Form(
               key: _formKey,
               child: Column(
                 children: [
+                  const FormTextfield(
+                    keyboardType: TextInputType.text,
+                    labelText: '',
+                    hintText: '',
+                  ),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     style: Theme.of(context).textTheme.bodyMedium,

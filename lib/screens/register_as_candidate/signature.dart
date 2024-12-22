@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'dart:typed_data';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,7 +15,6 @@ class SignatureCandidate extends StatefulWidget {
 }
 
 class _SignatureCandidateState extends State<SignatureCandidate> {
-  // initialize the signature controller
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 1,
     penColor: Colors.red,
@@ -23,8 +24,6 @@ class _SignatureCandidateState extends State<SignatureCandidate> {
     onDrawEnd: () => log('onDrawEnd called!'),
   );
 
-  bool _isDisabled = false;
-
   @override
   void initState() {
     super.initState();
@@ -32,16 +31,38 @@ class _SignatureCandidateState extends State<SignatureCandidate> {
       ..addListener(() => log('Value changed'))
       ..onDrawEnd = () => setState(
             () {
-              // setState for build to update value of "empty label" in gui
+              // setState for build to update value
             },
           );
   }
 
   @override
   void dispose() {
-    // IMPORTANT to dispose of the controller
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> saveSignature(Uint8List data) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/signature.png';
+      final file = File(path);
+      await file.writeAsBytes(data);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Signature saved to $path'),
+        ),
+      );
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to save signature: $e'),
+        ),
+      );
+    }
   }
 
   Future<void> exportImage(BuildContext context) async {
@@ -69,6 +90,8 @@ class _SignatureCandidateState extends State<SignatureCandidate> {
         builder: (context) => convertToImage(data),
       ),
     );
+
+    await saveSignature(data);
   }
 
   Future<void> exportSVG(BuildContext context) async {

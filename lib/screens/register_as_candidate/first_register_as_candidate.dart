@@ -46,15 +46,17 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
               decoration: InputDecoration(
                 labelText: 'Election',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(5),
                 ),
               ),
               value: selectedOption,
               items: electionOptions
-                  .map((option) => DropdownMenuItem(
-                        value: option,
-                        child: Text(option),
-                      ))
+                  .map(
+                    (option) => DropdownMenuItem(
+                      value: option,
+                      child: Text(option),
+                    ),
+                  )
                   .toList(),
               onChanged: (value) {
                 setState(() {

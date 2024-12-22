@@ -2,6 +2,7 @@ import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
 
 import '../../routes/route.dart';
+import '../../widgets/dropdown_btn.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/form_textfield.dart';
 import '../../widgets/top_bar.dart';
@@ -15,16 +16,41 @@ class RegisterCandidateThird extends StatefulWidget {
 }
 
 class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
-  String? selectedOption;
   final _formKey = GlobalKey<FormState>();
+  String? selectedGender;
+  String? selectedJobs;
+  String? selectedIncome;
+  String? selectedMaritalStatus;
   TextEditingController state = TextEditingController();
   TextEditingController country = TextEditingController();
   TextEditingController city = TextEditingController();
 
-  final List<String> electionOptions = [
-    'State 1',
-    'State 2',
-    'State 3',
+  final List<String> genderOptions = [
+    'Male',
+    'Female',
+  ];
+
+  final List<String> jobsOptions = [
+    'Employee',
+    'Self-Employed',
+    'Student',
+    'Unemployed',
+  ];
+
+  final List<String> incomeOptions = [
+    'Less than RM 1000',
+    'RM 1000 - RM 2000',
+    'RM 2000 - RM 3000',
+    'RM 3000 - RM 4000',
+    'RM 4000 - RM 5000',
+    'Over RM 5000',
+  ];
+
+  final List<String> maritalStatusOptions = [
+    'Single',
+    'Married',
+    'Divorced',
+    'Widowed',
   ];
 
   @override
@@ -78,6 +104,23 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                         },
                         onSaved: (value) {},
                       ),
+                      DropdownBtn(
+                        labelText: 'Gender',
+                        value: selectedGender,
+                        items: genderOptions
+                            .map(
+                              (option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                          });
+                        },
+                      ),
                       FormTextfield(
                         keyboardType: TextInputType.emailAddress,
                         labelText: 'Email',
@@ -128,20 +171,109 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                         },
                         onSaved: (value) {},
                       ),
+                      FormTextfield(
+                        keyboardType: TextInputType.text,
+                        labelText: 'Address Line 2',
+                        hintText: 'Address Line 2',
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter a valid address";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {},
+                      ),
                       CountryStateCityPicker(
                         country: country,
                         state: state,
                         city: city,
-                        dialogColor: Theme.of(context).shadowColor,
+                        dialogColor: Theme.of(context).secondaryHeaderColor,
                         textFieldDecoration: InputDecoration(
                           fillColor: Theme.of(context).secondaryHeaderColor,
-                          labelStyle: Theme.of(context).textTheme.displaySmall,
+                          labelStyle: Theme.of(context).textTheme.labelSmall,
                           filled: true,
-                          suffixIcon: const Icon(Icons.arrow_downward_rounded),
+                          suffixIcon:
+                              const Icon(Icons.keyboard_arrow_down_rounded),
                           border: const OutlineInputBorder(
                             borderSide: BorderSide(width: 5),
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 20),
+                      FormTextfield(
+                        keyboardType: TextInputType.number,
+                        labelText: 'Postcode',
+                        hintText: 'Postcode',
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter a valid postcode";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {},
+                      ),
+                      FormTextfield(
+                        keyboardType: TextInputType.text,
+                        labelText: 'Nationality',
+                        hintText: 'Nationality',
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter a valid nationality";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {},
+                      ),
+                      DropdownBtn(
+                        labelText: 'Jobs',
+                        value: selectedJobs,
+                        items: jobsOptions
+                            .map(
+                              (option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedJobs = value;
+                          });
+                        },
+                      ),
+                      DropdownBtn(
+                        labelText: 'Income',
+                        value: selectedIncome,
+                        items: incomeOptions
+                            .map(
+                              (option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedIncome = value;
+                          });
+                        },
+                      ),
+                      DropdownBtn(
+                        labelText: 'Marital Status',
+                        value: selectedMaritalStatus,
+                        items: maritalStatusOptions
+                            .map(
+                              (option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedMaritalStatus = value;
+                          });
+                        },
                       ),
                       bottomBtn(),
                     ],

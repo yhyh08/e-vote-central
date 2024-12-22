@@ -1,3 +1,4 @@
+import 'package:e_vote/screens/register_as_candidate/signature.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -69,6 +70,8 @@ class RouteGenerator {
       case RouteList.registerCandidateForth:
         return MaterialPageRoute(
             builder: (_) => const RegisterCandidateForth());
+      case RouteList.signatureCandidate:
+        return MaterialPageRoute(builder: (_) => const SignatureCandidate());
       default:
         return MaterialPageRoute(builder: (_) => const MyApp());
     }
@@ -94,4 +97,5 @@ class RouteList {
   static const String registerCandidateSecond = '/RegisterCandidateSecond';
   static const String registerCandidateThird = '/RegisterCandidateThird';
   static const String registerCandidateForth = '/RegisterCandidateFirst';
+  static const String signatureCandidate = '/SignatureCandidate';
 }

@@ -275,6 +275,14 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                           });
                         },
                       ),
+                      ElevatedBtn(
+                        btnText: 'Sign the form',
+                        btnColorWhite: false,
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteList.signatureCandidate);
+                        },
+                      ),
                       bottomBtn(),
                     ],
                   ),

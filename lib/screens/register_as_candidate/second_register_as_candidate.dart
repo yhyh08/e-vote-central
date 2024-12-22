@@ -17,7 +17,7 @@ class RegisterCandidateSecond extends StatefulWidget {
 class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
   String? selectedOption;
   final _formKey = GlobalKey<FormState>();
-  final List<int> nominees = [1]; // Start with one nominee
+  final List<int> nominees = [1];
 
   @override
   Widget build(BuildContext context) {

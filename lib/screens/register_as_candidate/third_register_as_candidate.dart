@@ -283,6 +283,7 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                               .pushNamed(RouteList.signatureCandidate);
                         },
                       ),
+                      const SizedBox(height: 20),
                       bottomBtn(),
                     ],
                   ),

@@ -72,7 +72,7 @@ class RegisterStatusState extends State<RegisterStatus> {
               child: ElevatedBtn(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(RouteList.registerCandidateFirst);
+                      .pushNamed(RouteList.registerCandidateForth);
                 },
                 btnText: 'Register New',
                 hasSize: false,

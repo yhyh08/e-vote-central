@@ -96,6 +96,6 @@ class RouteList {
   static const String registerCandidateFirst = '/RegisterCandidateFirst';
   static const String registerCandidateSecond = '/RegisterCandidateSecond';
   static const String registerCandidateThird = '/RegisterCandidateThird';
-  static const String registerCandidateForth = '/RegisterCandidateFirst';
+  static const String registerCandidateForth = '/RegisterCandidateForth';
   static const String signatureCandidate = '/SignatureCandidate';
 }

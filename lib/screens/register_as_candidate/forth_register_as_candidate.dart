@@ -17,37 +17,22 @@ class RegisterCandidateForth extends StatefulWidget {
 class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
   String? selectedOption;
   final _formKey = GlobalKey<FormState>();
+  List<PlatformFile> selectedFiles = [];
 
   Future<void> uploadDocumentFile() async {
     try {
-      // Open the file picker to select a document file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: [
-          'pdf',
-          'doc',
-          'docx',
-          'txt'
-        ], // Specify allowed file types
+        allowMultiple: true,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
       );
 
       if (result != null) {
-        // Get the file path
-        String? filePath = result.files.single.path;
-
-        if (filePath != null) {
-          // File picked successfully, you can use `filePath`
-          print("File picked: $filePath");
-          // TODO: Upload the file to your server or process it further
-        } else {
-          print("No file path found!");
-        }
-      } else {
-        // User canceled the picker
-        print("File selection canceled.");
+        setState(() {
+          selectedFiles = result.files;
+        });
       }
     } catch (e) {
-      // Handle errors
       print("Error picking file: $e");
     }
   }
@@ -119,6 +104,43 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                         },
                       ),
                       const SizedBox(height: 20),
+                      if (selectedFiles.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Selected Files:',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              ...selectedFiles.map((file) => Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.file_present,
+                                            size: 20),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          file.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
                       bottomBtn(),
                     ],
                   ),

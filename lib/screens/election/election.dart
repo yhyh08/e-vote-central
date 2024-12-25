@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:e_vote/network_utlis/api_constant.dart';
 import '../../gen/assets.gen.dart';
 import '../../routes/route.dart';
 import '../../widgets/search_bar.dart';
@@ -16,18 +18,61 @@ class Election extends StatefulWidget {
 }
 
 class ElectionState extends State<Election> {
-  List<DataSample> electionData = [
-    DataSample('2024 General Election: Your Voice, Your Choice'),
-    DataSample('Shape Tomorrow: Cast Your Vote!'),
-    DataSample('2024 Election: Defining Our Nation Next Chapter'),
-  ];
+  List<DataSample> electionData = [];
   List<DataSample> filteredData = [];
+  int selectedSegment = 1;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => afterBuildFunction(context));
+    fetchElections();
+  }
+
+  Future<void> fetchElections() async {
+    try {
+      final response = await http.get(Uri.parse('$API_URL/all-elections/'));
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        setState(() {
+          electionData = data.map((e) {
+            String title = e['election_topic'] ?? 'No Title';
+            DateTime startDate = e['start_date'] != null
+                ? DateTime.parse(e['start_date'])
+                : DateTime.now();
+            DateTime endDate = e['end_date'] != null
+                ? DateTime.parse(e['end_date'])
+                : DateTime.now();
+
+            return DataSample(title, startDate, endDate);
+          }).toList();
+          updateFilteredData();
+        });
+      } else {
+        throw Exception('Failed to load elections');
+      }
+    } catch (e) {
+      print('Error fetching elections: $e');
+    }
+  }
+
+  void updateFilteredData() {
+    DateTime now = DateTime.now();
+    print('Current Date: $now');
+
+    setState(() {
+      if (selectedSegment == 1) {
+        filteredData = electionData
+            .where((e) => e.startDate.isBefore(now) && e.endDate.isAfter(now))
+            .toList();
+      } else if (selectedSegment == 2) {
+        filteredData =
+            electionData.where((e) => e.startDate.isAfter(now)).toList();
+      }
+      print('Selected Segment: $selectedSegment');
+      print('Filtered Data: $filteredData');
+    });
   }
 
   Future<void> afterBuildFunction(BuildContext context) async {
@@ -86,7 +131,7 @@ class ElectionState extends State<Election> {
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: CustomSlidingSegmentedControl<int>(
-        initialValue: 1,
+        initialValue: selectedSegment,
         fixedWidth: 150,
         children: {
           1: Text(
@@ -117,14 +162,20 @@ class ElectionState extends State<Election> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInToLinear,
         onValueChanged: (v) {
-          print(v);
+          setState(() {
+            selectedSegment = v;
+            updateFilteredData();
+          });
         },
       ),
     );
   }
 
   Widget electionCard(DataSample data) {
-    String formattedDate = DateFormat('dd/MM/yy , hh:mm a').format(now);
+    String formattedStartDate =
+        DateFormat('dd/MM/yy , hh:mm a').format(data.startDate);
+    String formattedEndDate =
+        DateFormat('dd/MM/yy , hh:mm a').format(data.endDate);
 
     return Container(
       margin: const EdgeInsets.all(8.0),
@@ -194,7 +245,7 @@ class ElectionState extends State<Election> {
                     size: 18,
                   ),
                   Text(
-                    '$formattedDate - $formattedDate',
+                    '$formattedStartDate - $formattedEndDate',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ],
@@ -210,7 +261,11 @@ class ElectionState extends State<Election> {
 class DataSample {
   DataSample(
     this.title,
+    this.startDate,
+    this.endDate,
   );
 
   final String title;
+  final DateTime startDate;
+  final DateTime endDate;
 }

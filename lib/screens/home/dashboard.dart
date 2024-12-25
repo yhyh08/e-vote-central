@@ -1,15 +1,12 @@
-import 'dart:convert';
-
 import 'package:e_vote/models/result_list.dart';
+import 'package:e_vote/network_utlis/api.dart';
 import 'package:e_vote/widgets/result_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../gen/assets.gen.dart';
 import '../../widgets/title_btn.dart';
-import 'home_header.dart';
-// import '../trending.dart';
 import '../../../widgets/bottom_navigation.dart';
+import 'home_header.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -19,26 +16,37 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
-  var _userInfo = 'emptyUserInfo';
-  String? username;
-
-  // home screen show username
-  // Future<void> getUserData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String userInfo = prefs.getString('user_data') ?? '';
-
-  //   dynamic userObj = jsonDecode(userInfo);
-  //   username = userObj['response']['user']['username'];
-
-  //   setState(() {
-  //     _userInfo = username ?? '';
-  //   });
-  // }
+  String _userInfo = '';
+  String? _phoneNumber;
+  final Network _network = Network();
 
   @override
   void initState() {
     super.initState();
-    // getUserData();
+    _initializeUserInfo();
+  }
+
+  Future<void> _initializeUserInfo() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    _phoneNumber = localStorage.getString('user_phone');
+    if (_phoneNumber != null) {
+      await _loadUserInfo();
+    } else {
+      print('No phone number found in storage.');
+    }
+  }
+
+  Future<void> _loadUserInfo() async {
+    try {
+      if (_phoneNumber != null) {
+        final userInfo = await _network.getUserInfo(_phoneNumber!);
+        setState(() {
+          _userInfo = userInfo['name'] ?? 'Guest';
+        });
+      }
+    } catch (e) {
+      print('Error loading user info: $e');
+    }
   }
 
   @override

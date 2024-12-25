@@ -125,6 +125,9 @@ class AuthController extends ChangeNotifier {
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         await localStorage.setString('token', json.encode(data));
 
+        // Store the phone number
+        await localStorage.setString('user_phone', phoneNumber);
+
         Fluttertoast.showToast(
           msg: "Login successful!",
           backgroundColor: Theme.of(context).focusColor,

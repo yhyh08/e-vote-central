@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
-  final String _url = 'http://192.168.68.107:8000/api/v1';
   var token;
 
   final http.Client _client = http.Client();
@@ -16,7 +16,7 @@ class Network {
   }
 
   authData(data, apiUrl) async {
-    var fullUrl = _url + apiUrl;
+    var fullUrl = API_URL + apiUrl;
     try {
       print('Sending request to: $fullUrl');
       print('With data: ${jsonEncode(data)}');
@@ -50,7 +50,7 @@ class Network {
   }
 
   getData(apiUrl) async {
-    var fullUrl = _url + apiUrl;
+    var fullUrl = API_URL + apiUrl;
     try {
       var uri = Uri.parse(fullUrl);
 
@@ -96,5 +96,25 @@ class Network {
 
   void dispose() {
     _client.close();
+  }
+
+  Future<Map<String, dynamic>> getUserInfo(String phoneNumber) async {
+    try {
+      if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+$phoneNumber';
+      }
+      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
+
+      final response =
+          await http.get(Uri.parse('$API_URL/user-info/$phoneNumber'));
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      throw Exception('Failed to load user info');
+    } catch (e) {
+      print('Error fetching user info: $e');
+      throw Exception('Error fetching user info: $e');
+    }
   }
 }

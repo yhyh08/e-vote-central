@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 import '../../../routes/route.dart';
@@ -9,6 +10,64 @@ class Homeheader extends StatelessWidget {
     Key? key,
     required this.username,
   }) : super(key: key);
+
+  Future<void> _handleLogout(BuildContext context) async {
+    try {
+      bool confirm = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Logout'),
+                content: const Text('Are you sure you want to logout?'),
+                backgroundColor: Theme.of(context).secondaryHeaderColor,
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () => Navigator.of(context).pop(false),
+                  ),
+                  TextButton(
+                    child: const Text('Logout'),
+                    onPressed: () => Navigator.of(context).pop(true),
+                  ),
+                ],
+              );
+            },
+          ) ??
+          false;
+
+      if (confirm) {
+        // Clear shared preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+
+        // Navigate to login screen and clear all routes
+        if (context.mounted) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteList.login, (route) => false);
+        }
+
+        // Show success message
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Logged out successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error during logout: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error logging out'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +124,12 @@ class Homeheader extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: IconButton(
                         icon: const Icon(
-                          Icons.notifications_none_outlined,
+                          Icons.logout,
                           size: 28,
                         ),
-                        onPressed: () {
-                          // Navigator.of(context).pushNamed(RouteList.account);
-                        },
+                        onPressed: () => _handleLogout(context),
                       ),
+                      // Icons.notifications_none_outlined,
                     ),
                   ),
                 ],

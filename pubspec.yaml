@@ -43,7 +43,7 @@ dependencies:
   standard_searchbar: ^2.1.1
   intl: ^0.19.0
   logger: ^2.4.0
-  http: ^0.13.5
+  http: ^0.13.6
   twilio_flutter: ^0.0.9
   fluttertoast: ^8.1.2
   country_state_city_pro: ^0.0.6

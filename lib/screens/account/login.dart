@@ -77,15 +77,53 @@ class _LoginState extends State<Login> {
                         if (_formKey.currentState != null &&
                             _formKey.currentState!.validate()) {
                           phoneNum = controller.authController.text;
-                          controller.sendSMS();
+                          controller.sendOTP();
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginPin(phoneNum: phoneNum),
+                              builder: (context) => LoginPin(
+                                phoneNum: phoneNum,
+                                authController: controller,
+                              ),
                             ),
                           );
                         }
                       },
+                      // onPressed: () async {
+                      //   if (_formKey.currentState != null &&
+                      //       _formKey.currentState!.validate()) {
+                      //     phoneNum = controller.authController.text;
+
+                      //     // Check if voter exists
+                      //     final isEligible =
+                      //         await controller.validatePhoneNumber();
+                      //     if (!isEligible) {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         const SnackBar(
+                      //             content: Text(
+                      //                 'Phone number not found in voter registry')),
+                      //       );
+                      //       return;
+                      //     }
+
+                      //     // Send OTP
+                      //     final otpSent = await controller.sendSMS();
+                      //     if (otpSent) {
+                      //       Navigator.of(context).push(
+                      //         MaterialPageRoute(
+                      //           builder: (context) => LoginPin(
+                      //             phoneNum: phoneNum,
+                      //             authController: controller,
+                      //           ),
+                      //         ),
+                      //       );
+                      //     } else {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         const SnackBar(
+                      //             content: Text('Failed to send OTP')),
+                      //       );
+                      //     }
+                      //   }
+                      // },
                       btnText: 'Continue',
                     ),
                   ],

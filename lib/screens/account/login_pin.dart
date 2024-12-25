@@ -9,10 +9,12 @@ import 'auth_controller.dart';
 class LoginPin extends StatefulWidget {
   const LoginPin({
     required this.phoneNum,
+    required this.authController,
     super.key,
   });
 
   final String phoneNum;
+  final AuthController authController;
 
   @override
   State<LoginPin> createState() => _LoginPinState();
@@ -23,8 +25,6 @@ class _LoginPinState extends State<LoginPin> {
 
   @override
   Widget build(BuildContext context) {
-    AuthController controller = AuthController();
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -79,10 +79,10 @@ class _LoginPinState extends State<LoginPin> {
                         selectedFillColor: Theme.of(context).shadowColor,
                       ),
                       animationDuration: const Duration(milliseconds: 300),
-                      controller: controller.otpController,
+                      controller: widget.authController.otpController,
                       validator: (String? number) {
                         if (number!.isEmpty) {
-                          return "Enter Phone Number";
+                          return "Enter 6 Pin";
                         }
                         return null;
                       },
@@ -90,7 +90,7 @@ class _LoginPinState extends State<LoginPin> {
                         print("Completed");
                       },
                       onChanged: (value) {
-                        controller.otpController.text = value;
+                        widget.authController.otpController.text = value;
                       },
                       beforeTextPaste: (text) {
                         print("Allowing to paste $text");
@@ -100,12 +100,19 @@ class _LoginPinState extends State<LoginPin> {
                     const SizedBox(height: 30),
                     ElevatedBtn(
                       onPressed: () async {
-                        if (_formKey.currentState != null &&
-                            _formKey.currentState!.validate()) {
-                          controller.verifyOTP(context);
+                        if (widget.authController.otpController.text.length ==
+                            6) {
+                          final verified =
+                              await widget.authController.verifyOTP(context);
+                          if (verified) {
+                            Navigator.of(context)
+                                .pushReplacementNamed(RouteList.dashboard);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Invalid OTP')),
+                            );
+                          }
                         }
-                        Navigator.of(context)
-                            .pushReplacementNamed(RouteList.dashboard);
                       },
                       btnText: 'Sign in',
                     ),

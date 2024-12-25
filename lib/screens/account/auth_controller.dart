@@ -1,54 +1,155 @@
-import 'dart:math';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../network_utlis/api.dart';
+import '../../routes/route.dart';
 
 class AuthController extends ChangeNotifier {
   TextEditingController authController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final Network _network = Network();
   bool isCodeSent = false;
 
-  late TwilioFlutter twilioFlutter;
+  // Check if phone exists in users table
+  Future<bool> validatePhoneNumber() async {
+    try {
+      String phoneNumber = authController.text.trim();
+      if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+$phoneNumber';
+      }
+      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
 
-  var sentOTP = 0;
+      print('Checking phone number: $phoneNumber');
 
-  // showInvisibleWidgets() {
-  //   isCodeSent = true;
-  //   update();
-  // }
+      final response = await _network.getData('/check-user/$phoneNumber');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-  sendSMS() {
-    twilioFlutter = TwilioFlutter(
-        accountSid: 'ACd71d933d211fe37d288c1878567def95',
-        authToken: '49d14fe845f93a4d3395f37fbac18de2',
-        twilioNumber: '+15103300932');
-
-    var rnd = Random();
-
-    var digits = rnd.nextInt(900000) + 100000;
-
-    sentOTP = digits;
-
-    print(sentOTP);
-
-    twilioFlutter.sendSMS(
-        toNumber: authController.text,
-        messageBody: 'Hello This is 6 digit otp code to verify phone $digits');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['exists'] == true) {
+          isCodeSent = false; // Reset code sent status
+          notifyListeners();
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      print('Error validating phone number: $e');
+      return false;
+    }
   }
 
-  verifyOTP(BuildContext context) {
-    if (sentOTP.toString() == otpController.text) {
+  // Send OTP via Twilio
+  Future<bool> sendOTP() async {
+    try {
+      String phoneNumber = authController.text.trim();
+      if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+$phoneNumber';
+      }
+      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
+
+      print('Sending OTP to: $phoneNumber');
+
+      final response = await _network.authData({
+        'phone': phoneNumber,
+      }, '/send-otp');
+
+      print('OTP request response status: ${response.statusCode}');
+      print('OTP request response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == true) {
+          // Store the debug OTP if provided
+          if (data['debug_otp'] != null) {
+            print('Debug OTP received: ${data['debug_otp']}');
+            // Auto-fill OTP in development
+            otpController.text = data['debug_otp'].toString();
+          }
+
+          isCodeSent = true;
+          notifyListeners();
+
+          Fluttertoast.showToast(
+            msg: "OTP sent successfully. Debug OTP: ${data['debug_otp']}",
+            backgroundColor: Colors.green,
+            timeInSecForIosWeb: 4,
+          );
+          return true;
+        }
+      }
+
       Fluttertoast.showToast(
-        msg: "OTP Verified SuccessFully!",
-        backgroundColor: Theme.of(context).focusColor,
+        msg: "Failed to send OTP",
+        backgroundColor: Colors.red,
       );
-    } else {
+      return false;
+    } catch (e) {
+      print('Error sending OTP: $e');
       Fluttertoast.showToast(
-        msg: "OTP didn't match!",
+        msg: "Failed to send OTP: ${e.toString()}",
+        backgroundColor: Colors.red,
+      );
+      return false;
+    }
+  }
+
+  // Verify OTP and login
+  Future<bool> verifyOTP(BuildContext context) async {
+    try {
+      print('Starting OTP verification...');
+
+      String phoneNumber = authController.text.trim();
+      if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+$phoneNumber';
+      }
+      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
+
+      print('Verifying OTP for phone: $phoneNumber');
+      print('Entered OTP: ${otpController.text}');
+
+      final response = await _network.authData({
+        'phone': phoneNumber,
+        'otp': otpController.text,
+      }, '/verify-otp');
+
+      print('Verification response received');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final data = json.decode(response.body);
+
+      if (response.statusCode == 200 && data['status'] == true) {
+        // Save token
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        await localStorage.setString('token', json.encode(data));
+
+        Fluttertoast.showToast(
+          msg: "Login successful!",
+          backgroundColor: Theme.of(context).focusColor,
+        );
+
+        // Navigate to dashboard
+        Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
+        return true;
+      }
+
+      Fluttertoast.showToast(
+        msg: data['message'] ?? "Verification failed",
         backgroundColor: Theme.of(context).hintColor,
       );
+      return false;
+    } catch (e) {
+      print('Error during verification: $e');
+      Fluttertoast.showToast(
+        msg: "Verification failed: ${e.toString()}",
+        backgroundColor: Theme.of(context).hintColor,
+      );
+      return false;
     }
   }
 }

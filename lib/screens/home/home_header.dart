@@ -16,42 +16,25 @@ class Homeheader extends StatelessWidget {
       bool confirm = await showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Logout'),
-                content: const Text('Are you sure you want to logout?'),
-                backgroundColor: Theme.of(context).secondaryHeaderColor,
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('Cancel'),
-                    onPressed: () => Navigator.of(context).pop(false),
-                  ),
-                  TextButton(
-                    child: const Text('Logout'),
-                    onPressed: () => Navigator.of(context).pop(true),
-                  ),
-                ],
-              );
+              return dialog(context);
             },
           ) ??
           false;
 
       if (confirm) {
-        // Clear shared preferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.clear();
 
-        // Navigate to login screen and clear all routes
         if (context.mounted) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(RouteList.login, (route) => false);
         }
 
-        // Show success message
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Logged out successfully'),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: const Text('Logged out successfully'),
+              backgroundColor: Theme.of(context).focusColor,
             ),
           );
         }
@@ -60,9 +43,9 @@ class Homeheader extends StatelessWidget {
       print('Error during logout: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error logging out'),
-            backgroundColor: Colors.red,
+          SnackBar(
+            content: const Text('Error logging out'),
+            backgroundColor: Theme.of(context).hintColor,
           ),
         );
       }
@@ -138,6 +121,30 @@ class Homeheader extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget dialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to logout?'),
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            'Cancel',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        TextButton(
+          child: Text(
+            'Logout',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+        ),
+      ],
     );
   }
 }

@@ -43,7 +43,6 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  // Send OTP via Twilio
   Future<bool> sendOTP() async {
     try {
       String phoneNumber = authController.text.trim();
@@ -98,7 +97,6 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  // Verify OTP and login
   Future<bool> verifyOTP(BuildContext context) async {
     try {
       print('Starting OTP verification...');
@@ -124,7 +122,6 @@ class AuthController extends ChangeNotifier {
       final data = json.decode(response.body);
 
       if (response.statusCode == 200 && data['status'] == true) {
-        // Save token
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         await localStorage.setString('token', json.encode(data));
 
@@ -133,7 +130,6 @@ class AuthController extends ChangeNotifier {
           backgroundColor: Theme.of(context).focusColor,
         );
 
-        // Navigate to dashboard
         Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
         return true;
       }

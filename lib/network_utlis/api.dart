@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'api_constant.dart';
 
 class Network {
   var token;
@@ -115,6 +116,29 @@ class Network {
     } catch (e) {
       print('Error fetching user info: $e');
       throw Exception('Error fetching user info: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> getLatestElection() async {
+    const String apiUrl = '$API_URL/latest-election';
+
+    try {
+      final response = await _client
+          .get(
+            Uri.parse(apiUrl),
+            headers: setHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: 30),
+          );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load latest election data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching latest election: $e');
     }
   }
 }

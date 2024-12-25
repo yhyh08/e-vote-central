@@ -1,9 +1,11 @@
-import 'package:e_vote/models/result_list.dart';
-import 'package:e_vote/network_utlis/api.dart';
-import 'package:e_vote/widgets/result_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../gen/assets.gen.dart';
+import '../../models/result_list.dart';
+import '../../network_utlis/api.dart';
+import '../../routes/route.dart';
+import '../../widgets/result_listtile.dart';
 import '../../widgets/title_btn.dart';
 import '../../../widgets/bottom_navigation.dart';
 import 'home_header.dart';
@@ -19,11 +21,13 @@ class DashboardState extends State<Dashboard> {
   String _userInfo = '';
   String? _phoneNumber;
   final Network _network = Network();
+  String _latestElectionTitle = 'Loading...';
 
   @override
   void initState() {
     super.initState();
     _initializeUserInfo();
+    _fetchLatestElection();
   }
 
   Future<void> _initializeUserInfo() async {
@@ -46,6 +50,20 @@ class DashboardState extends State<Dashboard> {
       }
     } catch (e) {
       print('Error loading user info: $e');
+    }
+  }
+
+  Future<void> _fetchLatestElection() async {
+    try {
+      final latestElection = await _network.getLatestElection();
+      setState(() {
+        _latestElectionTitle =
+            latestElection['election_topic'] ?? 'Election Topic';
+      });
+    } catch (e) {
+      setState(() {
+        _latestElectionTitle = 'Error loading election';
+      });
     }
   }
 
@@ -77,7 +95,7 @@ class DashboardState extends State<Dashboard> {
                   leftText: 'Latest Election',
                   rightText: 'See More',
                   onTap: () {
-                    // Navigator.of(context).pushNamed(RouteList.register);
+                    Navigator.of(context).pushNamed(RouteList.election);
                   },
                 ),
                 latestElec(),
@@ -86,7 +104,7 @@ class DashboardState extends State<Dashboard> {
                   leftText: 'Result',
                   rightText: 'See More',
                   onTap: () {
-                    // Navigator.of(context).pushNamed(RouteList.register);
+                    Navigator.of(context).pushNamed(RouteList.result);
                   },
                 ),
                 resultList(),
@@ -114,7 +132,12 @@ class DashboardState extends State<Dashboard> {
         ),
         child: GestureDetector(
           onTap: () {
-            // Navigator.of(context).pushReplacementNamed(RouteList.register);
+            Navigator.of(context).pushNamed(
+              RouteList.electionDetail,
+              arguments: {
+                'election_topic': _latestElectionTitle,
+              },
+            );
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -123,7 +146,7 @@ class DashboardState extends State<Dashboard> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    '2024 General Election: Your Voice, Your Choice',
+                    _latestElectionTitle,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),

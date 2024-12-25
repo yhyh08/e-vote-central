@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:e_vote/network_utlis/api_constant.dart';
+
 import '../../gen/assets.gen.dart';
+import '../../network_utlis/api_constant.dart';
 import '../../routes/route.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
@@ -18,8 +19,8 @@ class Election extends StatefulWidget {
 }
 
 class ElectionState extends State<Election> {
-  List<DataSample> electionData = [];
-  List<DataSample> filteredData = [];
+  List<ElectionData> electionData = [];
+  List<ElectionData> filteredData = [];
   int selectedSegment = 1;
 
   @override
@@ -45,7 +46,7 @@ class ElectionState extends State<Election> {
                 ? DateTime.parse(e['end_date'])
                 : DateTime.now();
 
-            return DataSample(title, startDate, endDate);
+            return ElectionData(title, startDate, endDate);
           }).toList();
           updateFilteredData();
         });
@@ -171,7 +172,7 @@ class ElectionState extends State<Election> {
     );
   }
 
-  Widget electionCard(DataSample data) {
+  Widget electionCard(ElectionData data) {
     String formattedStartDate =
         DateFormat('dd/MM/yy , hh:mm a').format(data.startDate);
     String formattedEndDate =
@@ -258,8 +259,8 @@ class ElectionState extends State<Election> {
   }
 }
 
-class DataSample {
-  DataSample(
+class ElectionData {
+  ElectionData(
     this.title,
     this.startDate,
     this.endDate,

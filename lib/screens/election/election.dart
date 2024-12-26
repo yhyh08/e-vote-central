@@ -47,8 +47,9 @@ class ElectionState extends State<Election> {
                 ? DateTime.parse(e['end_date'])
                 : DateTime.now();
             int id = e['election_id'] ?? e['id'] ?? 0;
+            int orgId = e['org_id'] ?? 0;
 
-            return ElectionData(title, startDate, endDate, id);
+            return ElectionData(title, startDate, endDate, orgId, id);
           }).toList();
           updateFilteredData();
         });
@@ -272,11 +273,13 @@ class ElectionData {
     this.title,
     this.startDate,
     this.endDate,
+    this.orgId,
     this.id,
   );
 
   final String title;
   final DateTime startDate;
   final DateTime endDate;
+  final int orgId;
   final int id;
 }

@@ -27,6 +27,7 @@ class ElectionDetailState extends State<ElectionDetail>
   final DateTime now = DateTime.now();
   late TabController _tabController;
   Map<String, dynamic> electionDetail = {};
+  String organizationName = 'Loading...';
 
   @override
   void initState() {
@@ -48,18 +49,49 @@ class ElectionDetailState extends State<ElectionDetail>
       );
 
       if (response.statusCode == 200) {
+        final data = json.decode(response.body);
         setState(() {
-          electionDetail = json.decode(response.body);
+          electionDetail = data;
         });
+
+        // Fetch organization name after getting election details
+        if (data['org_id'] != null) {
+          await fetchOrganizationName(data['org_id']);
+        }
       } else {
         throw Exception(
             'Failed to load election details: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching election details: $e');
-      // Consider showing an error message to the user
       setState(() {
         electionDetail = {'error': e.toString()};
+      });
+    }
+  }
+
+  Future<void> fetchOrganizationName(int orgId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$serverApiUrl/organization-info/$orgId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final orgData = json.decode(response.body);
+        setState(() {
+          organizationName = orgData['org_name'] ?? 'Unknown Organization';
+        });
+      } else {
+        throw Exception('Failed to load organization');
+      }
+    } catch (e) {
+      print('Error fetching organization: $e');
+      setState(() {
+        organizationName = 'Error loading organization';
       });
     }
   }
@@ -210,8 +242,7 @@ class ElectionDetailState extends State<ElectionDetail>
                       ),
                       Expanded(
                         child: Text(
-                          electionDetail['organization_name']?.toString() ??
-                              'Loading...',
+                          organizationName,
                           style: Theme.of(context).textTheme.labelSmall,
                           overflow: TextOverflow.ellipsis,
                         ),

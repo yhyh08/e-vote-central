@@ -8,8 +8,7 @@ class ElectionInfo extends StatefulWidget {
 }
 
 class ElectionInfoState extends State<ElectionInfo> {
-  final String description =
-      "Aute aute esse velit ullamco mollit irure ad sunt amet magna. Dolore dolor sunt pariatur ipsum adipisicing amet anim. Excepteur";
+  final String description = ' ';
 
   final List<Map<String, dynamic>> generalInfo = [
     {

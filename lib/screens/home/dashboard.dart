@@ -8,6 +8,7 @@ import '../../routes/route.dart';
 import '../../widgets/result_listtile.dart';
 import '../../widgets/title_btn.dart';
 import '../../../widgets/bottom_navigation.dart';
+import '../election/election_detail/election_detail.dart';
 import 'home_header.dart';
 
 class Dashboard extends StatefulWidget {
@@ -22,6 +23,7 @@ class DashboardState extends State<Dashboard> {
   String? _phoneNumber;
   final Network _network = Network();
   String _latestElectionTitle = 'Loading...';
+  Map<String, dynamic> _latestElection = {};
 
   @override
   void initState() {
@@ -57,12 +59,14 @@ class DashboardState extends State<Dashboard> {
     try {
       final latestElection = await _network.getLatestElection();
       setState(() {
+        _latestElection = latestElection;
         _latestElectionTitle =
             latestElection['election_topic'] ?? 'Election Topic';
       });
     } catch (e) {
       setState(() {
         _latestElectionTitle = 'Error loading election';
+        _latestElection = {};
       });
     }
   }
@@ -132,12 +136,16 @@ class DashboardState extends State<Dashboard> {
         ),
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(
-              RouteList.electionDetail,
-              arguments: {
-                'election_topic': _latestElectionTitle,
-              },
-            );
+            if (_latestElection.containsKey('election_id')) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ElectionDetail(
+                    electionId: _latestElection['election_id'],
+                  ),
+                ),
+              );
+            }
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -38,8 +38,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Dashboard());
       case RouteList.election:
         return MaterialPageRoute(builder: (_) => const Election());
-      case RouteList.electionDetail:
-        return MaterialPageRoute(builder: (_) => const ElectionDetail());
+      // case RouteList.electionDetail:
+      //   return MaterialPageRoute(
+      //       builder: (_) => const ElectionDetail(electionId: ));
       case RouteList.candidateProfile:
         final CandidateDetail candidate = settings.arguments as CandidateDetail;
         return MaterialPageRoute(

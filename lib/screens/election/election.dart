@@ -7,9 +7,9 @@ import 'dart:convert';
 
 import '../../gen/assets.gen.dart';
 import '../../network_utlis/api_constant.dart';
-import '../../routes/route.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
+import 'election_detail/election_detail.dart';
 
 class Election extends StatefulWidget {
   const Election({super.key});
@@ -33,20 +33,22 @@ class ElectionState extends State<Election> {
 
   Future<void> fetchElections() async {
     try {
-      final response = await http.get(Uri.parse('$API_URL/all-elections/'));
+      final response =
+          await http.get(Uri.parse('$serverApiUrl/all-elections/'));
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         setState(() {
           electionData = data.map((e) {
-            String title = e['election_topic'] ?? 'No Title';
+            String title = e['election_topic'] ?? 'Election Title';
             DateTime startDate = e['start_date'] != null
                 ? DateTime.parse(e['start_date'])
                 : DateTime.now();
             DateTime endDate = e['end_date'] != null
                 ? DateTime.parse(e['end_date'])
                 : DateTime.now();
+            int id = e['election_id'] ?? e['id'] ?? 0;
 
-            return ElectionData(title, startDate, endDate);
+            return ElectionData(title, startDate, endDate, id);
           }).toList();
           updateFilteredData();
         });
@@ -224,8 +226,14 @@ class ElectionState extends State<Election> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteList.electionDetail);
+                        print('Election Data: ${data.title}, ID: ${data.id}');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ElectionDetail(
+                              electionId: data.id,
+                            ),
+                          ),
+                        );
                       },
                       child: Text(
                         'View More',
@@ -264,9 +272,11 @@ class ElectionData {
     this.title,
     this.startDate,
     this.endDate,
+    this.id,
   );
 
   final String title;
   final DateTime startDate;
   final DateTime endDate;
+  final int id;
 }

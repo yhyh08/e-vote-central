@@ -17,7 +17,7 @@ class Network {
   }
 
   authData(data, apiUrl) async {
-    var fullUrl = API_URL + apiUrl;
+    var fullUrl = serverApiUrl + apiUrl;
     try {
       print('Sending request to: $fullUrl');
       print('With data: ${jsonEncode(data)}');
@@ -51,7 +51,7 @@ class Network {
   }
 
   getData(apiUrl) async {
-    var fullUrl = API_URL + apiUrl;
+    var fullUrl = serverApiUrl + apiUrl;
     try {
       var uri = Uri.parse(fullUrl);
 
@@ -107,7 +107,7 @@ class Network {
       phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
 
       final response =
-          await http.get(Uri.parse('$API_URL/user-info/$phoneNumber'));
+          await http.get(Uri.parse('$serverApiUrl/user-info/$phoneNumber'));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -120,25 +120,26 @@ class Network {
   }
 
   Future<Map<String, dynamic>> getLatestElection() async {
-    const String apiUrl = '$API_URL/latest-election';
-
     try {
-      final response = await _client
-          .get(
-            Uri.parse(apiUrl),
-            headers: setHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: 30),
-          );
+      final response = await http.get(
+        Uri.parse('$serverApiUrl/latest-election'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('Latest Election Response: ${response.body}');
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        throw Exception('Failed to load latest election data');
+        final data = json.decode(response.body);
+        print('Latest Election ID: ${data['id']}');
+        return data;
       }
+      throw Exception('Status: ${response.statusCode}');
     } catch (e) {
-      throw Exception('Error fetching latest election: $e');
+      print('Latest Election Error: $e');
+      rethrow;
     }
   }
 }

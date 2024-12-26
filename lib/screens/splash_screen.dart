@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../routes/route.dart';
 import '../gen/assets.gen.dart';
@@ -11,6 +12,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Future<bool> checkUserLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -19,7 +25,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // delay for show splash screen
   initialization() async {
-    await Future.delayed(const Duration(milliseconds: 3500), nextPage);
+    final bool isLoggedIn = await checkUserLoginStatus();
+
+    if (isLoggedIn) {
+      await Future.microtask(() {
+        if (mounted) nextPage();
+      });
+    } else {
+      await Future.delayed(const Duration(milliseconds: 3500), () {
+        if (mounted) nextPage();
+      });
+    }
   }
 
   // after splash screen show

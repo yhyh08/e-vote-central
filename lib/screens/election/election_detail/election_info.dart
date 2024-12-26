@@ -1,47 +1,60 @@
 import 'package:flutter/material.dart';
 
 class ElectionInfo extends StatefulWidget {
-  const ElectionInfo({super.key});
+  final String? description;
+  final String? orgCat;
+  final String? orgAddress;
+  final String? orgWebsite;
+  final String? orgEmail;
+  final String? orgSize;
+
+  const ElectionInfo({
+    super.key,
+    this.description,
+    this.orgCat,
+    this.orgAddress,
+    this.orgWebsite,
+    this.orgEmail,
+    this.orgSize,
+  });
 
   @override
   ElectionInfoState createState() => ElectionInfoState();
 }
 
 class ElectionInfoState extends State<ElectionInfo> {
-  final String description = ' ';
-
-  final List<Map<String, dynamic>> generalInfo = [
-    {
-      "icon": Icons.language,
-      "label": "Website",
-      "value": "AI Logix.com",
-      "isLink": true,
-    },
-    {
-      "icon": Icons.email,
-      "label": "Email",
-      "value": "AI Logix.com",
-      "isLink": true,
-    },
-    {
-      "icon": Icons.business,
-      "label": "Industry",
-      "value": "Aute aute fugiat qui sunt eius",
-      "isLink": false,
-    },
-    {
-      "icon": Icons.people,
-      "label": "Size",
-      "value": "51,344 employees",
-      "isLink": false,
-    },
-    {
-      "icon": Icons.location_city,
-      "label": "Company",
-      "value": "Aute aute fugiat qui sunt eius",
-      "isLink": false,
-    },
-  ];
+  List<Map<String, dynamic>> get generalInfo => [
+        {
+          "icon": Icons.language,
+          "label": "Website",
+          "value": widget.orgWebsite ?? "AI Logix.com",
+          "isLink": true,
+        },
+        {
+          "icon": Icons.email,
+          "label": "Email",
+          "value": widget.orgEmail ?? "AI Logix.com",
+          "isLink": true,
+        },
+        {
+          "icon": Icons.business,
+          "label": "Category",
+          "value": widget.orgCat ?? "Category",
+          "isLink": false,
+        },
+        {
+          "icon": Icons.people,
+          "label": "Size",
+          "value": widget.orgSize ?? "51,344 employees",
+          "isLink": false,
+        },
+        {
+          "icon": Icons.location_city,
+          "label": "Company",
+          "value": widget.orgAddress ?? "Address",
+          "isLink": false,
+        },
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,92 +69,23 @@ class ElectionInfoState extends State<ElectionInfo> {
           ),
           const SizedBox(height: 10),
           Text(
-            description,
+            widget.description ?? 'No description',
             maxLines: 4,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 20),
-          Column(
-            children: generalInfo.map((info) {
-              return InfoTile(
-                icon: info['icon'],
-                label: info['label'],
-                value: info['value'],
-                isLink: info['isLink'],
-                onTap: info['isLink']
-                    ? () {
-                        // Example action for clickable items
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("${info['label']} clicked!"),
-                          ),
-                        );
-                      }
-                    : null,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: generalInfo.length,
+            itemBuilder: (context, index) {
+              final info = generalInfo[index];
+              return ListTile(
+                leading: Icon(info['icon']),
+                title: Text(info['label']),
+                subtitle: Text(info['value']),
               );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class InfoTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final bool isLink;
-  final VoidCallback? onTap;
-
-  const InfoTile({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.isLink = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Theme.of(context).iconTheme.color,
-            size: Theme.of(context).iconTheme.size,
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF4F4F4F),
-                      ),
-                ),
-                const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w500,
-                      color: isLink
-                          ? Theme.of(context).primaryColor
-                          : Theme.of(context).dialogBackgroundColor,
-                      decoration: isLink ? TextDecoration.underline : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            },
           ),
         ],
       ),

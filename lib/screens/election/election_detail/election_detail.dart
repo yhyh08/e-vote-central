@@ -27,21 +27,23 @@ class ElectionDetailState extends State<ElectionDetail>
   final DateTime now = DateTime.now();
   late TabController _tabController;
   Map<String, dynamic> electionDetail = {};
+  Map<String, dynamic> organizationData = {};
   String organizationName = 'Loading...';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    fetchElectionDetail(widget.electionId);
+    _fetchElectionDetail();
+    fetchOrganizationData(widget.electionId);
   }
 
-  Future<void> fetchElectionDetail(int electionId) async {
+  Future<void> _fetchElectionDetail() async {
     try {
-      if (electionId <= 0) throw Exception('Invalid election ID');
+      if (widget.electionId <= 0) throw Exception('Invalid election ID');
 
       final response = await http.get(
-        Uri.parse('$serverApiUrl/election-info/$electionId'),
+        Uri.parse('$serverApiUrl/election-info/${widget.electionId}'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -54,9 +56,8 @@ class ElectionDetailState extends State<ElectionDetail>
           electionDetail = data;
         });
 
-        // Fetch organization name after getting election details
         if (data['org_id'] != null) {
-          await fetchOrganizationName(data['org_id']);
+          await fetchOrganizationData(data['org_id']);
         }
       } else {
         throw Exception(
@@ -70,7 +71,7 @@ class ElectionDetailState extends State<ElectionDetail>
     }
   }
 
-  Future<void> fetchOrganizationName(int orgId) async {
+  Future<void> fetchOrganizationData(int orgId) async {
     try {
       final response = await http.get(
         Uri.parse('$serverApiUrl/organization-info/$orgId'),
@@ -83,6 +84,7 @@ class ElectionDetailState extends State<ElectionDetail>
       if (response.statusCode == 200) {
         final orgData = json.decode(response.body);
         setState(() {
+          organizationData = orgData;
           organizationName = orgData['org_name'] ?? 'Unknown Organization';
         });
       } else {
@@ -145,7 +147,14 @@ class ElectionDetailState extends State<ElectionDetail>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  const ElectionInfo(),
+                  ElectionInfo(
+                    description: electionDetail['description'],
+                    orgCat: organizationData['org_cat'],
+                    orgAddress: organizationData['org_address'],
+                    orgWebsite: organizationData['org_website'],
+                    orgEmail: organizationData['org_email'],
+                    orgSize: organizationData['org_size']?.toString(),
+                  ),
                   ElectionOrganization(),
                   ListView.builder(
                     shrinkWrap: true,
@@ -204,7 +213,7 @@ class ElectionDetailState extends State<ElectionDetail>
                     maxLines: 2,
                   ),
                   Text(
-                    electionDetail['description']?.toString() ?? 'Loading...',
+                    _getElectionType(electionDetail['type']),
                     style: Theme.of(context).textTheme.labelSmall,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
@@ -270,5 +279,31 @@ class ElectionDetailState extends State<ElectionDetail>
       print('Error formatting dates: $e');
       return '$startDate - $endDate';
     }
+  }
+
+  String _getElectionType(dynamic type) {
+    if (type == null) return 'Loading...';
+    final typeValue = int.tryParse(type.toString());
+
+    switch (typeValue) {
+      case 1:
+        return 'General Election';
+      case 0:
+        return 'Special Election';
+      default:
+        return 'Unknown Election Type';
+    }
+  }
+
+  Future<Map<String, dynamic>> _fetchOrganizationData(
+      String orgId, dynamic DatabaseHelper) async {
+    final db = await DatabaseHelper.instance.database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'organization',
+      where: 'id = ?',
+      whereArgs: [orgId],
+    );
+
+    return result.isNotEmpty ? result.first : {};
   }
 }

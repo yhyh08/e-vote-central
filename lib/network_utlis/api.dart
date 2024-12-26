@@ -133,7 +133,7 @@ class Network {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('Latest Election ID: ${data['id']}');
+        print('Latest Election ID: ${data['election_id']}');
         return data;
       }
       throw Exception('Status: ${response.statusCode}');

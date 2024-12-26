@@ -42,7 +42,6 @@ class ElectionOrganization extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 20),
-              // Generate experience tiles dynamically using a for loop
               Column(
                 children: experiences.map((experience) {
                   return Column(

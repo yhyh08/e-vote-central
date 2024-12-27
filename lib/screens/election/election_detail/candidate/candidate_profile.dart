@@ -117,39 +117,45 @@ class CandidateProfileState extends State<CandidateProfile> {
                       },
               ),
             ),
-            const CandidateInfo(
+            CandidateInfo(
               title: 'Short Biographys',
-              content:
-                  'Daniel Jackson is a dedicated software engineer with 11 years of experience in the tech industry. As a strong advocate',
+              content: widget.candidate.biography,
             ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   InfoRow(
                     icon: Icons.email_outlined,
                     label: 'Email',
-                    value: 'daniel@gmail.com',
+                    value: widget.candidate.email,
                   ),
-                  SizedBox(height: 5),
                   InfoRow(
                     icon: Icons.phone_outlined,
                     label: 'Phone',
-                    value: '+6019-2345678',
+                    value: widget.candidate.phone,
                   ),
-                  SizedBox(height: 5),
                   InfoRow(
-                    icon: Icons.work_outline,
-                    label: '10+ years of experience',
-                    value: 'SoftShift',
+                    icon: Icons.date_range,
+                    label: 'Date of Birth',
+                    value: widget.candidate.dob,
+                  ),
+                  InfoRow(
+                    icon: Icons.ac_unit,
+                    label: 'Nationality',
+                    value: widget.candidate.nationality,
+                  ),
+                  InfoRow(
+                    icon: Icons.electric_bolt,
+                    label: 'Religion',
+                    value: widget.candidate.religion,
                   ),
                 ],
               ),
             ),
-            const CandidateInfo(
+            CandidateInfo(
               title: 'Election Manifesto',
-              content:
-                  'Our vision is to create a transparent, efficient, and inclusive society where technology empowers every citizen. We commit to enhancing',
+              content: widget.candidate.manifesto,
             ),
           ],
         ),

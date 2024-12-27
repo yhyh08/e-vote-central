@@ -29,6 +29,7 @@ class ElectionDetailState extends State<ElectionDetail>
   Map<String, dynamic> electionDetail = {};
   Map<String, dynamic> organizationData = {};
   String organizationName = 'Loading...';
+  String viewOrgan = '';
   List<CandidateDetail> candidates = [];
   bool isLoadingCandidates = true;
 
@@ -67,7 +68,6 @@ class ElectionDetailState extends State<ElectionDetail>
             'Failed to load election details: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching election details: $e');
       setState(() {
         electionDetail = {'error': e.toString()};
       });
@@ -89,6 +89,7 @@ class ElectionDetailState extends State<ElectionDetail>
         setState(() {
           organizationData = orgData;
           organizationName = orgData['org_name'] ?? 'Unknown Organization';
+          viewOrgan = organizationName;
         });
       } else {
         throw Exception('Failed to load organization');
@@ -97,6 +98,7 @@ class ElectionDetailState extends State<ElectionDetail>
       print('Error fetching organization: $e');
       setState(() {
         organizationName = 'Error loading organization';
+        viewOrgan = organizationName;
       });
     }
   }
@@ -110,8 +112,6 @@ class ElectionDetailState extends State<ElectionDetail>
           'Accept': 'application/json',
         },
       );
-
-      print('API Response: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
@@ -127,7 +127,6 @@ class ElectionDetailState extends State<ElectionDetail>
         throw Exception('Failed to load candidates');
       }
     } catch (e) {
-      print('Error fetching candidates: $e');
       setState(() {
         isLoadingCandidates = false;
       });
@@ -193,8 +192,16 @@ class ElectionDetailState extends State<ElectionDetail>
                   ),
                   ElectionOrganization(),
                   isLoadingCandidates
-                      ? const Center(child: CircularProgressIndicator())
-                      : ElectionPosition(candidates: candidates),
+                      ? const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : ElectionPosition(
+                          candidates: candidates,
+                          organizationName: viewOrgan,
+                        ),
                 ],
               ),
             ),
@@ -264,10 +271,7 @@ class ElectionDetailState extends State<ElectionDetail>
                             electionDetail['start_date']?.toString(),
                             electionDetail['end_date']?.toString(),
                           ),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(wordSpacing: 0),
+                          style: Theme.of(context).textTheme.labelSmall,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -308,7 +312,6 @@ class ElectionDetailState extends State<ElectionDetail>
       final formatter = DateFormat('dd/MM/yyyy');
       return '${formatter.format(start)} - ${formatter.format(end)}';
     } catch (e) {
-      print('Error formatting dates: $e');
       return '$startDate - $endDate';
     }
   }
@@ -325,17 +328,5 @@ class ElectionDetailState extends State<ElectionDetail>
       default:
         return 'Unknown Election Type';
     }
-  }
-
-  Future<Map<String, dynamic>> _fetchOrganizationData(
-      String orgId, dynamic DatabaseHelper) async {
-    final db = await DatabaseHelper.instance.database;
-    final List<Map<String, dynamic>> result = await db.query(
-      'organization',
-      where: 'id = ?',
-      whereArgs: [orgId],
-    );
-
-    return result.isNotEmpty ? result.first : {};
   }
 }

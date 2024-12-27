@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../routes/route.dart';
-
 class CandidateInfo extends StatelessWidget {
   final String title;
   final String content;
@@ -28,23 +26,11 @@ class CandidateInfo extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              isDetail
-                  ? const SizedBox()
-                  : GestureDetector(
-                      child: Text(
-                        'View More',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(RouteList.candidateProfileDetail),
-                    ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
             content,
-            maxLines: isDetail ? 50 : 2,
-            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],

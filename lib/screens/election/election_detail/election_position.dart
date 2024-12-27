@@ -6,13 +6,16 @@ import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
 import '../../../models/candidate_card.dart';
 import '../voted/vote_confirmation_dialog.dart';
+import 'candidate/candidate_profile.dart';
 
 class ElectionPosition extends StatelessWidget {
   final List<CandidateDetail> candidates;
+  final String organizationName;
 
   const ElectionPosition({
     Key? key,
     required this.candidates,
+    required this.organizationName,
   }) : super(key: key);
 
   Map<String, List<CandidateDetail>> _groupPosition() {
@@ -124,7 +127,7 @@ class ElectionPosition extends StatelessWidget {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                viewVoteBtn(context),
+                                viewVoteBtn(context, candidate),
                               ],
                             ),
                           ),
@@ -142,9 +145,7 @@ class ElectionPosition extends StatelessWidget {
   }
 }
 
-Widget viewVoteBtn(BuildContext context) {
-  // bool hasVoted = false;
-
+Widget viewVoteBtn(BuildContext context, CandidateDetail candidate) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -154,17 +155,15 @@ Widget viewVoteBtn(BuildContext context) {
         onPressed: () {
           Navigator.of(context).pushNamed(
             RouteList.candidateProfile,
+            arguments: candidate,
           );
         },
       ),
       const SizedBox(width: 10),
       DisElevatedBtn(
         btnText: 'Vote',
-        // hasVoted ? 'Voted' : 'Vote',
         hasSize: false,
-        onPressed:
-            // hasVoted ? () {} :
-            () {
+        onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
@@ -174,9 +173,6 @@ Widget viewVoteBtn(BuildContext context) {
                     'Are you sure you want to vote for this candidate? This action cannot be undone.',
                 onConfirm: () {
                   Navigator.of(context).pop();
-                  // setState(() {
-                  //   hasVoted = !hasVoted;
-                  // });
                   Navigator.of(context).pushNamed(RouteList.voted);
                 },
                 onCancel: () {
@@ -185,12 +181,6 @@ Widget viewVoteBtn(BuildContext context) {
               );
             },
           );
-
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     content: Text('${'widget.user.name'} marked as voted'),
-          //   ),
-          // );
         },
       ),
     ],

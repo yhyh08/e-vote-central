@@ -14,20 +14,25 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Icon(icon, color: Theme.of(context).primaryColor),
-        const SizedBox(width: 8),
-        Text(
-          "$label: ",
-          style: Theme.of(context).textTheme.titleSmall,
+        Row(
+          children: [
+            Icon(icon, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 8),
+            Text(
+              "$label: ",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
         ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
+        const SizedBox(height: 5),
       ],
     );
   }

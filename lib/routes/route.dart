@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/candidate_card.dart';
 import '../screens/election/election_detail/candidate/candidate_profile.dart';
-import '../screens/election/election_detail/candidate/candidate_profile_detail.dart';
-import '../screens/election/election_detail/election_detail.dart';
 import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
@@ -38,9 +36,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Dashboard());
       case RouteList.election:
         return MaterialPageRoute(builder: (_) => const Election());
-      // case RouteList.electionDetail:
-      //   return MaterialPageRoute(
-      //       builder: (_) => const ElectionDetail(electionId: ));
       case RouteList.candidateProfile:
         final CandidateDetail candidate = settings.arguments as CandidateDetail;
         return MaterialPageRoute(
@@ -48,9 +43,6 @@ class RouteGenerator {
             candidate: candidate,
           ),
         );
-      case RouteList.candidateProfileDetail:
-        return MaterialPageRoute(
-            builder: (_) => const CandidateProfileDetail());
       case RouteList.voted:
         return MaterialPageRoute(builder: (_) => const Voted());
       case RouteList.result:
@@ -86,9 +78,7 @@ class RouteList {
   static const String registerPin = '/RegisterPin';
   static const String dashboard = '/Dashboard';
   static const String election = '/Election';
-  static const String electionDetail = '/ElectionDetail';
   static const String candidateProfile = '/CandidateProfile';
-  static const String candidateProfileDetail = '/CandidateProfileDetail';
   static const String electionOrganization = '/ElectionOrganization';
   static const String voted = '/Voted';
   static const String result = '/Result';

@@ -1,42 +1,20 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
+// import '../gen/assets.gen.dart';
 
 class CandidateDetail {
+  final int id;
   final String name;
-  final String role;
-  final String address;
-  final ImageProvider<Object> candidateImage;
-  final int? countVote;
-  final int? percentage;
+  final String gender;
+  final String position;
+  final String email;
+  final String image;
 
-  CandidateDetail({
-    required this.name,
-    required this.role,
-    required this.address,
-    required this.candidateImage,
-    this.countVote,
-    this.percentage,
-  });
+  CandidateDetail.fromJson(Map<String, dynamic> json)
+      : id = json['candidate_id'] ?? 0,
+        name = json['candidate_name'] ?? '',
+        gender = json['candidate_gender'] ?? '',
+        position = json['position'] ?? '',
+        email = json['candidate_email'] ?? '',
+        image = json['candidate_image'] ?? '';
 }
-
-final List<CandidateDetail> candidates = [
-  CandidateDetail(
-    name: 'Daniel Jackson',
-    role: 'Software Engineer',
-    address: '1789 North Street, San Antonio, TX 78201',
-    candidateImage: Assets.images.voteday.image().image,
-  ),
-  CandidateDetail(
-    name: 'Christina Eng',
-    role: 'Teacher',
-    address: '1789 North Street, San Antonio, TX 78201',
-    candidateImage: Assets.images.voteday.image().image,
-  ),
-  // CandidateDetail(
-  //   name: 'Alice Chin',
-  //   role: 'Lecturer',
-  //   address: '1789 North Street, San Antonio, TX 78201',
-  //   candidateImage: Assets.images.voteday.image().image,
-  // ),
-];

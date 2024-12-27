@@ -72,7 +72,7 @@ class CandidateProfileState extends State<CandidateProfile> {
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                widget.candidate.role,
+                                widget.candidate.position,
                                 style: Theme.of(context).textTheme.labelSmall,
                               ),
                               const SizedBox(height: 5),

@@ -29,6 +29,8 @@ class ElectionDetailState extends State<ElectionDetail>
   Map<String, dynamic> electionDetail = {};
   Map<String, dynamic> organizationData = {};
   String organizationName = 'Loading...';
+  List<CandidateDetail> candidates = [];
+  bool isLoadingCandidates = true;
 
   @override
   void initState() {
@@ -36,6 +38,7 @@ class ElectionDetailState extends State<ElectionDetail>
     _tabController = TabController(length: 3, vsync: this);
     _fetchElectionDetail();
     fetchOrganizationData(widget.electionId);
+    fetchCandidates();
   }
 
   Future<void> _fetchElectionDetail() async {
@@ -98,6 +101,39 @@ class ElectionDetailState extends State<ElectionDetail>
     }
   }
 
+  Future<void> fetchCandidates() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$serverApiUrl/election-candidates/${widget.electionId}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('API Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<dynamic> candidatesJson = responseData['candidates'] ?? [];
+
+        setState(() {
+          candidates = candidatesJson
+              .map((json) => CandidateDetail.fromJson(json))
+              .toList();
+          isLoadingCandidates = false;
+        });
+      } else {
+        throw Exception('Failed to load candidates');
+      }
+    } catch (e) {
+      print('Error fetching candidates: $e');
+      setState(() {
+        isLoadingCandidates = false;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -156,13 +192,9 @@ class ElectionDetailState extends State<ElectionDetail>
                     orgSize: organizationData['org_size']?.toString(),
                   ),
                   ElectionOrganization(),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: candidates.length,
-                    itemBuilder: (context, index) {
-                      return ElectionPosition(candidate: candidates[index]);
-                    },
-                  ),
+                  isLoadingCandidates
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElectionPosition(candidates: candidates),
                 ],
               ),
             ),
@@ -179,7 +211,7 @@ class ElectionDetailState extends State<ElectionDetail>
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: Image(
-            image: Assets.images.voteday1.image().image,
+            image: Assets.images.voteday.image().image,
             height: 120,
             fit: BoxFit.cover,
           ),

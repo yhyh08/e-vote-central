@@ -27,31 +27,31 @@ class ElectionInfoState extends State<ElectionInfo> {
         {
           "icon": Icons.language,
           "label": "Website",
-          "value": widget.orgWebsite ?? "AI Logix.com",
+          "value": widget.orgWebsite ?? "No Website",
           "isLink": true,
         },
         {
           "icon": Icons.email,
           "label": "Email",
-          "value": widget.orgEmail ?? "AI Logix.com",
+          "value": widget.orgEmail ?? "No Email",
           "isLink": true,
         },
         {
           "icon": Icons.business,
           "label": "Category",
-          "value": widget.orgCat ?? "Category",
+          "value": widget.orgCat ?? "No Category",
           "isLink": false,
         },
         {
           "icon": Icons.people,
           "label": "Size",
-          "value": widget.orgSize ?? "51,344 employees",
+          "value": widget.orgSize ?? "No Size",
           "isLink": false,
         },
         {
           "icon": Icons.location_city,
-          "label": "Company",
-          "value": widget.orgAddress ?? "Address",
+          "label": "Location",
+          "value": widget.orgAddress ?? "No Address",
           "isLink": false,
         },
       ];
@@ -76,7 +76,7 @@ class ElectionInfoState extends State<ElectionInfo> {
           const SizedBox(height: 20),
           ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: generalInfo.length,
             itemBuilder: (context, index) {
               final info = generalInfo[index];

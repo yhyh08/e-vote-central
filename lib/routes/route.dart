@@ -21,8 +21,6 @@ import '../screens/account/register.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-
     switch (settings.name) {
       case RouteList.welcome:
         return MaterialPageRoute(builder: (_) => const Welcome());

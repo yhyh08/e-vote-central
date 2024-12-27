@@ -63,7 +63,6 @@ class ElectionState extends State<Election> {
 
   void updateFilteredData() {
     DateTime now = DateTime.now();
-    print('Current Date: $now');
 
     setState(() {
       if (selectedSegment == 1) {
@@ -74,8 +73,6 @@ class ElectionState extends State<Election> {
         filteredData =
             electionData.where((e) => e.startDate.isAfter(now)).toList();
       }
-      print('Selected Segment: $selectedSegment');
-      print('Filtered Data: $filteredData');
     });
   }
 

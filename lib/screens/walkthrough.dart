@@ -29,6 +29,8 @@ class TestScreen extends StatelessWidget {
     ),
   ];
 
+  TestScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return IntroScreen(

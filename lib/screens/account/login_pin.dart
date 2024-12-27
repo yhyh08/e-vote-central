@@ -21,8 +21,6 @@ class LoginPin extends StatefulWidget {
 }
 
 class _LoginPinState extends State<LoginPin> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

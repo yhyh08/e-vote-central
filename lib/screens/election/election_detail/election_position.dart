@@ -6,7 +6,6 @@ import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
 import '../../../models/candidate_card.dart';
 import '../voted/vote_confirmation_dialog.dart';
-import 'candidate/candidate_profile.dart';
 
 class ElectionPosition extends StatelessWidget {
   final List<CandidateDetail> candidates;

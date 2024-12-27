@@ -51,7 +51,7 @@ class DashboardState extends State<Dashboard> {
         });
       }
     } catch (e) {
-      print('Error loading user info: $e');
+      e;
     }
   }
 

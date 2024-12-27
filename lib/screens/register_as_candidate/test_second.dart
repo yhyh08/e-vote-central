@@ -180,7 +180,7 @@ class _RegisterNominationState extends State<RegisterNomination> {
 
   // Step Divider Widget
   Widget stepDivider() {
-    return Expanded(
+    return const Expanded(
       child: Divider(
         color: Colors.grey,
         thickness: 2,

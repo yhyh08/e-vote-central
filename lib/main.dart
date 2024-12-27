@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common/theme.dart';
 import 'routes/route.dart';
 import 'screens/home/dashboard.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,15 +18,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: theme,
       // home: const Dashboard(),
-      home: CheckAuth(),
+      home: const CheckAuth(),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
 
 class CheckAuth extends StatefulWidget {
+  const CheckAuth({super.key});
+
   @override
-  _CheckAuthState createState() => _CheckAuthState();
+  State<CheckAuth> createState() => _CheckAuthState();
 }
 
 class _CheckAuthState extends State<CheckAuth> {
@@ -50,9 +53,9 @@ class _CheckAuthState extends State<CheckAuth> {
   Widget build(BuildContext context) {
     Widget child;
     if (isAuth) {
-      child = Dashboard();
+      child = const Dashboard();
     } else {
-      child = SplashScreen();
+      child = const SplashScreen();
     }
     return Scaffold(
       body: child,

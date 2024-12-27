@@ -46,7 +46,7 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                   height: 150,
                   fit: BoxFit.cover,
                 ),
-                Positioned(
+                const Positioned(
                   top: 100,
                   left: 16,
                   child: Row(
@@ -55,16 +55,16 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                       CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.black,
-                        child: const Icon(
+                        child: Icon(
                           Icons.person,
                           color: Colors.white,
                           size: 30,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Organization 1',
                             style: TextStyle(
@@ -88,10 +88,10 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
             ),
             const SizedBox(height: 16),
             // Date and Address
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                   SizedBox(width: 8),
                   Text(
@@ -101,11 +101,10 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                 ],
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(Icons.location_on, size: 16, color: Colors.grey),
                   SizedBox(width: 8),
                   Expanded(
@@ -119,10 +118,9 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
             ),
             const Divider(),
             // Experience Section
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
                 '3+ Years of Experience',
                 style: TextStyle(
                   fontSize: 16,
@@ -130,8 +128,8 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
                   ExperienceCard(
@@ -140,14 +138,14 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                     duration: '3 yrs 11 mos',
                     skills: [],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   ExperienceCard(
                     company: 'Founder and CEO',
                     role: '',
                     duration: 'Oct 2022 - Present (7 mos)',
                     skills: ['Managing', 'Strategic', 'Human Resource'],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   ExperienceCard(
                     company: 'Founder',
                     role: '',
@@ -159,10 +157,9 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
             ),
             const Divider(),
             // Person in Charge Section
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
                 'Person in charge',
                 style: TextStyle(
                   fontSize: 16,
@@ -177,21 +174,21 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.blue,
                         child: Icon(Icons.person, color: Colors.white),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               'James Tan',
                               style: TextStyle(

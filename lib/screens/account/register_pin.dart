@@ -12,52 +12,8 @@ class RegisterPin extends StatefulWidget {
 }
 
 class _RegisterPinState extends State<RegisterPin> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    // login check user identity if correct show success on bottom else show invalid
-    void conditionLogin(context) async {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState?.save();
-
-        // bool isLoggined = await fetchUserData(phoneNumber, passwords);
-
-        // if (isLoggined) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       backgroundColor: Theme.of(context).secondaryHeaderColor,
-        //       duration: const Duration(seconds: 2),
-        //       content: Container(
-        //         padding: const EdgeInsets.all(8),
-        //         child: Text(
-        //           'Login Successfully',
-        //           style: Theme.of(context).textTheme.labelLarge,
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        //   Future.delayed(const Duration(seconds: 3), () {
-        //     Navigator.of(context).pushReplacementNamed(RouteList.dashboard);
-        //   });
-        // } else {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       backgroundColor: Theme.of(context).hintColor,
-        //       duration: const Duration(seconds: 2),
-        //       content: Container(
-        //         padding: const EdgeInsets.all(8),
-        //         child: Text(
-        //           'Invalid Phone Num or Password',
-        //           style: Theme.of(context).textTheme.titleMedium,
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        // }
-      }
-    }
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -110,19 +66,13 @@ class _RegisterPinState extends State<RegisterPin> {
                         ),
                         animationDuration: const Duration(milliseconds: 300),
                         enableActiveFill: true,
-                        // errorAnimationController: errorController,
-                        // controller: textEditingController,
-                        onCompleted: (v) {
-                          print("Completed");
-                        },
+                        onCompleted: (v) {},
                         onChanged: (value) {
-                          print(value);
                           setState(() {
                             // currentText = value;
                           });
                         },
                         beforeTextPaste: (text) {
-                          print("Allowing to paste $text");
                           return true;
                         },
                       ),

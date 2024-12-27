@@ -8,19 +8,19 @@ class ElectionOrganization extends StatelessWidget {
   final List<Experience> experiences = [
     Experience(
       icon: Icons.flash_on,
-      companyName: 'WizeVue',
+      companyName: 'Marslab',
       position: 'Founder and CEO',
       duration: 'Oct 2022 - Present (7 mos)',
       skills: ['Managing', 'Strategic', 'Human Resource'],
     ),
     Experience(
-      companyName: 'WizeVue',
+      companyName: 'AOT',
       position: 'Founder',
       duration: 'Jun 2019 - Present (3 yrs 11 mos)',
       skills: ['Customer Relationship Management (CRM)'],
     ),
     Experience(
-      companyName: 'WizeVue',
+      companyName: 'Marslab',
       position: 'Founder',
       duration: 'Jun 2019 - Present (3 yrs 11 mos)',
       skills: ['Customer Relationship Management (CRM)'],

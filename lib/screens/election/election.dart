@@ -269,6 +269,12 @@ class ElectionState extends State<Election> {
 }
 
 class ElectionData {
+  final String title;
+  final DateTime startDate;
+  final DateTime endDate;
+  final int orgId;
+  final int id;
+
   ElectionData(
     this.title,
     this.startDate,
@@ -276,10 +282,4 @@ class ElectionData {
     this.orgId,
     this.id,
   );
-
-  final String title;
-  final DateTime startDate;
-  final DateTime endDate;
-  final int orgId;
-  final int id;
 }

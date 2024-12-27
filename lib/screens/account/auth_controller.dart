@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,25 +21,31 @@ class AuthController extends ChangeNotifier {
       if (!phoneNumber.startsWith('+')) {
         phoneNumber = '+$phoneNumber';
       }
-      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
-
-      print('Checking phone number: $phoneNumber');
 
       final response = await _network.getData('/check-user/$phoneNumber');
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['exists'] == true) {
-          isCodeSent = false; // Reset code sent status
-          notifyListeners();
-          return true;
-        }
+      final data = json.decode(response.body);
+
+      if (response.statusCode == 404) {
+        Fluttertoast.showToast(
+          msg: data['message'] ?? "Phone number not registered",
+          backgroundColor: Colors.red,
+        );
+        return false;
+      }
+
+      if (response.statusCode == 200 && data['exists'] == true) {
+        isCodeSent = false; // Reset code sent status
+        notifyListeners();
+        return true;
       }
       return false;
     } catch (e) {
       print('Error validating phone number: $e');
+      Fluttertoast.showToast(
+        msg: "Error checking phone number",
+        backgroundColor: Colors.red,
+      );
       return false;
     }
   }
@@ -49,7 +56,6 @@ class AuthController extends ChangeNotifier {
       if (!phoneNumber.startsWith('+')) {
         phoneNumber = '+$phoneNumber';
       }
-      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
 
       print('Sending OTP to: $phoneNumber');
 
@@ -60,30 +66,37 @@ class AuthController extends ChangeNotifier {
       print('OTP request response status: ${response.statusCode}');
       print('OTP request response body: ${response.body}');
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['status'] == true) {
-          // Store the debug OTP if provided
-          if (data['debug_otp'] != null) {
-            print('Debug OTP received: ${data['debug_otp']}');
-            // Auto-fill OTP in development
-            otpController.text = data['debug_otp'].toString();
-          }
+      final data = json.decode(response.body);
 
-          isCodeSent = true;
-          notifyListeners();
+      if (response.statusCode == 404) {
+        Fluttertoast.showToast(
+          msg: data['message'] ?? "Phone number not registered",
+          backgroundColor: Colors.red,
+        );
+        return false;
+      }
 
-          Fluttertoast.showToast(
-            msg: "OTP sent successfully. Debug OTP: ${data['debug_otp']}",
-            backgroundColor: Colors.green,
-            timeInSecForIosWeb: 4,
-          );
-          return true;
+      if (response.statusCode == 200 && data['status'] == true) {
+        // Store the debug OTP if provided
+        if (data['debug_otp'] != null) {
+          print('Debug OTP received: ${data['debug_otp']}');
+          // Auto-fill OTP in development
+          otpController.text = data['debug_otp'].toString();
         }
+
+        isCodeSent = true;
+        notifyListeners();
+
+        Fluttertoast.showToast(
+          msg: "OTP sent successfully. Debug OTP: ${data['debug_otp']}",
+          backgroundColor: Colors.green,
+          timeInSecForIosWeb: 4,
+        );
+        return true;
       }
 
       Fluttertoast.showToast(
-        msg: "Failed to send OTP",
+        msg: data['message'] ?? "Failed to send OTP",
         backgroundColor: Colors.red,
       );
       return false;
@@ -105,7 +118,6 @@ class AuthController extends ChangeNotifier {
       if (!phoneNumber.startsWith('+')) {
         phoneNumber = '+$phoneNumber';
       }
-      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
 
       print('Verifying OTP for phone: $phoneNumber');
       print('Entered OTP: ${otpController.text}');

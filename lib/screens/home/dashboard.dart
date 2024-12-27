@@ -45,13 +45,20 @@ class DashboardState extends State<Dashboard> {
   Future<void> _loadUserInfo() async {
     try {
       if (_phoneNumber != null) {
+        print('Fetching user info for phone: $_phoneNumber');
         final userInfo = await _network.getUserInfo(_phoneNumber!);
+        print('User info response: $userInfo');
+
         setState(() {
           _userInfo = userInfo['name'] ?? 'Guest';
         });
+        print('Set username to: $_userInfo');
       }
     } catch (e) {
-      e;
+      print('Error loading user info: $e');
+      setState(() {
+        _userInfo = 'Guest';
+      });
     }
   }
 

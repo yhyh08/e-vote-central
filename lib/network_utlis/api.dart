@@ -104,7 +104,6 @@ class Network {
       if (!phoneNumber.startsWith('+')) {
         phoneNumber = '+$phoneNumber';
       }
-      phoneNumber = phoneNumber.replaceAll(' ', '').replaceAll('-', '');
 
       final response =
           await http.get(Uri.parse('$serverApiUrl/user-info/$phoneNumber'));

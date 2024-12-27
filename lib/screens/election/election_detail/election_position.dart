@@ -4,7 +4,7 @@ import '../../../gen/assets.gen.dart';
 import '../../../routes/route.dart';
 import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
-import '../../../models/candidate_card.dart';
+import '../../../models/candidate_detail.dart';
 import '../voted/vote_confirmation_dialog.dart';
 
 class ElectionPosition extends StatelessWidget {

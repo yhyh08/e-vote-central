@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../network_utlis/api_constant.dart';
 import '../../../widgets/top_bar.dart';
-import '../../../models/candidate_card.dart';
+import '../../../models/candidate_detail.dart';
 import 'election_info.dart';
 import 'election_organization.dart';
 import 'election_position.dart';

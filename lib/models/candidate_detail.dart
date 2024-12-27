@@ -12,6 +12,7 @@ class CandidateDetail {
   final String biography;
   final String manifesto;
   final String image;
+  int votes;
 
   CandidateDetail({
     required this.id,
@@ -27,6 +28,7 @@ class CandidateDetail {
     required this.biography,
     required this.manifesto,
     required this.image,
+    this.votes = 0,
   });
 
   CandidateDetail.fromJson(Map<String, dynamic> json)
@@ -42,5 +44,6 @@ class CandidateDetail {
         dob = json['candidate_dob'] ?? '',
         biography = json['short_biography'] ?? '',
         manifesto = json['manifesto'] ?? '',
-        image = json['candidate_image'] ?? '';
+        image = json['candidate_image'] ?? '',
+        votes = 0;
 }

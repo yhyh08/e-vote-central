@@ -2,7 +2,7 @@ import 'package:e_vote/screens/register_as_candidate/signature.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
-import '../models/candidate_card.dart';
+import '../models/candidate_detail.dart';
 import '../screens/election/election_detail/candidate/candidate_profile.dart';
 import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';

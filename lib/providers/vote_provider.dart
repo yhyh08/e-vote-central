@@ -1,13 +1,17 @@
-import 'package:e_vote/network_utlis/api_constant.dart';
-import 'package:e_vote/services/vote_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../services/vote_service.dart';
 
 class VoteProvider extends ChangeNotifier {
   final Set<int> _votedCandidates = {};
   final Map<String, int> _positionVotes = {};
+  final VoteService _voteService;
 
-  VoteProvider(VoteService voteService);
+  VoteProvider(this._voteService) {
+    loadVoteStatus();
+  }
 
   bool hasVotedFor(int candidateId) {
     return _votedCandidates.contains(candidateId);
@@ -17,41 +21,65 @@ class VoteProvider extends ChangeNotifier {
     return _positionVotes.containsKey(position);
   }
 
+  Future<void> loadVoteStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final votedList = prefs.getStringList('voted_candidates') ?? [];
+    _votedCandidates.addAll(votedList.map(int.parse));
+
+    final positionData = prefs.getString('position_votes') ?? '{}';
+    final Map<String, dynamic> positionMap = json.decode(positionData);
+    _positionVotes
+        .addAll(positionMap.map((key, value) => MapEntry(key, value as int)));
+    notifyListeners();
+  }
+
   Future<void> voteForCandidate(int candidateId, String position) async {
     if (hasVotedForPosition(position)) {
-      return;
+      throw Exception('You have already voted for this position');
+    }
+
+    if (hasVotedFor(candidateId)) {
+      throw Exception('You have already voted for this candidate');
     }
 
     try {
-      // Make API call to update vote count in Laravel backend
-      final response = await http.post(
-        Uri.parse('$serverApiUrl/candidate/$candidateId/vote'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': 'Bearer ${your_token}',
-        },
-      );
+      final success = await _voteService.incrementVoteCount(candidateId);
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update vote count: ${response.body}');
+      if (success) {
+        _votedCandidates.add(candidateId);
+        _positionVotes[position] = candidateId;
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setStringList('voted_candidates',
+            _votedCandidates.map((id) => id.toString()).toList());
+        await prefs.setString('position_votes', json.encode(_positionVotes));
+
+        notifyListeners();
+      } else {
+        throw Exception('Failed to record vote');
       }
-
-      // Update local state
-      _votedCandidates.add(candidateId);
-      _positionVotes[position] = candidateId;
-
-      notifyListeners();
     } catch (e) {
       print('Error voting for candidate: $e');
       rethrow;
     }
   }
 
-  void clearVotes() {
+  Future<void> clearVotes() async {
     _votedCandidates.clear();
     _positionVotes.clear();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('voted_candidates');
+    await prefs.remove('position_votes');
+
     notifyListeners();
+  }
+
+  List<int> getVotedCandidates() {
+    return _votedCandidates.toList();
+  }
+
+  Map<String, int> getPositionVotes() {
+    return Map.from(_positionVotes);
   }
 }

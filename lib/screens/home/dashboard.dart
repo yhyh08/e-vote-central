@@ -88,7 +88,7 @@ class DashboardState extends State<Dashboard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Homeheader(
-              username: _userInfo,
+              username: _userInfo.capitalize(),
             ),
             TitleBtn(
               leftText: 'Update Profile Information',
@@ -195,5 +195,12 @@ class DashboardState extends State<Dashboard> {
         ),
       ],
     );
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return this;
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }

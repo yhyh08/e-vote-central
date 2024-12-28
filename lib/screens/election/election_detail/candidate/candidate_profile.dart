@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../gen/assets.gen.dart';
-import '../../../../models/candidate_card.dart';
+import '../../../../models/candidate_detail.dart';
 import '../../../../routes/route.dart';
 import '../../../../widgets/disable_elevated_button.dart';
 import '../../../../widgets/top_bar.dart';
 import '../../voted/vote_confirmation_dialog.dart';
 import 'candidate_info.dart';
 import 'info_row.dart';
+import '../../../../providers/vote_provider.dart';
 
 class CandidateProfile extends StatefulWidget {
   final CandidateDetail candidate;
@@ -23,10 +25,13 @@ class CandidateProfile extends StatefulWidget {
 }
 
 class CandidateProfileState extends State<CandidateProfile> {
-  bool hasVoted = false;
-
   @override
   Widget build(BuildContext context) {
+    final voteProvider = Provider.of<VoteProvider>(context);
+    final hasVoted = voteProvider.hasVotedFor(widget.candidate.id);
+    final hasVotedPosition =
+        voteProvider.hasVotedForPosition(widget.candidate.position);
+
     return TopBar(
       title: 'Candidate Profile',
       index: 1,
@@ -89,8 +94,12 @@ class CandidateProfileState extends State<CandidateProfile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: DisElevatedBtn(
-                btnText: hasVoted ? 'Voted' : 'Vote',
-                onPressed: hasVoted
+                btnText: hasVoted
+                    ? 'Voted'
+                    : hasVotedPosition
+                        ? 'Position Already Voted'
+                        : 'Vote',
+                onPressed: (hasVoted || hasVotedPosition)
                     ? () {}
                     : () {
                         showDialog(
@@ -99,14 +108,32 @@ class CandidateProfileState extends State<CandidateProfile> {
                             return VoteConfirmationDialog(
                               title: 'Vote',
                               message:
-                                  'Are you sure you want to vote for this candidate? This action cannot be undone.',
-                              onConfirm: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  hasVoted = !hasVoted;
-                                });
-                                Navigator.of(context)
-                                    .pushNamed(RouteList.voted);
+                                  'Are you sure you want to vote for ${widget.candidate.name} as ${widget.candidate.position}? You can only vote for one candidate per position.',
+                              onConfirm: () async {
+                                final scaffoldContext =
+                                    ScaffoldMessenger.of(context);
+                                final navigatorContext = Navigator.of(context);
+
+                                try {
+                                  navigatorContext.pop();
+
+                                  await voteProvider.voteForCandidate(
+                                    widget.candidate.id,
+                                    widget.candidate.position,
+                                  );
+
+                                  if (!mounted) return;
+                                  await navigatorContext
+                                      .pushReplacementNamed(RouteList.voted);
+                                } catch (e) {
+                                  scaffoldContext.showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Failed to submit vote: $e'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               },
                               onCancel: () {
                                 Navigator.of(context).pop();

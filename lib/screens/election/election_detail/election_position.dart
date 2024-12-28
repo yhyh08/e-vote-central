@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../routes/route.dart';
-import '../../../widgets/disable_elevated_button.dart';
 import '../../../widgets/elevated_button.dart';
 import '../../../models/candidate_detail.dart';
-import '../voted/vote_confirmation_dialog.dart';
 
 class ElectionPosition extends StatelessWidget {
   final List<CandidateDetail> candidates;
@@ -146,39 +144,16 @@ class ElectionPosition extends StatelessWidget {
 
 Widget viewVoteBtn(BuildContext context, CandidateDetail candidate) {
   return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    mainAxisAlignment: MainAxisAlignment.start,
     children: [
       ElevatedBtn(
         btnText: 'View Profile',
         hasSize: false,
+        width: MediaQuery.of(context).size.width / 1.25,
         onPressed: () {
           Navigator.of(context).pushNamed(
             RouteList.candidateProfile,
             arguments: candidate,
-          );
-        },
-      ),
-      const SizedBox(width: 10),
-      DisElevatedBtn(
-        btnText: 'Vote',
-        hasSize: false,
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return VoteConfirmationDialog(
-                title: 'Vote',
-                message:
-                    'Are you sure you want to vote for this candidate? This action cannot be undone.',
-                onConfirm: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(RouteList.voted);
-                },
-                onCancel: () {
-                  Navigator.of(context).pop();
-                },
-              );
-            },
           );
         },
       ),

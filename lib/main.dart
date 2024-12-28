@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/vote_provider.dart';
+import 'services/vote_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/theme.dart';
@@ -7,7 +10,18 @@ import 'screens/home/dashboard.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => VoteProvider(
+            VoteService(), // Initialize your VoteService here
+          ),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

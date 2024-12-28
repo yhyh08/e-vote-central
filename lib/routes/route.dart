@@ -7,7 +7,7 @@ import '../screens/election/election_detail/candidate/candidate_profile.dart';
 import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
-import '../screens/account/register_pin.dart';
+import '../screens/no use/register_pin.dart';
 import '../screens/register_as_candidate/first_register_as_candidate.dart';
 import '../screens/register_as_candidate/forth_register_as_candidate.dart';
 import '../screens/register_as_candidate/register_status.dart';
@@ -17,7 +17,7 @@ import '../screens/result/result.dart';
 import '../screens/result/result_detail.dart';
 import '../screens/welcome.dart';
 import '../screens/account/login.dart';
-import '../screens/account/register.dart';
+import '../screens/no use/register.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

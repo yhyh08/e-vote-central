@@ -24,12 +24,19 @@ class DashboardState extends State<Dashboard> {
   final Network _network = Network();
   String _latestElectionTitle = 'Loading...';
   Map<String, dynamic> _latestElection = {};
+  bool _isDisposed = false;
 
   @override
   void initState() {
     super.initState();
     _initializeUserInfo();
     _fetchLatestElection();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   Future<void> _initializeUserInfo() async {
@@ -49,32 +56,43 @@ class DashboardState extends State<Dashboard> {
         final userInfo = await _network.getUserInfo(_phoneNumber!);
         print('User info response: $userInfo');
 
-        setState(() {
-          _userInfo = userInfo['name'] ?? 'Guest';
-        });
+        if (mounted) {
+          setState(() {
+            _userInfo = userInfo['name'] ?? 'Guest';
+          });
+        }
         print('Set username to: $_userInfo');
       }
     } catch (e) {
       print('Error loading user info: $e');
-      setState(() {
-        _userInfo = 'Guest';
-      });
+      if (mounted) {
+        setState(() {
+          _userInfo = 'Guest';
+        });
+      }
     }
   }
 
   Future<void> _fetchLatestElection() async {
+    if (_isDisposed) return;
     try {
       final latestElection = await _network.getLatestElection();
-      setState(() {
-        _latestElection = latestElection;
-        _latestElectionTitle =
-            latestElection['election_topic'] ?? 'Election Topic';
-      });
+      if (_isDisposed) return;
+      if (mounted) {
+        setState(() {
+          _latestElection = latestElection;
+          _latestElectionTitle =
+              latestElection['election_topic'] ?? 'Election Topic';
+        });
+      }
     } catch (e) {
-      setState(() {
-        _latestElectionTitle = 'Error loading election';
-        _latestElection = {};
-      });
+      if (_isDisposed) return;
+      if (mounted) {
+        setState(() {
+          _latestElectionTitle = 'Error loading election';
+          _latestElection = {};
+        });
+      }
     }
   }
 

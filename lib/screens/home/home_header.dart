@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 import '../../../routes/route.dart';
+import '../../gen/assets.gen.dart';
 
 class Homeheader extends StatelessWidget {
   final String username;
@@ -73,15 +74,11 @@ class Homeheader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.account_circle_rounded,
-                      size: 50,
-                    ),
-                    onPressed: () {
-                      // Navigator.of(context).pushNamed(RouteList.account);
-                    },
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundImage: Assets.images.userlogo.image().image,
                   ),
+                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -92,7 +89,7 @@ class Homeheader extends StatelessWidget {
                             .headlineMedium
                             ?.copyWith(color: Colors.white),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
                       Text(
                         username,
                         style: Theme.of(context)
@@ -106,13 +103,13 @@ class Homeheader extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.logout,
+                          color: Theme.of(context).dividerColor,
                           size: 28,
                         ),
                         onPressed: () => _handleLogout(context),
                       ),
-                      // Icons.notifications_none_outlined,
                     ),
                   ),
                 ],

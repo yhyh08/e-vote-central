@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +13,6 @@ class AuthController extends ChangeNotifier {
   final Network _network = Network();
   bool isCodeSent = false;
 
-  // Check if phone exists in users table
   Future<bool> validatePhoneNumber() async {
     try {
       String phoneNumber = authController.text.trim();
@@ -35,7 +33,7 @@ class AuthController extends ChangeNotifier {
       }
 
       if (response.statusCode == 200 && data['exists'] == true) {
-        isCodeSent = false; // Reset code sent status
+        isCodeSent = false;
         notifyListeners();
         return true;
       }
@@ -78,9 +76,8 @@ class AuthController extends ChangeNotifier {
 
       if (response.statusCode == 200 && data['status'] == true) {
         // Store the debug OTP if provided
-        if (data['debug_otp'] != null) {
+        if (data['debug_otp'] != 'Wait') {
           print('Debug OTP received: ${data['debug_otp']}');
-          // Auto-fill OTP in development
           otpController.text = data['debug_otp'].toString();
         }
 

@@ -132,7 +132,7 @@ class RegisterStatusState extends State<RegisterStatus> {
                             child: ListTile(
                               title: Text(
                                 registration.electionTopic,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleSmall,
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +140,7 @@ class RegisterStatusState extends State<RegisterStatus> {
                                   Text(
                                     registration.candName,
                                     style:
-                                        Theme.of(context).textTheme.labelSmall,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   Text(
                                     registration.formattedDate,

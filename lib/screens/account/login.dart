@@ -1,3 +1,4 @@
+import 'package:e_vote/widgets/form_textfield.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/elevated_button.dart';
@@ -44,17 +45,10 @@ class _LoginState extends State<Login> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          TextFormField(
+                          FormTextfield(
                             keyboardType: TextInputType.phone,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              labelText: 'Phone',
-                              labelStyle:
-                                  Theme.of(context).textTheme.labelLarge,
-                              hintText: '+60xxxxxxxxx',
-                              hintStyle: Theme.of(context).textTheme.labelSmall,
-                            ),
+                            labelText: 'Phone',
+                            hintText: '+60xxxxxxxxx',
                             controller: controller.authController,
                             validator: (String? number) {
                               if (number == null || number.isEmpty) {

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'dart:convert';
 
+import '../../network_utlis/api_constant.dart';
+import '../../providers/registration_state.dart';
 import '../../routes/route.dart';
+import '../../widgets/dropdown_btn.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/top_bar.dart';
 import 'step_icon.dart';
@@ -14,12 +20,110 @@ class RegisterCandidateFirst extends StatefulWidget {
 
 class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
   String? selectedOption;
+  String? selectedElectionId;
+  List<String> electionOptions = [];
+  Map<String, String> electionIds = {};
 
-  final List<String> electionOptions = [
-    'Election 1',
-    'Election 2',
-    'Election 3',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchElectionTopics();
+  }
+
+  Future<void> fetchElectionTopics() async {
+    try {
+      final response =
+          await http.get(Uri.parse('$serverApiUrl/all-elections/'));
+      print('Raw API Response: ${response.body}'); // Print raw response
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        print('Decoded data: $data');
+
+        setState(() {
+          electionOptions.clear();
+          electionIds.clear();
+
+          for (var election in data) {
+            print(
+                'Processing election: $election'); // Print each election object
+
+            String topic = election['election_topic']?.toString() ?? '';
+            String id = election['election_id']?.toString() ??
+                election['id']?.toString() ??
+                '';
+
+            print(
+                'Extracted - Topic: $topic, ID: $id'); // Print extracted values
+
+            if (topic.isNotEmpty) {
+              electionOptions.add(topic);
+              electionIds[topic] = id;
+            }
+          }
+
+          print('Final electionOptions: $electionOptions');
+          print('Final electionIds: $electionIds');
+        });
+      }
+    } catch (e) {
+      print('Error in fetchElectionTopics: $e');
+    }
+  }
+
+  void onElectionSelected(String electionId) {
+    final registrationState =
+        Provider.of<RegistrationState>(context, listen: false);
+    registrationState.setSelectedElectionId(electionId);
+    print('Selected Election ID: $electionId');
+  }
+
+  Future<void> saveElectionData() async {
+    try {
+      if (selectedOption == null || selectedElectionId == null) {
+        throw Exception('Please select an election');
+      }
+
+      final response = await http.post(
+        Uri.parse('$serverApiUrl/candidates'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: json.encode({
+          'election_id': selectedElectionId,
+          'position': selectedOption,
+          'status': 'pending',
+          'user_id': '2', // You should get this from user authentication
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Election data saved successfully!',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushNamed(context, RouteList.registerCandidateSecond);
+      } else {
+        throw Exception('Failed to save election data');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Error saving election data: $e',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          backgroundColor: Theme.of(context).hintColor,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +134,7 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const StepIcon(
-              activeIndex: 0,
-            ),
+            const StepIcon(activeIndex: 0),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerLeft,
@@ -42,57 +144,135 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
               ),
             ),
             const SizedBox(height: 24),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: 'Election',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
+            DropdownBtn(
+              labelText: 'Election',
               value: selectedOption,
               items: electionOptions
-                  .map(
-                    (option) => DropdownMenuItem(
-                      value: option,
-                      child: Text(option),
-                    ),
-                  )
+                  .map((option) => DropdownMenuItem(
+                        value: option,
+                        child: Text(
+                          option,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ))
                   .toList(),
               onChanged: (value) {
+                print(
+                    'Dropdown value changed to: $value'); // Debug selected value
+                print(
+                    'Current electionIds map: $electionIds'); // Debug map content
+
                 setState(() {
                   selectedOption = value;
+                  if (value != null) {
+                    selectedElectionId = electionIds[value];
+                    Provider.of<RegistrationState>(context, listen: false)
+                        .setSelectedElectionId(selectedElectionId);
+                  }
                 });
               },
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedBtn(
-                  btnText: 'Next',
-                  hasSize: false,
-                  width: 180,
-                  onPressed: () {
-                    if (selectedOption != null) {
-                      Navigator.of(context)
-                          .pushNamed(RouteList.registerCandidateSecond);
+            bottomBtn()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget bottomBtn() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // ElevatedBtn(
+          //   btnText: 'Back',
+          //   hasSize: false,
+          //   btnColorWhite: false,
+          //   width: 160,
+          //   onPressed: () => Navigator.of(context).pop(),
+          // ),
+          Row(
+            children: [
+              ElevatedBtn(
+                btnText: 'Save',
+                hasSize: false,
+                btnColorWhite: false,
+                width: 150,
+                onPressed: () async {
+                  try {
+                    if (selectedOption != null && selectedElectionId != null) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        },
+                      );
+
+                      final registrationState = Provider.of<RegistrationState>(
+                          context,
+                          listen: false);
+
+                      // Save election_id to state and SharedPreferences
+                      registrationState.setElectionId(selectedElectionId);
+                      final success = await registrationState.saveStep1();
+
+                      Navigator.of(context).pop(); // Close loading dialog
+
+                      if (success) {
+                        Navigator.pushNamed(
+                            context, RouteList.registerCandidateSecond);
+                      }
                     } else {
+                      // Show error if no selection made
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Please select an election.',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
+                        const SnackBar(
+                          content: Text('Please select an election option'),
+                          backgroundColor: Colors.red,
                         ),
                       );
                     }
-                  },
-                ),
+                  } catch (e) {
+                    // Only pop if dialog is showing
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context).pop(); // Close loading dialog
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error: ${e.toString()}'),
+                        backgroundColor: Theme.of(context).hintColor,
+                      ),
+                    );
+                  }
+                },
               ),
-            )
-          ],
-        ),
+              const SizedBox(width: 16),
+              ElevatedBtn(
+                btnText: 'Next',
+                hasSize: false,
+                width: 160,
+                onPressed: () {
+                  if (selectedOption != null) {
+                    Navigator.pushNamed(
+                        context, RouteList.registerCandidateSecond);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Please select an election.',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

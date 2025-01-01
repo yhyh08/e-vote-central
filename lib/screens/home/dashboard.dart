@@ -61,7 +61,7 @@ class DashboardState extends State<Dashboard> {
             _userInfo = userInfo['name'] ?? 'Guest';
           });
         }
-        print('Set username to: $_userInfo');
+        print('Username for this account: $_userInfo');
       }
     } catch (e) {
       print('Error loading user info: $e');

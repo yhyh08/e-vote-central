@@ -8,6 +8,7 @@ import 'routes/route.dart';
 import 'screens/home/dashboard.dart';
 import 'screens/splash_screen.dart';
 import 'services/vote_service.dart';
+import 'providers/registration_state.dart';
 
 void main() {
   runApp(
@@ -18,6 +19,7 @@ void main() {
             VoteService(),
           ),
         ),
+        ChangeNotifierProvider(create: (_) => RegistrationState()),
       ],
       child: const MyApp(),
     ),

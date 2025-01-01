@@ -9,8 +9,9 @@ import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/no use/register_pin.dart';
 import '../screens/register_as_candidate/first_register_as_candidate.dart';
-import '../screens/register_as_candidate/forth_register_as_candidate.dart';
+import '../screens/register_as_candidate/fifth_register_as_candidate.dart';
 import '../screens/register_as_candidate/register_status.dart';
+import '../screens/register_as_candidate/forth_register_as_candidate.dart';
 import '../screens/register_as_candidate/second_register_as_candidate.dart';
 import '../screens/register_as_candidate/third_register_as_candidate.dart';
 import '../screens/result/result.dart';
@@ -61,6 +62,9 @@ class RouteGenerator {
       case RouteList.registerCandidateForth:
         return MaterialPageRoute(
             builder: (_) => const RegisterCandidateForth());
+      case RouteList.registerCandidateFifth:
+        return MaterialPageRoute(
+            builder: (_) => const RegisterCandidateFifth());
       case RouteList.signatureCandidate:
         return MaterialPageRoute(builder: (_) => const SignatureCandidate());
       default:
@@ -86,5 +90,6 @@ class RouteList {
   static const String registerCandidateSecond = '/RegisterCandidateSecond';
   static const String registerCandidateThird = '/RegisterCandidateThird';
   static const String registerCandidateForth = '/RegisterCandidateForth';
+  static const String registerCandidateFifth = '/RegisterCandidateFifth';
   static const String signatureCandidate = '/SignatureCandidate';
 }

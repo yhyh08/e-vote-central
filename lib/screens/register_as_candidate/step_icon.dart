@@ -11,7 +11,7 @@ class StepIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         children: [
           // Step 1
@@ -28,6 +28,11 @@ class StepIcon extends StatelessWidget {
 
           // Step 4
           stepIcon(Icons.file_upload_outlined, 3, context),
+          stepDivider(context),
+
+          // Step 5
+          stepIcon(Icons.dangerous, 4, context),
+          stepDivider(context),
         ],
       ),
     );

@@ -1,8 +1,11 @@
-import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'dart:convert';
 
+import '../../network_utlis/api_constant.dart';
+import '../../providers/registration_state.dart';
 import '../../routes/route.dart';
-import '../../widgets/dropdown_btn.dart';
 import '../../widgets/elevated_button.dart';
 import '../../widgets/form_textfield.dart';
 import '../../widgets/top_bar.dart';
@@ -17,59 +20,24 @@ class RegisterCandidateThird extends StatefulWidget {
 
 class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
   final _formKey = GlobalKey<FormState>();
-  String? selectedGender;
-  String? selectedJobs;
-  String? selectedIncome;
-  String? selectedMaritalStatus;
-  TextEditingController state = TextEditingController();
-  TextEditingController country = TextEditingController();
-  TextEditingController city = TextEditingController();
-
-  final List<String> genderOptions = [
-    'Male',
-    'Female',
-  ];
-
-  final List<String> jobsOptions = [
-    'Employee',
-    'Self-Employed',
-    'Student',
-    'Unemployed',
-  ];
-
-  final List<String> incomeOptions = [
-    'Less than RM 1000',
-    'RM 1000 - RM 2000',
-    'RM 2000 - RM 3000',
-    'RM 3000 - RM 4000',
-    'RM 4000 - RM 5000',
-    'Over RM 5000',
-  ];
-
-  final List<String> maritalStatusOptions = [
-    'Single',
-    'Married',
-    'Divorced',
-    'Widowed',
-  ];
+  final TextEditingController bioController = TextEditingController();
+  final TextEditingController manifestoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return TopBar(
       title: 'Register as Candidate',
-      index: 3,
+      index: 4,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const StepIcon(
-              activeIndex: 1,
-            ),
+            const StepIcon(activeIndex: 2),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Profile Infomation',
+                'Submit Information',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
@@ -81,209 +49,31 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                   child: Column(
                     children: [
                       FormTextfield(
-                        keyboardType: TextInputType.text,
-                        labelText: 'First Name',
-                        hintText: 'First Name',
-                        validator: (String? value) {
+                        controller: bioController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                        labelText: 'Short Biography',
+                        hintText: 'Enter your short bio',
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Enter a valid first name";
+                            return "Short biography is required";
                           }
                           return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      FormTextfield(
-                        keyboardType: TextInputType.text,
-                        labelText: 'Last Name',
-                        hintText: 'Last Name',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid last name";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      DropdownBtn(
-                        labelText: 'Gender',
-                        value: selectedGender,
-                        items: genderOptions
-                            .map(
-                              (option) => DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
                         },
                       ),
                       FormTextfield(
-                        keyboardType: TextInputType.emailAddress,
-                        labelText: 'Email',
-                        hintText: 'xxx@gmail.com',
-                        validator: (String? email) {
-                          if (email == null ||
-                              !email.contains('@') ||
-                              email.isEmpty) {
-                            return "Enter a valid email address";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      FormTextfield(
-                        keyboardType: TextInputType.number,
-                        labelText: 'Identification No',
-                        hintText: 'I/C No',
-                        validator: (String? value) {
+                        controller: manifestoController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                        labelText: 'Election Manifesto',
+                        hintText: 'Enter your manifesto',
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Enter a valid identification number";
+                            return "Manifesto is required";
                           }
                           return null;
                         },
-                        onSaved: (value) {},
                       ),
-                      FormTextfield(
-                        keyboardType: TextInputType.phone,
-                        labelText: 'Phone',
-                        hintText: 'Phone',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid phone number";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      FormTextfield(
-                        keyboardType: TextInputType.text,
-                        labelText: 'Address Line 1',
-                        hintText: 'Address Line 1',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid address";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      FormTextfield(
-                        keyboardType: TextInputType.text,
-                        labelText: 'Address Line 2',
-                        hintText: 'Address Line 2',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid address";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      CountryStateCityPicker(
-                        country: country,
-                        state: state,
-                        city: city,
-                        dialogColor: Theme.of(context).secondaryHeaderColor,
-                        textFieldDecoration: InputDecoration(
-                          fillColor: Theme.of(context).secondaryHeaderColor,
-                          labelStyle: Theme.of(context).textTheme.labelSmall,
-                          filled: true,
-                          suffixIcon:
-                              const Icon(Icons.keyboard_arrow_down_rounded),
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(width: 5),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      FormTextfield(
-                        keyboardType: TextInputType.number,
-                        labelText: 'Postcode',
-                        hintText: 'Postcode',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid postcode";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      FormTextfield(
-                        keyboardType: TextInputType.text,
-                        labelText: 'Nationality',
-                        hintText: 'Nationality',
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter a valid nationality";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {},
-                      ),
-                      DropdownBtn(
-                        labelText: 'Jobs',
-                        value: selectedJobs,
-                        items: jobsOptions
-                            .map(
-                              (option) => DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedJobs = value;
-                          });
-                        },
-                      ),
-                      DropdownBtn(
-                        labelText: 'Income',
-                        value: selectedIncome,
-                        items: incomeOptions
-                            .map(
-                              (option) => DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedIncome = value;
-                          });
-                        },
-                      ),
-                      DropdownBtn(
-                        labelText: 'Marital Status',
-                        value: selectedMaritalStatus,
-                        items: maritalStatusOptions
-                            .map(
-                              (option) => DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedMaritalStatus = value;
-                          });
-                        },
-                      ),
-                      ElevatedBtn(
-                        btnText: 'Sign the form',
-                        btnColorWhite: false,
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(RouteList.signatureCandidate);
-                        },
-                      ),
-                      const SizedBox(height: 20),
                       bottomBtn(),
                     ],
                   ),
@@ -299,42 +89,75 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
   Widget bottomBtn() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30),
-      child: Align(
-        alignment: Alignment.bottomRight,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedBtn(
-              btnText: 'Back',
-              hasSize: false,
-              btnColorWhite: false,
-              width: 160,
-              onPressed: () {
-                Navigator.of(context).pop(context);
-              },
-            ),
-            ElevatedBtn(
-              btnText: 'Next',
-              hasSize: false,
-              width: 160,
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  Navigator.of(context)
-                      .pushNamed(RouteList.registerCandidateForth);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Please fill out all fields before proceeding.',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedBtn(
+            btnText: 'Back',
+            hasSize: false,
+            btnColorWhite: false,
+            width: 160,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          ElevatedBtn(
+            btnText: 'Save',
+            hasSize: false,
+            btnColorWhite: false,
+            width: 150,
+            onPressed: () async {
+              try {
+                if (_formKey.currentState?.validate() ?? false) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const Center(child: CircularProgressIndicator());
+                    },
                   );
+
+                  final registrationState =
+                      Provider.of<RegistrationState>(context, listen: false);
+
+                  // Make sure these values are not empty
+                  final bio = bioController.text.trim();
+                  final manifesto = manifestoController.text.trim();
+
+                  if (bio.isEmpty || manifesto.isEmpty) {
+                    throw Exception('Bio and manifesto are required');
+                  }
+
+                  registrationState.setBio(bio);
+                  registrationState.setManifesto(manifesto);
+
+                  final success = await registrationState.saveStep3AndSubmit();
+
+                  Navigator.of(context).pop(); // Close loading dialog
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('All information saved successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.pushNamed(
+                        context, RouteList.registerCandidateForth);
+                  }
                 }
-              },
-            ),
-          ],
-        ),
+              } catch (e) {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop(); // Close loading dialog
+                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error: ${e.toString()}'),
+                    backgroundColor: Theme.of(context).hintColor,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }

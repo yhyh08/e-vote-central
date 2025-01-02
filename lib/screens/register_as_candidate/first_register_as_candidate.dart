@@ -84,6 +84,10 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
         throw Exception('Please select an election');
       }
 
+      final registrationState =
+          Provider.of<RegistrationState>(context, listen: false);
+      await registrationState.saveStep1Data(selectedElectionId!);
+
       final response = await http.post(
         Uri.parse('$serverApiUrl/candidates'),
         headers: {
@@ -218,14 +222,13 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
 
                       // Save election_id to state and SharedPreferences
                       registrationState.setElectionId(selectedElectionId);
-                      final success = await registrationState.saveStep1();
+                      await registrationState
+                          .saveStep1Data(selectedElectionId!);
 
                       Navigator.of(context).pop(); // Close loading dialog
 
-                      if (success) {
-                        Navigator.pushNamed(
-                            context, RouteList.registerCandidateSecond);
-                      }
+                      Navigator.pushNamed(
+                          context, RouteList.registerCandidateSecond);
                     } else {
                       // Show error if no selection made
                       ScaffoldMessenger.of(context).showSnackBar(

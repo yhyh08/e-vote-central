@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
 
-import '../../network_utlis/api_constant.dart';
 import '../../providers/registration_state.dart';
 import '../../routes/route.dart';
 import '../../widgets/elevated_button.dart';
@@ -114,35 +111,16 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                       return const Center(child: CircularProgressIndicator());
                     },
                   );
-
+                  Navigator.of(context).pop();
+                  // Save step 3 data
                   final registrationState =
                       Provider.of<RegistrationState>(context, listen: false);
+                  registrationState.setBio(bioController.text);
+                  registrationState.setManifesto(manifestoController.text);
+                  await registrationState.saveStep3Data();
 
-                  // Make sure these values are not empty
-                  final bio = bioController.text.trim();
-                  final manifesto = manifestoController.text.trim();
-
-                  if (bio.isEmpty || manifesto.isEmpty) {
-                    throw Exception('Bio and manifesto are required');
-                  }
-
-                  registrationState.setBio(bio);
-                  registrationState.setManifesto(manifesto);
-
-                  final success = await registrationState.saveStep3AndSubmit();
-
-                  Navigator.of(context).pop(); // Close loading dialog
-
-                  if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('All information saved successfully!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.pushNamed(
-                        context, RouteList.registerCandidateForth);
-                  }
+                  Navigator.pushNamed(
+                      context, RouteList.registerCandidateForth);
                 }
               } catch (e) {
                 if (Navigator.canPop(context)) {

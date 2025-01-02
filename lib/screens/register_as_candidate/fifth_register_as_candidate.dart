@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../network_utlis/api_constant.dart';
 import '../../providers/registration_state.dart';
@@ -138,7 +139,7 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
 
         final request = http.MultipartRequest(
           'POST',
-          Uri.parse('$serverApiUrl/candidates/$candidateId/documents'),
+          Uri.parse('$serverApiUrl/save-candidate-documents'),
         );
 
         request.files.add(multipartFile);
@@ -155,117 +156,22 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
     }
   }
 
-  Future<void> saveBioAndManifesto(String candidateId) async {
+  Future<void> debugPrintAllStepData() async {
     try {
-      final response = await http.post(
-        Uri.parse('$serverApiUrl/candidate-additional-info/$candidateId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode({
-          'bio': bioController.text,
-          'manifesto': manifestoController.text,
-        }),
-      );
+      final prefs = await SharedPreferences.getInstance();
+      final step1Data = prefs.getString('step1_data');
+      final step2Data = prefs.getString('step2_data');
+      final step3Data = prefs.getString('short_biography');
+      final step3Manifesto = prefs.getString('manifesto');
+      final step4Data = prefs.getString('step4_data');
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to save bio and manifesto');
-      }
+      print('DEBUG: Step 1 Data: $step1Data');
+      print('DEBUG: Step 2 Data: $step2Data');
+      print('DEBUG: Step 3 Biography: $step3Data');
+      print('DEBUG: Step 3 Manifesto: $step3Manifesto');
+      print('DEBUG: Step 4 Data: $step4Data');
     } catch (e) {
-      print('Error saving bio and manifesto: $e');
-      rethrow;
-    }
-  }
-
-  Future<void> _saveAllData() async {
-    try {
-      final registrationState =
-          Provider.of<RegistrationState>(context, listen: false);
-
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
-
-      // Prepare the complete candidate data
-      final Map<String, dynamic> candidateData = {
-        'election_id': registrationState.selectedElectionId,
-        'first_name': registrationState.candidateProfile?.firstName,
-        'last_name': registrationState.candidateProfile?.lastName,
-        'gender': registrationState.candidateProfile?.gender,
-        'email': registrationState.candidateProfile?.email,
-        'phone': registrationState.candidateProfile?.phone,
-        'identification_no':
-            registrationState.candidateProfile?.identificationNo,
-        'date_of_birth': registrationState.candidateProfile?.dateOfBirth,
-        'address': {
-          'line1': registrationState.candidateProfile?.address.line1,
-          'line2': registrationState.candidateProfile?.address.line2,
-          'city': registrationState.candidateProfile?.address.city,
-          'state': registrationState.candidateProfile?.address.state,
-          'country': registrationState.candidateProfile?.address.country,
-          'postcode': registrationState.candidateProfile?.address.postcode,
-        },
-        'nationality': registrationState.candidateProfile?.nationality,
-        'job_status': registrationState.candidateProfile?.jobStatus,
-        'income': registrationState.candidateProfile?.income,
-        'marital_status': registrationState.candidateProfile?.maritalStatus,
-        'religion': registrationState.candidateProfile?.religion,
-        'status': 'pending',
-      };
-
-      // Send data to API
-      final response = await http.post(
-        Uri.parse('$serverApiUrl/candidates'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode(candidateData),
-      );
-
-      // Close loading indicator
-      Navigator.of(context).pop();
-
-      if (response.statusCode == 201) {
-        final responseData = json.decode(response.body);
-        final candidateId = responseData['id'];
-
-        // Upload documents if any are selected
-        if (selectedFiles.isNotEmpty) {
-          await uploadDocuments(candidateId);
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration completed successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        // Navigate to success screen or home
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          RouteList.dashboard,
-          (route) => false,
-        );
-      } else {
-        throw Exception('Failed to save candidate data: ${response.body}');
-      }
-    } catch (e) {
-      // Close loading indicator if still showing
-      Navigator.of(context).pop();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error saving registration: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print('DEBUG: Error retrieving step data: $e');
     }
   }
 
@@ -285,7 +191,7 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Submit Infomation',
+                'Submit Information',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
@@ -311,6 +217,14 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
                         buildFileList(),
                       ],
                       bottomBtn(),
+                      const SizedBox(height: 20),
+                      ElevatedBtn(
+                        btnText: 'Debug Print All Step Data',
+                        btnColorWhite: false,
+                        onPressed: () async {
+                          await debugPrintAllStepData();
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -344,7 +258,16 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
               hasSize: false,
               btnColorWhite: false,
               width: 150,
-              onPressed: _saveAllData,
+              onPressed: () async {
+                final registrationState =
+                    Provider.of<RegistrationState>(context, listen: false);
+
+                await registrationState.submitAllData();
+
+                Navigator.of(context).pop();
+
+                Navigator.pushNamed(context, RouteList.registerStatus);
+              },
             ),
           ],
         ),

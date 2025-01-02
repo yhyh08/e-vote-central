@@ -122,12 +122,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
           setState(() {
             positionOptions.clear();
 
-            // // Debug each election's ID
-            // elections.forEach((election) {
-            //   print(
-            //       'Checking election: ${election['id']} vs $selectedElectionId');
-            // });
-
             final selectedElection = elections.firstWhere(
               (election) {
                 final electionId = election['election_id']?.toString() ??
@@ -517,24 +511,33 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                     },
                   );
 
-                  onSaveProfile(); // Save to state first
                   final registrationState =
                       Provider.of<RegistrationState>(context, listen: false);
-                  final success = await registrationState.saveStep2();
 
-                  Navigator.of(context).pop(); // Close loading dialog
+                  onSaveProfile();
 
-                  if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Basic information saved successfully!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    // Navigate to step 3
-                    Navigator.pushNamed(
-                        context, RouteList.registerCandidateThird);
-                  }
+                  await registrationState.saveStep2Data();
+
+                  Navigator.of(context).pop();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Basic information saved successfully!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.pushNamed(
+                      context, RouteList.registerCandidateThird);
+                  // Close loading dialog
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill all the fields'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+
+                  // Navigate to step 3
                 }
               } catch (e) {
                 // Only pop if dialog is showing

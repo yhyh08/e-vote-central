@@ -29,58 +29,6 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
 
-  // Add to second_register_as_candidate.dart
-  Future<void> saveNomineeData() async {
-    try {
-      if (!_formKey.currentState!.validate()) {
-        throw Exception('Please fill all required fields');
-      }
-
-      final registrationState =
-          Provider.of<RegistrationState>(context, listen: false);
-      final selectedElectionId = registrationState.selectedElectionId;
-
-      final response = await http.post(
-        Uri.parse('$serverApiUrl/nominations'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode({
-          'nominee_name': nameController.text,
-          'nominee_phone': phoneController.text,
-          'nominee_email': emailController.text,
-          'reason': reasonController.text,
-          'election_id': selectedElectionId,
-        }),
-      );
-
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Nominee data saved successfully!',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        throw Exception('Failed to save nominee data');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error saving nominee data: $e',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          backgroundColor: Theme.of(context).hintColor,
-        ),
-      );
-    }
-  }
-
   void onAddNominee() {
     final nominee = NomineeData(
       name: nameController.text,
@@ -180,8 +128,11 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        nameController.text = value ?? '';
+                                      });
                                     },
+                                    controller: nameController,
                                   ),
                                   FormTextfield(
                                     keyboardType: TextInputType.emailAddress,
@@ -196,7 +147,9 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        emailController.text = value ?? '';
+                                      });
                                     },
                                   ),
                                   FormTextfield(
@@ -211,9 +164,10 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                     },
                                     onSaved: (value) {
                                       setState(() {
-                                        value;
+                                        phoneController.text = value ?? '';
                                       });
                                     },
+                                    controller: phoneController,
                                   ),
                                   DropdownBtn(
                                     labelText: 'Organization',
@@ -243,8 +197,11 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        reasonController.text = value ?? '';
+                                      });
                                     },
+                                    controller: reasonController,
                                   ),
                                 ],
                               ))
@@ -317,21 +274,19 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                       final registrationState = Provider.of<RegistrationState>(
                           context,
                           listen: false);
-                      final success = await registrationState.saveStep4();
+                      await registrationState.saveStep4Data();
 
                       Navigator.of(context).pop(); // Close loading dialog
 
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Nominee information saved successfully!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        Navigator.pushNamed(
-                            context, RouteList.registerCandidateFifth);
-                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('Nominee information saved successfully!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pushNamed(
+                          context, RouteList.registerCandidateFifth);
                     }
                   } catch (e) {
                     Navigator.of(context).pop(); // Close loading dialog

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 
 import '../../../widgets/elevated_button.dart';
 
@@ -15,6 +16,39 @@ class VoteConfirmationDialog extends StatelessWidget {
     required this.onConfirm,
     required this.onCancel,
   }) : super(key: key);
+
+  Future<void> _authenticateAndConfirm(BuildContext context) async {
+    final LocalAuthentication auth = LocalAuthentication();
+    try {
+      bool isAuthenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to confirm your vote',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
+      );
+
+      if (isAuthenticated) {
+        onConfirm();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Theme.of(context).hintColor,
+            content: Text('Authentication failed',
+                style: Theme.of(context).textTheme.bodyMedium),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).hintColor,
+          content: Text('Error during authentication: $e',
+              style: Theme.of(context).textTheme.bodyMedium),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +72,7 @@ class VoteConfirmationDialog extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedBtn(
-          onPressed: onConfirm,
+          onPressed: () => _authenticateAndConfirm(context),
           btnText: 'Confirm',
           hasSize: false,
         ),

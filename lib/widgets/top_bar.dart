@@ -44,15 +44,15 @@ class TopBar extends StatelessWidget {
                 },
               )
             : null,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.notifications,
-              color: Theme.of(context).splashColor,
-            ),
-            onPressed: () {},
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.notifications,
+        //       color: Theme.of(context).splashColor,
+        //     ),
+        //     onPressed: () {},
+        //   ),
+        // ],
       ),
       backgroundColor: Theme.of(context).secondaryHeaderColor,
       bottomNavigationBar: BottomNavigation(currentIndex: index),

@@ -20,11 +20,32 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
   List<PlatformFile> selectedFiles = [];
   TextEditingController bioController = TextEditingController();
   TextEditingController manifestoController = TextEditingController();
+  bool isLoading = false;
 
-  static const int maxFiles = 5;
+  static const int maxFiles = 10;
 
   Future<void> uploadDocumentFile() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
+      final registrationState =
+          Provider.of<RegistrationState>(context, listen: false);
+      final currentFiles = registrationState.documents;
+
+      if (currentFiles.length >= 10) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              backgroundColor: Theme.of(context).hintColor,
+              content: Text(
+                'You can only upload up to 10 documents.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              )),
+        );
+        return;
+      }
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowMultiple: true,
@@ -33,52 +54,67 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
       );
 
       if (result != null) {
-        final registrationState =
-            Provider.of<RegistrationState>(context, listen: false);
+        int addedFilesCount = 0;
 
         for (var file in result.files) {
           if (file.path != null) {
+            // Check for duplicate file names
+            bool isDuplicate = currentFiles
+                .any((existingFile) => existingFile.name == file.name);
+            if (isDuplicate) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    backgroundColor: Theme.of(context).hintColor,
+                    content: Text(
+                      'File "${file.name}" already exists. Please choose a different file.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )),
+              );
+              continue;
+            }
+
             print('DEBUG: Adding document to provider: ${file.name}');
-            print('DEBUG: Document path: ${file.path}');
-            print('DEBUG: Document size: ${file.size}');
             registrationState.addDocument(file);
+            addedFilesCount++;
           }
         }
 
-        // Force UI update
         setState(() {});
 
-        // Show feedback to user
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Added ${result.files.length} document(s)')),
-        );
+        if (addedFilesCount > 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Added $addedFilesCount document(s)',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              backgroundColor: Theme.of(context).focusColor,
+            ),
+          );
+        }
       }
     } catch (e) {
       print("DEBUG: Error picking file: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error selecting files: $e')),
+        SnackBar(
+            backgroundColor: Theme.of(context).hintColor,
+            content: Text(
+              'Error selecting files: $e',
+              style: Theme.of(context).textTheme.bodyMedium,
+            )),
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  // Future<void> debugPrintAllStepData() async {
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final step1Data = prefs.getString('step1_data');
-  //     final step2Data = prefs.getString('step2_data');
-  //     final step3Data = prefs.getString('short_biography');
-  //     final step3Manifesto = prefs.getString('manifesto');
-  //     final step4Data = prefs.getString('step4_data');
-
-  //     print('DEBUG: Step 1 Data: $step1Data');
-  //     print('DEBUG: Step 2 Data: $step2Data');
-  //     print('DEBUG: Step 3 Biography: $step3Data');
-  //     print('DEBUG: Step 3 Manifesto: $step3Manifesto');
-  //     print('DEBUG: okStep 4 Data: $step4Data');
-  //   } catch (e) {
-  //     print('DEBUG: Error retrieving step data: $e');
-  //   }
-  // }
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,47 +124,60 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
     return TopBar(
       title: 'Register as Candidate',
       index: 4,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const StepIcon(activeIndex: 4),
-            const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Submit Information',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      ElevatedBtn(
-                        btnText: 'Upload Document',
-                        btnColorWhite: false,
-                        onPressed: () async {
-                          await uploadDocumentFile();
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      if (hasDocuments) ...[
-                        const SizedBox(height: 16),
-                        buildFileList(),
-                      ],
-                      bottomBtn(),
-                      const SizedBox(height: 20),
-                    ],
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                const StepIcon(activeIndex: 4),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Submit Information',
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Only PDF, DOC, DOCX, JPG, JPEG, PNG files are allowed and maximum 10 files',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedBtn(
+                            btnText: 'Upload Document',
+                            btnColorWhite: false,
+                            onPressed: () async {
+                              await uploadDocumentFile();
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          if (hasDocuments) ...[
+                            const SizedBox(height: 16),
+                            buildFileList(),
+                          ],
+                          bottomBtn(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          if (isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
       ),
     );
   }
@@ -155,6 +204,14 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
               hasSize: false,
               width: 160,
               onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                );
+
                 final registrationState =
                     Provider.of<RegistrationState>(context, listen: false);
 
@@ -182,7 +239,7 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Theme.of(context).dialogBackgroundColor),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -202,7 +259,10 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
                         setState(() {});
                       }
                     : null,
-                child: const Text('Clear All'),
+                child: Text(
+                  'Clear All',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             ],
           ),
@@ -264,11 +324,5 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
       default:
         return Icons.file_present;
     }
-  }
-
-  String _formatFileSize(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }

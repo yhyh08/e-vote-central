@@ -54,7 +54,7 @@ class RegisterStatusState extends State<RegisterStatus> {
                   electionTopic: electionTopic,
                   candName: candidate['name'] ?? 'Unknown Candidate',
                   status: candidate['status'] ?? 'Unknown Status',
-                  createdAt: DateTime.parse(candidate['created_at']),
+                  createdAt: candidate['created_at'] ?? 'Unknown Date',
                 ));
               }
             }
@@ -143,7 +143,7 @@ class RegisterStatusState extends State<RegisterStatus> {
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   Text(
-                                    registration.formattedDate,
+                                    registration.createdAt,
                                     style:
                                         Theme.of(context).textTheme.labelSmall,
                                   ),

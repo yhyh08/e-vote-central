@@ -6,36 +6,27 @@ import '../network_utlis/api_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationState extends ChangeNotifier {
-  // Step 1: Election Data
   String? _electionId;
   String? _electionTopic;
-
-  // Step 2: Nominee Data
   List<NomineeData> nominees = [];
-
-  // Step 3: Candidate Profile
   CandidateProfile? _candidateProfile;
-
-  // Step 4: Documents and Additional Info
   final List<PlatformFile> _documents = <PlatformFile>[];
   List<PlatformFile> get documents => List<PlatformFile>.from(_documents);
   String? _bio;
   String? _manifesto;
-
-  // Getters
   String? get electionId => _electionId;
   String? get electionTopic => _electionTopic;
   List<NomineeData> get nominee => nominees;
   CandidateProfile? get candidateProfile => _candidateProfile;
-
   String? _selectedElectionId;
+  String? get getElectionId => _selectedElectionId;
   String? get selectedElectionId => _selectedElectionId;
+  bool get hasDocuments => _documents.isNotEmpty;
 
   void setSelectedElectionId(String? electionId) {
     _selectedElectionId = electionId;
     print('Setting election ID in provider: $electionId');
 
-    // Save to SharedPreferences immediately when selected
     _saveElectionIdToPrefs(electionId);
 
     notifyListeners();
@@ -49,7 +40,6 @@ class RegistrationState extends ChangeNotifier {
     }
   }
 
-  // Step 1: Update Election Data
   void setElectionData(String electionId, String electionTopic) {
     _electionId = electionId;
     _electionTopic = electionTopic;
@@ -59,7 +49,6 @@ class RegistrationState extends ChangeNotifier {
   void addNominee(NomineeData nominee) {
     nominees.add(nominee);
     print('DEBUG: Added nominee: ${nominee.toJson()}');
-    print('DEBUG: Current nominees count: ${nominees.length}');
     print(
         'DEBUG: All nominees data: ${nominees.map((n) => n.toJson()).toList()}');
     notifyListeners();
@@ -70,13 +59,11 @@ class RegistrationState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Step 3: Update Candidate Profile
   void setCandidateProfile(CandidateProfile profile) {
     _candidateProfile = profile;
     notifyListeners();
   }
 
-  // Save bio and manifesto
   void setBio(String value) {
     _bio = value;
     notifyListeners();
@@ -87,25 +74,211 @@ class RegistrationState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Step 4: Update Nominee
   void setNominee(List<int> nominees) {
     nominees = nominees;
     notifyListeners();
   }
-
-  String? get getElectionId => _selectedElectionId;
 
   void setElectionId(String? id) {
     _selectedElectionId = id;
     notifyListeners();
   }
 
-  // Add a method to check if Step 1 is complete
   Future<bool> isStep1Complete() async {
     final prefs = await SharedPreferences.getInstance();
     final electionId = prefs.getString('election_id');
-    print('DEBUG: Checking Step 1 completion - election_id: $electionId');
     return electionId != null && electionId.isNotEmpty;
+  }
+
+  Future<void> clearStoredData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('step1_data');
+      await prefs.remove('step2_data');
+      await prefs.remove('step3_data');
+      await prefs.remove('step4_data');
+      await prefs.remove('step5_documents');
+      _documents.clear();
+      notifyListeners();
+    } catch (e) {
+      print('DEBUG: Error clearing stored data: $e');
+    }
+  }
+
+  void addDocument(PlatformFile file) {
+    try {
+      if (file.path != null) {
+        _documents.add(file);
+        print('DEBUG: Added document: ${file.name}');
+        notifyListeners();
+      } else {
+        print('DEBUG: Document path is null');
+      }
+    } catch (e) {
+      print('DEBUG: Error adding document: $e');
+    }
+  }
+
+  void removeDocument(PlatformFile file) {
+    _documents.remove(file);
+    notifyListeners();
+  }
+
+  void clearDocuments() {
+    _documents.clear();
+    notifyListeners();
+  }
+
+  int get documentCount => _documents.length;
+
+  bool hasDocument(String path) {
+    return _documents.any((doc) => doc.path == path);
+  }
+
+  Future<void> saveStep1Data(String electionId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'step1_data', json.encode({'election_id': electionId}));
+      print('DEBUG: Step 1 data saved successfully: election_id = $electionId');
+    } catch (e) {
+      print('DEBUG: Error saving step 1 data: $e');
+      throw Exception('Error saving step 1: $e');
+    }
+  }
+
+  Future<bool> saveStep2Data() async {
+    try {
+      if (_candidateProfile == null) {
+        print('DEBUG: Candidate profile is null. Cannot save Step 2 data.');
+        return false;
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final tokenString = prefs.getString('token');
+      if (tokenString == null) {
+        throw Exception('Authentication token not found');
+      }
+
+      final tokenData = json.decode(tokenString);
+      final actualToken = tokenData['token'];
+      final userId = tokenData['user']['id'];
+
+      // Save candidate profile data
+      final step2Data = {
+        'candidate_name':
+            '${_candidateProfile!.firstName} ${_candidateProfile!.lastName}',
+        'candidate_phone': _candidateProfile!.phone,
+        'candidate_email': _candidateProfile!.email,
+        'candidate_gender': _candidateProfile!.gender,
+        'candidate_ic': _candidateProfile!.identificationNo,
+        'candidate_address':
+            '${_candidateProfile!.address.line1}, ${_candidateProfile!.address.line2}, ${_candidateProfile!.address.city}, ${_candidateProfile!.address.state}, ${_candidateProfile!.address.country}, ${_candidateProfile!.address.postcode}',
+        'nationality': _candidateProfile!.nationality,
+        'job': _candidateProfile!.jobStatus,
+        'income': _candidateProfile!.income,
+        'marriage_status': _candidateProfile!.maritalStatus,
+        'position': _candidateProfile!.position,
+        'religion': _candidateProfile!.religion,
+        'reason': 'a',
+        'sign': 'sign.jpg',
+        'candidate_image': 'candidate.jpg',
+        'status': 'Pending',
+        'user_id': int.parse(userId.toString()),
+        'votes_count': 0,
+      };
+
+      await prefs.setString('step2_data', json.encode(step2Data));
+
+      // Save additional data
+      await prefs.setString('short_biography', _bio ?? '');
+      await prefs.setString('manifesto', _manifesto ?? '');
+
+      print('DEBUG: Step 2 data saved successfully: ${json.encode(step2Data)}');
+      return true;
+    } catch (e) {
+      print('DEBUG: Error saving step 2 data: $e');
+      throw Exception('Error saving step 2: $e');
+    }
+  }
+
+  Future<void> saveStep3Data() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString('short_biography', _bio ?? '');
+      await prefs.setString('manifesto', _manifesto ?? '');
+
+      print(
+          'DEBUG: Step 3 data saved successfully: biography = ${_bio ?? ''}, manifesto = ${_manifesto ?? ''}');
+    } catch (e) {
+      throw Exception('Error saving step 3: $e');
+    }
+  }
+
+  Future<bool> submitDocuments() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final tokenString = prefs.getString('token');
+
+      if (tokenString == null) {
+        throw Exception('Token not found');
+      }
+
+      final tokenData = json.decode(tokenString);
+
+      final candidateResponse = await http.get(
+        Uri.parse('$serverApiUrl/get-candidateid'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
+        },
+      );
+
+      final candidateData = json.decode(candidateResponse.body);
+      final candidateId = candidateData['data']['candidate_id'];
+      print('DEBUG: Using candidate_id: $candidateId');
+
+      var uri = Uri.parse('$serverApiUrl/save-candidate-documents');
+
+      for (var document in _documents) {
+        if (document.path != null) {
+          print('DEBUG: Processing document: ${document.name}');
+
+          var request = http.MultipartRequest('POST', uri);
+
+          request.headers.addAll({
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${tokenData['token']}',
+          });
+
+          request.fields['candidate_id'] = candidateId.toString();
+          request.fields['document_name'] = document.name;
+
+          final file = await http.MultipartFile.fromPath(
+            'document',
+            document.path!,
+            filename: document.name,
+          );
+          request.files.add(file);
+
+          var response = await request.send();
+          var responseData = await response.stream.bytesToString();
+
+          print('DEBUG: Upload response status: ${response.statusCode}');
+          print('DEBUG: Upload response: $responseData');
+
+          if (response.statusCode >= 400) {
+            throw Exception('Failed to upload ${document.name}: $responseData');
+          }
+        }
+      }
+
+      return true;
+    } catch (e) {
+      print('DEBUG: Error in submitDocuments: $e');
+      throw Exception('Failed to upload documents: $e');
+    }
   }
 
   Future<bool> submitCandidateData() async {
@@ -278,214 +451,6 @@ class RegistrationState extends ChangeNotifier {
       throw Exception('Failed to submit nominations: $e');
     }
   }
-
-  // Clear all stored data
-  Future<void> clearStoredData() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('step1_data');
-      await prefs.remove('step2_data');
-      await prefs.remove('step3_data');
-      await prefs.remove('step4_data');
-      await prefs.remove('step5_documents');
-      _documents.clear();
-      notifyListeners();
-    } catch (e) {
-      print('DEBUG: Error clearing stored data: $e');
-    }
-  }
-
-  void addDocument(PlatformFile file) {
-    try {
-      if (file.path != null) {
-        _documents.add(file);
-        print('DEBUG: Added document: ${file.name}');
-        notifyListeners();
-      } else {
-        print('DEBUG: Document path is null');
-      }
-    } catch (e) {
-      print('DEBUG: Error adding document: $e');
-    }
-  }
-
-  void removeDocument(PlatformFile file) {
-    _documents.remove(file);
-    notifyListeners();
-  }
-
-  void clearDocuments() {
-    _documents.clear();
-    notifyListeners();
-  }
-
-  // Get document count
-  int get documentCount => _documents.length;
-
-  // Check if document exists
-  bool hasDocument(String path) {
-    return _documents.any((doc) => doc.path == path);
-  }
-
-  Future<void> saveStep1Data(String electionId) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          'step1_data', json.encode({'election_id': electionId}));
-      print('DEBUG: Step 1 data saved successfully: election_id = $electionId');
-    } catch (e) {
-      print('DEBUG: Error saving step 1 data: $e');
-      throw Exception('Error saving step 1: $e');
-    }
-  }
-
-  // Method to save Step 2 data to SharedPreferences
-  Future<bool> saveStep2Data() async {
-    try {
-      if (_candidateProfile == null) {
-        print('DEBUG: Candidate profile is null. Cannot save Step 2 data.');
-        return false;
-      }
-
-      final prefs = await SharedPreferences.getInstance();
-      final tokenString = prefs.getString('token');
-      if (tokenString == null) {
-        throw Exception('Authentication token not found');
-      }
-
-      final tokenData = json.decode(tokenString);
-      final actualToken = tokenData['token'];
-      final userId = tokenData['user']['id'];
-
-      // Save candidate profile data
-      final step2Data = {
-        'candidate_name':
-            '${_candidateProfile!.firstName} ${_candidateProfile!.lastName}',
-        'candidate_phone': _candidateProfile!.phone,
-        'candidate_email': _candidateProfile!.email,
-        'candidate_gender': _candidateProfile!.gender,
-        'candidate_ic': _candidateProfile!.identificationNo,
-        'candidate_address':
-            '${_candidateProfile!.address.line1}, ${_candidateProfile!.address.line2}, ${_candidateProfile!.address.city}, ${_candidateProfile!.address.state}, ${_candidateProfile!.address.country}, ${_candidateProfile!.address.postcode}',
-        'nationality': _candidateProfile!.nationality,
-        'job': _candidateProfile!.jobStatus,
-        'income': _candidateProfile!.income,
-        'marriage_status': _candidateProfile!.maritalStatus,
-        'position': _candidateProfile!.position,
-        'religion': _candidateProfile!.religion,
-        'reason': 'a',
-        'sign': 'sign.jpg',
-        'candidate_image': 'candidate.jpg',
-        'status': 'Pending',
-        'user_id': int.parse(userId.toString()),
-        'votes_count': 0,
-      };
-
-      await prefs.setString('step2_data', json.encode(step2Data));
-
-      // Save additional data
-      await prefs.setString('short_biography', _bio ?? '');
-      await prefs.setString('manifesto', _manifesto ?? '');
-
-      print('DEBUG: Step 2 data saved successfully: ${json.encode(step2Data)}');
-      return true;
-    } catch (e) {
-      print('DEBUG: Error saving step 2 data: $e');
-      throw Exception('Error saving step 2: $e');
-    }
-  }
-
-  // Method to save Step 3 data to SharedPreferences
-  Future<void> saveStep3Data() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.setString('short_biography', _bio ?? '');
-      await prefs.setString('manifesto', _manifesto ?? '');
-
-      print(
-          'DEBUG: Step 3 data saved successfully: biography = ${_bio ?? ''}, manifesto = ${_manifesto ?? ''}');
-    } catch (e) {
-      throw Exception('Error saving step 3: $e');
-    }
-  }
-
-  Future<bool> submitDocuments() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final tokenString = prefs.getString('token');
-
-      if (tokenString == null) {
-        throw Exception('Token not found');
-      }
-
-      final tokenData = json.decode(tokenString);
-
-      final candidateResponse = await http.get(
-        Uri.parse('$serverApiUrl/get-candidateid'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${tokenData['token']}',
-        },
-      );
-
-      final candidateData = json.decode(candidateResponse.body);
-      final candidateId = candidateData['data']['candidate_id'];
-      print('DEBUG: Using candidate_id: $candidateId');
-
-      var uri = Uri.parse('$serverApiUrl/save-candidate-documents');
-
-      for (var document in _documents) {
-        if (document.path != null) {
-          print('DEBUG: Processing document: ${document.name}');
-
-          var request = http.MultipartRequest('POST', uri);
-
-          // Don't set Content-Type header, let MultipartRequest handle it
-          request.headers.addAll({
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ${tokenData['token']}',
-          });
-
-          // Add both the file path and the file itself
-          request.fields['candidate_id'] = candidateId.toString();
-          request.fields['document_name'] = document.name; // Add the file name
-
-          final file = await http.MultipartFile.fromPath(
-            'document', // This should match your Laravel input field
-            document.path!,
-            filename: document.name,
-          );
-          request.files.add(file);
-
-          print('DEBUG: Request fields: ${request.fields}');
-          print('DEBUG: File details:');
-          print('  - Field name: ${file.field}');
-          print('  - Filename: ${file.filename}');
-          print('  - Length: ${file.length}');
-          print('  - Path: ${document.path}');
-
-          var response = await request.send();
-          var responseData = await response.stream.bytesToString();
-
-          print('DEBUG: Upload response status: ${response.statusCode}');
-          print('DEBUG: Upload response: $responseData');
-
-          if (response.statusCode >= 400) {
-            throw Exception('Failed to upload ${document.name}: $responseData');
-          }
-        }
-      }
-
-      return true;
-    } catch (e) {
-      print('DEBUG: Error in submitDocuments: $e');
-      throw Exception('Failed to upload documents: $e');
-    }
-  }
-
-  // Add this method to check if documents are ready
-  bool get hasDocuments => _documents.isNotEmpty;
 }
 
 class NomineeData {

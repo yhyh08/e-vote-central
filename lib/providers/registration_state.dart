@@ -59,6 +59,9 @@ class RegistrationState extends ChangeNotifier {
   void addNominee(NomineeData nominee) {
     nominees.add(nominee);
     print('DEBUG: Added nominee: ${nominee.toJson()}');
+    print('DEBUG: Current nominees count: ${nominees.length}');
+    print(
+        'DEBUG: All nominees data: ${nominees.map((n) => n.toJson()).toList()}');
     notifyListeners();
   }
 
@@ -84,6 +87,12 @@ class RegistrationState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Step 4: Update Nominee
+  void setNominee(List<int> nominees) {
+    nominees = nominees;
+    notifyListeners();
+  }
+
   String? get getElectionId => _selectedElectionId;
 
   void setElectionId(String? id) {
@@ -99,20 +108,24 @@ class RegistrationState extends ChangeNotifier {
     return electionId != null && electionId.isNotEmpty;
   }
 
-  Future<bool> submitAllData() async {
+  Future<bool> submitCandidateData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final tokenString = prefs.getString('token');
+
       if (tokenString == null) {
         throw Exception('Authentication token not found');
       }
 
-      // Retrieve step data
       final step1DataString = prefs.getString('step1_data');
       final step2DataString = prefs.getString('step2_data');
       final step3Bio = prefs.getString('short_biography');
       final step3Manifesto = prefs.getString('manifesto');
-      final step4DataString = prefs.getString('step4_data');
+
+      print('DEBUG: Raw Step 1 data string: $step1DataString');
+      print('DEBUG: Raw Step 2 data string: $step2DataString');
+      print('DEBUG: Raw Step 3 bio: $step3Bio');
+      print('DEBUG: Raw Step 3 manifesto: $step3Manifesto');
 
       if (step1DataString == null ||
           step2DataString == null ||
@@ -121,77 +134,148 @@ class RegistrationState extends ChangeNotifier {
         throw Exception('Missing step data');
       }
 
-      // Parse the data
+      final tokenData = json.decode(tokenString);
+      final userId = tokenData['user']['id'];
+      print('DEBUG: Extracted user_id: $userId');
+
       final step1Data = json.decode(step1DataString);
       final step2Data = json.decode(step2DataString);
-      final step4Data = json.decode(step4DataString!);
 
-      // Prepare candidate data
-      final candidateData = {
-        'election_id': step1Data['election_id'],
-        'candidate_name': step2Data['candidate_name'],
-        'candidate_phone': step2Data['candidate_phone'],
-        'candidate_email': step2Data['candidate_email'],
-        'candidate_gender': step2Data['candidate_gender'],
-        'candidate_ic': step2Data['candidate_ic'],
-        'candidate_dob': step2Data['candidate_dob'],
-        'candidate_address': step2Data['candidate_address'],
-        'nationality': step2Data['nationality'],
-        'job': step2Data['job'],
-        'income': step2Data['income'],
-        'marriage_status': step2Data['marriage_status'],
-        'position': step2Data['position'],
-        'religion': step2Data['religion'],
-        'short_biography': step3Bio,
-        'manifesto': step3Manifesto,
-        'status': 'Pending',
+      Map<String, dynamic> candidateData = {
+        'user_id': int.parse(userId.toString()), // Ensure it's an integer
+        'election_id': int.tryParse(step1Data['election_id'].toString()) ?? 0,
+        'candidate_name': step2Data['candidate_name']?.trim() ?? '',
+        'candidate_phone': step2Data['candidate_phone']?.trim() ?? '',
+        'candidate_email':
+            step2Data['candidate_email']?.trim().toLowerCase() ?? '',
+        'candidate_gender': step2Data['candidate_gender']?.trim() ?? '',
+        'candidate_ic': step2Data['candidate_ic']?.trim() ?? '',
+        'candidate_address':
+            step2Data['candidate_address']?.toString().trim() ?? '',
+        'nationality': step2Data['nationality']?.trim() ?? '',
+        'job': step2Data['job']?.trim() ?? '',
+        'income': step2Data['income']?.trim() ?? '',
+        'marriage_status': step2Data['marriage_status']?.trim() ?? '',
+        'position': step2Data['position']?.trim() ?? '',
+        'religion': step2Data['religion']?.trim() ?? '',
+        'short_biography': step3Bio.trim(),
+        'manifesto': step3Manifesto.trim(),
+        'status': 'pending',
         'votes_count': 0,
-        'reason': 'a',
+        'reason': 'pending review',
         'candidate_image': 'default.jpg',
         'sign': 'sign.jpg',
+        'user_id': userId,
+        'nominee_id': [1, 2],
+        'cand_doc_id': [1, 2],
       };
 
-      // POST to save-candidate-info
-      final responseInfo = await http.post(
+      print('DEBUG: User ID in data: ${candidateData['user_id']}');
+      print('DEBUG: Full request payload: ${json.encode(candidateData)}');
+
+      if (candidateData['user_id'] == null) {
+        throw Exception('user_id is null');
+      }
+
+      final response = await http.post(
         Uri.parse('$serverApiUrl/save-candidate-info'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${json.decode(tokenString)['token']}',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
         },
         body: json.encode(candidateData),
       );
 
-      if (responseInfo.statusCode != 200) {
-        throw Exception('Failed to save candidate info');
+      print('DEBUG: Request URL: $serverApiUrl/save-candidate-info');
+      print('DEBUG: Request headers: ${json.encode({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${tokenData['token']}'
+          })}');
+      print('DEBUG: Response status: ${response.statusCode}');
+      print('DEBUG: Response body: ${response.body}');
+
+      if (response.statusCode >= 400) {
+        final errorBody = json.decode(response.body);
+        throw Exception(
+            'Server error (${response.statusCode}): ${errorBody['message'] ?? 'Unknown error'}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to submit candidate data: $e');
+    }
+  }
+
+  Future<bool> submitNominationData() async {
+    print('DEBUG: submitNominationData() called');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final tokenString = prefs.getString('token');
+
+      if (tokenString == null) {
+        throw Exception('Token not found');
       }
 
-      // Prepare nomination data
-      final nominationData = {
-        'nominee_name': step4Data['nominee_name'],
-        'nominee_phone': step4Data['nominee_phone'],
-        'nominee_email': step4Data['nominee_email'],
-        'election_id': step4Data['election_id'],
-        'org_id': step4Data['org_id'],
-      };
+      final tokenData = json.decode(tokenString);
 
-      // POST to save-nominations
-      final responseNominations = await http.post(
-        Uri.parse('$serverApiUrl/save-nominations'),
+      final candidateResponse = await http.get(
+        Uri.parse('$serverApiUrl/get-candidateid'),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${json.decode(tokenString)['token']}',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
         },
-        body: json.encode(nominationData),
       );
 
-      if (responseNominations.statusCode != 200) {
-        throw Exception('Failed to save nominations');
+      print('DEBUG: Candidate response: ${candidateResponse.body}');
+
+      if (candidateResponse.statusCode != 200) {
+        throw Exception('Failed to get candidate information');
+      }
+
+      final candidateData = json.decode(candidateResponse.body);
+      final candidateId = candidateData['data']['candidate_id'];
+      print('DEBUG: Extracted candidate ID: $candidateId');
+      print('DEBUG: Number of nominees: ${nominees.length}');
+
+      for (NomineeData nominee in nominees) {
+        print('DEBUG: Processing nominee data:');
+        print('DEBUG: Name: ${nominee.name}');
+        print('DEBUG: Email: ${nominee.email}');
+        print('DEBUG: Phone: ${nominee.phone}');
+        print('DEBUG: Reason: ${nominee.reason}');
+        print('DEBUG: Organization ID: ${nominee.organization}');
+
+        final nominationData = {
+          'candidate_id': candidateId,
+          'nominee_name': nominee.name,
+          'nominee_phone': nominee.phone,
+          'nominee_email': nominee.email,
+          'org_id': int.parse(nominee.organization),
+          'reason': nominee.reason,
+        };
+
+        final response = await http.post(
+          Uri.parse('$serverApiUrl/save-nominations'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${tokenData['token']}',
+          },
+          body: json.encode(nominationData),
+        );
+
+        print('DEBUG: Nomination response body: ${response.body}');
+
+        if (response.statusCode >= 400) {
+          throw Exception('Failed to save nomination: ${response.body}');
+        }
       }
 
       return true;
     } catch (e) {
-      print('DEBUG: Error in submitAllData: $e');
-      throw Exception('Failed to submit registration: $e');
+      print('DEBUG: Error in submitNominationData: $e');
+      throw Exception('Failed to submit nominations: $e');
     }
   }
 
@@ -202,7 +286,7 @@ class RegistrationState extends ChangeNotifier {
       await prefs.remove('step1_data');
       await prefs.remove('step2_data');
       await prefs.remove('step3_data');
-      await prefs.remove('step4_nominees');
+      await prefs.remove('step4_data');
       await prefs.remove('step5_documents');
       _documents.clear();
       notifyListeners();
@@ -226,23 +310,13 @@ class RegistrationState extends ChangeNotifier {
   }
 
   void removeDocument(PlatformFile file) {
-    try {
-      _documents.removeWhere((doc) => doc.path == file.path);
-      print('DEBUG: Removed document: ${file.name}');
-      notifyListeners();
-    } catch (e) {
-      print('DEBUG: Error removing document: $e');
-    }
+    _documents.remove(file);
+    notifyListeners();
   }
 
   void clearDocuments() {
-    try {
-      _documents.clear();
-      print('DEBUG: Cleared all documents');
-      notifyListeners();
-    } catch (e) {
-      print('DEBUG: Error clearing documents: $e');
-    }
+    _documents.clear();
+    notifyListeners();
   }
 
   // Get document count
@@ -274,6 +348,14 @@ class RegistrationState extends ChangeNotifier {
       }
 
       final prefs = await SharedPreferences.getInstance();
+      final tokenString = prefs.getString('token');
+      if (tokenString == null) {
+        throw Exception('Authentication token not found');
+      }
+
+      final tokenData = json.decode(tokenString);
+      final actualToken = tokenData['token'];
+      final userId = tokenData['user']['id'];
 
       // Save candidate profile data
       final step2Data = {
@@ -283,7 +365,6 @@ class RegistrationState extends ChangeNotifier {
         'candidate_email': _candidateProfile!.email,
         'candidate_gender': _candidateProfile!.gender,
         'candidate_ic': _candidateProfile!.identificationNo,
-        'candidate_dob': _candidateProfile!.dateOfBirth,
         'candidate_address':
             '${_candidateProfile!.address.line1}, ${_candidateProfile!.address.line2}, ${_candidateProfile!.address.city}, ${_candidateProfile!.address.state}, ${_candidateProfile!.address.country}, ${_candidateProfile!.address.postcode}',
         'nationality': _candidateProfile!.nationality,
@@ -296,8 +377,8 @@ class RegistrationState extends ChangeNotifier {
         'sign': 'sign.jpg',
         'candidate_image': 'candidate.jpg',
         'status': 'Pending',
-        'nominee_id': 5,
-        'user_id': 2,
+        'user_id': int.parse(userId.toString()),
+        'votes_count': 0,
       };
 
       await prefs.setString('step2_data', json.encode(step2Data));
@@ -319,50 +400,94 @@ class RegistrationState extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      // Save biography and manifesto
       await prefs.setString('short_biography', _bio ?? '');
       await prefs.setString('manifesto', _manifesto ?? '');
 
       print(
           'DEBUG: Step 3 data saved successfully: biography = ${_bio ?? ''}, manifesto = ${_manifesto ?? ''}');
     } catch (e) {
-      print('DEBUG: Error saving step 3 data: $e');
       throw Exception('Error saving step 3: $e');
     }
   }
 
-  // Method to save Step 4 data to SharedPreferences
-  Future<void> saveStep4Data() async {
+  Future<bool> submitDocuments() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      final tokenString = prefs.getString('token');
 
-      // Assuming you want to save the first nominee's data
-      if (nominees.isNotEmpty) {
-        final nominee = nominees.first;
-        final step4Data = {
-          'nominee_name': nominee.name,
-          'nominee_phone': nominee.phone,
-          'nominee_email': nominee.email,
-          'election_id': _selectedElectionId,
-          'reason': nominee.reason,
-          'org_id': nominee.organization, // Assuming organization is the org_id
-        };
-
-        await prefs.setString('step4_data', json.encode(step4Data));
-
-        print(
-            'DEBUG: Step 4 data saved successfully: ${json.encode(step4Data)}');
-      } else {
-        print('DEBUG: No nominee data to save for Step 4');
+      if (tokenString == null) {
+        throw Exception('Token not found');
       }
+
+      final tokenData = json.decode(tokenString);
+
+      final candidateResponse = await http.get(
+        Uri.parse('$serverApiUrl/get-candidateid'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
+        },
+      );
+
+      final candidateData = json.decode(candidateResponse.body);
+      final candidateId = candidateData['data']['candidate_id'];
+      print('DEBUG: Using candidate_id: $candidateId');
+
+      var uri = Uri.parse('$serverApiUrl/save-candidate-documents');
+
+      for (var document in _documents) {
+        if (document.path != null) {
+          print('DEBUG: Processing document: ${document.name}');
+
+          var request = http.MultipartRequest('POST', uri);
+
+          // Don't set Content-Type header, let MultipartRequest handle it
+          request.headers.addAll({
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${tokenData['token']}',
+          });
+
+          // Add both the file path and the file itself
+          request.fields['candidate_id'] = candidateId.toString();
+          request.fields['document_name'] = document.name; // Add the file name
+
+          final file = await http.MultipartFile.fromPath(
+            'document', // This should match your Laravel input field
+            document.path!,
+            filename: document.name,
+          );
+          request.files.add(file);
+
+          print('DEBUG: Request fields: ${request.fields}');
+          print('DEBUG: File details:');
+          print('  - Field name: ${file.field}');
+          print('  - Filename: ${file.filename}');
+          print('  - Length: ${file.length}');
+          print('  - Path: ${document.path}');
+
+          var response = await request.send();
+          var responseData = await response.stream.bytesToString();
+
+          print('DEBUG: Upload response status: ${response.statusCode}');
+          print('DEBUG: Upload response: $responseData');
+
+          if (response.statusCode >= 400) {
+            throw Exception('Failed to upload ${document.name}: $responseData');
+          }
+        }
+      }
+
+      return true;
     } catch (e) {
-      print('DEBUG: Error saving step 4 data: $e');
-      throw Exception('Error saving step 4: $e');
+      print('DEBUG: Error in submitDocuments: $e');
+      throw Exception('Failed to upload documents: $e');
     }
   }
+
+  // Add this method to check if documents are ready
+  bool get hasDocuments => _documents.isNotEmpty;
 }
 
-// Data Classes
 class NomineeData {
   final String name;
   final String email;
@@ -408,10 +533,7 @@ class CandidateProfile {
   final String jobStatus;
   final String income;
   final String maritalStatus;
-  final String dateOfBirth;
   final String position;
-  // final String shortBiography;
-  // final String manifesto;
 
   CandidateProfile({
     required this.firstName,
@@ -426,10 +548,7 @@ class CandidateProfile {
     required this.jobStatus,
     required this.income,
     required this.maritalStatus,
-    required this.dateOfBirth,
     required this.position,
-    // required this.shortBiography,
-    // required this.manifesto,
   });
 
   Map<String, dynamic> toJson() => {
@@ -445,9 +564,6 @@ class CandidateProfile {
         'income': income,
         'marital_status': maritalStatus,
         'position': position,
-        'date_of_birth': dateOfBirth,
-        // 'short_biography': shortBiography,
-        // 'manifesto': manifesto,
       };
 }
 
@@ -476,4 +592,19 @@ class Address {
         'country': country,
         'postcode': postcode,
       };
+}
+
+Future<int?> getUserIdFromToken() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final tokenString = prefs.getString('token');
+    if (tokenString != null) {
+      final tokenData = json.decode(tokenString);
+      return tokenData['user']['id'];
+    }
+    return null;
+  } catch (e) {
+    print('DEBUG: Error getting user ID from token: $e');
+    return null;
+  }
 }

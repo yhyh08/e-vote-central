@@ -175,6 +175,12 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
                   }
                 });
               },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Select an election";
+                }
+                return null;
+              },
             ),
             const Spacer(),
             bottomBtn()
@@ -188,92 +194,54 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // ElevatedBtn(
-          //   btnText: 'Back',
-          //   hasSize: false,
-          //   btnColorWhite: false,
-          //   width: 160,
-          //   onPressed: () => Navigator.of(context).pop(),
-          // ),
-          Row(
-            children: [
-              ElevatedBtn(
-                btnText: 'Save',
-                hasSize: false,
-                btnColorWhite: false,
-                width: 150,
-                onPressed: () async {
-                  try {
-                    if (selectedOption != null && selectedElectionId != null) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
-                      );
+          ElevatedBtn(
+            btnText: 'Next',
+            hasSize: false,
+            width: 160,
+            onPressed: () async {
+              try {
+                if (selectedOption != null && selectedElectionId != null) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  );
 
-                      final registrationState = Provider.of<RegistrationState>(
-                          context,
-                          listen: false);
+                  final registrationState =
+                      Provider.of<RegistrationState>(context, listen: false);
 
-                      // Save election_id to state and SharedPreferences
-                      registrationState.setElectionId(selectedElectionId);
-                      await registrationState
-                          .saveStep1Data(selectedElectionId!);
+                  registrationState.setElectionId(selectedElectionId);
+                  await registrationState.saveStep1Data(selectedElectionId!);
 
-                      Navigator.of(context).pop(); // Close loading dialog
+                  Navigator.of(context).pop();
 
-                      Navigator.pushNamed(
-                          context, RouteList.registerCandidateSecond);
-                    } else {
-                      // Show error if no selection made
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please select an election option'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  } catch (e) {
-                    // Only pop if dialog is showing
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context).pop(); // Close loading dialog
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error: ${e.toString()}'),
-                        backgroundColor: Theme.of(context).hintColor,
-                      ),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(width: 16),
-              ElevatedBtn(
-                btnText: 'Next',
-                hasSize: false,
-                width: 160,
-                onPressed: () {
-                  if (selectedOption != null) {
-                    Navigator.pushNamed(
-                        context, RouteList.registerCandidateSecond);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Please select an election.',
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+                  Navigator.pushNamed(
+                      context, RouteList.registerCandidateSecond);
+                } else {
+                  // Show error if no selection made
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select an election option'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error: ${e.toString()}'),
+                    backgroundColor: Theme.of(context).hintColor,
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

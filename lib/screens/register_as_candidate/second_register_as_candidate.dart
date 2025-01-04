@@ -1,5 +1,6 @@
 import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -45,8 +46,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
   final TextEditingController state = TextEditingController();
   final TextEditingController country = TextEditingController();
   final TextEditingController city = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  DateTime? selectedDate;
 
   String? selectedElectionId;
   String? organizationId;
@@ -126,12 +125,9 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               (election) {
                 final electionId = election['election_id']?.toString() ??
                     election['id']?.toString();
-                print(
-                    'Comparing election ID: $electionId with selected: $selectedElectionId');
                 return electionId == selectedElectionId;
               },
               orElse: () {
-                print('No matching election found');
                 return null;
               },
             );
@@ -180,20 +176,13 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
     state.dispose();
     country.dispose();
     city.dispose();
-    dobController.dispose();
     super.dispose();
   }
 
   void onSaveProfile() {
-    if (selectedDate == null) {
-      throw Exception('Please select a date of birth');
-    }
-
     if (selectedPosition == null || selectedPosition!.isEmpty) {
       throw Exception('Please select a position');
     }
-
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
 
     final profile = CandidateProfile(
       firstName: firstNameController.text,
@@ -203,7 +192,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
       identificationNo: identificationNoController.text,
       phone: phoneController.text,
       religion: selectedReligion ?? '',
-      dateOfBirth: formattedDate,
       position: selectedPosition!,
       address: Address(
         line1: addressLine1Controller.text,
@@ -299,6 +287,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               )
               .toList(),
           onChanged: (value) => setState(() => selectedGender = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select a gender";
+            }
+            return null;
+          },
         ),
         FormTextfield(
           controller: emailController,
@@ -315,41 +309,54 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
         FormTextfield(
           controller: phoneController,
           keyboardType: TextInputType.phone,
-          labelText: 'Phone',
-          hintText: 'Phone',
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(11),
+          ],
+          labelText: 'Phone Number',
+          hintText: 'Phone Number (11 digits, No space or dash-)',
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "Enter a valid phone number";
             }
+
             return null;
           },
         ),
-        DateTimeFormField(
-          decoration: const InputDecoration(
-            labelText: 'Date of Birth',
-            helperText: 'MM/DD/YYYY',
-          ),
-          mode: DateTimeFieldPickerMode.date,
-          onChanged: (DateTime? value) {
-            setState(() {
-              selectedDate = value;
-            });
-          },
-          initialValue: selectedDate,
-        ),
-        const SizedBox(height: 20),
         FormTextfield(
           controller: identificationNoController,
           keyboardType: TextInputType.number,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(12),
+          ],
           labelText: 'Identification No',
-          hintText: 'I/C No',
+          hintText: 'I/C No (12 digits, No space or dash-)',
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "Enter a valid identification number";
             }
+            if (value.length != 12) {
+              return "Identification number must be 12 digits";
+            }
             return null;
           },
         ),
+        CountryStateCityPicker(
+          country: country,
+          state: state,
+          city: city,
+          dialogColor: Theme.of(context).primaryColorLight,
+          textFieldDecoration: InputDecoration(
+            hintStyle: Theme.of(context).textTheme.bodyMedium,
+            labelStyle: Theme.of(context).textTheme.bodyMedium,
+            filled: true,
+            suffixIcon: const Icon(Icons.keyboard_arrow_down_rounded),
+            border: const OutlineInputBorder(
+              borderSide: BorderSide(width: 5),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
         FormTextfield(
           controller: addressLine1Controller,
           keyboardType: TextInputType.text,
@@ -374,23 +381,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
             return null;
           },
         ),
-        CountryStateCityPicker(
-          country: country,
-          state: state,
-          city: city,
-          dialogColor: Theme.of(context).primaryColorLight,
-          textFieldDecoration: InputDecoration(
-            // fillColor: Theme.of(context).shadowColor,
-            hintStyle: Theme.of(context).textTheme.bodyMedium,
-            labelStyle: Theme.of(context).textTheme.bodyMedium,
-            filled: true,
-            suffixIcon: const Icon(Icons.keyboard_arrow_down_rounded),
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(width: 5),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
         FormTextfield(
           controller: nationalityController,
           keyboardType: TextInputType.text,
@@ -428,6 +418,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               )
               .toList(),
           onChanged: (value) => setState(() => selectedReligion = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select a religion";
+            }
+            return null;
+          },
         ),
         DropdownBtn(
           labelText: 'Position',
@@ -444,6 +440,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               selectedPosition = newValue;
             });
           },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select a position";
+            }
+            return null;
+          },
         ),
         DropdownBtn(
           labelText: 'Jobs',
@@ -455,6 +457,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               )
               .toList(),
           onChanged: (value) => setState(() => selectedJobs = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select a job";
+            }
+            return null;
+          },
         ),
         DropdownBtn(
           labelText: 'Income',
@@ -466,6 +474,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               )
               .toList(),
           onChanged: (value) => setState(() => selectedIncome = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select an income";
+            }
+            return null;
+          },
         ),
         DropdownBtn(
           labelText: 'Marital Status',
@@ -477,6 +491,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
               )
               .toList(),
           onChanged: (value) => setState(() => selectedMaritalStatus = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Select a marital status";
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -496,10 +516,9 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           ElevatedBtn(
-            btnText: 'Save',
+            btnText: 'Next',
             hasSize: false,
-            btnColorWhite: false,
-            width: 150,
+            width: 160,
             onPressed: () async {
               try {
                 if (_formKey.currentState?.validate() ?? false) {
@@ -528,7 +547,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                   );
                   Navigator.pushNamed(
                       context, RouteList.registerCandidateThird);
-                  // Close loading dialog
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -536,13 +554,10 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                       backgroundColor: Colors.red,
                     ),
                   );
-
-                  // Navigate to step 3
                 }
               } catch (e) {
-                // Only pop if dialog is showing
                 if (Navigator.canPop(context)) {
-                  Navigator.of(context).pop(); // Close loading dialog
+                  Navigator.of(context).pop();
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

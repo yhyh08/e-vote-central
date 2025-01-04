@@ -163,9 +163,9 @@ class CandidateProfileState extends State<CandidateProfile> {
                     value: widget.candidate.phone,
                   ),
                   InfoRow(
-                    icon: Icons.date_range,
-                    label: 'Date of Birth',
-                    value: widget.candidate.dob,
+                    icon: Icons.work,
+                    label: 'Job',
+                    value: widget.candidate.job,
                   ),
                   InfoRow(
                     icon: Icons.ac_unit,

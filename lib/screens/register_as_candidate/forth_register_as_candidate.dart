@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -20,22 +21,42 @@ class RegisterCandidateForth extends StatefulWidget {
 }
 
 class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
-  String? selectedOption;
-  List<String> organizationOptions = [];
   final _formKey = GlobalKey<FormState>();
   final List<int> nominees = [1];
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController reasonController = TextEditingController();
+  Map<String, String> organizations = {};
 
-  void onAddNominee() {
+  // Create maps to store controllers for each nominee
+  final Map<int, TextEditingController> nameControllers = {};
+  final Map<int, TextEditingController> emailControllers = {};
+  final Map<int, TextEditingController> phoneControllers = {};
+  final Map<int, TextEditingController> reasonControllers = {};
+  final Map<int, String?> selectedOrgIds = {};
+
+  @override
+  void dispose() {
+    nameControllers.values.forEach((controller) => controller.dispose());
+    emailControllers.values.forEach((controller) => controller.dispose());
+    phoneControllers.values.forEach((controller) => controller.dispose());
+    reasonControllers.values.forEach((controller) => controller.dispose());
+    super.dispose();
+  }
+
+  void _initializeControllersForNominee(int index) {
+    nameControllers[index] = TextEditingController();
+    emailControllers[index] = TextEditingController();
+    phoneControllers[index] = TextEditingController();
+    reasonControllers[index] = TextEditingController();
+    selectedOrgIds[index] = null;
+    print('DEBUG: Initialized controllers for nominee $index');
+  }
+
+  void onAddNominee(int index) {
     final nominee = NomineeData(
-      name: nameController.text,
-      email: emailController.text,
-      phone: phoneController.text,
-      reason: reasonController.text,
-      organization: selectedOption ?? '',
+      name: nameControllers[index]!.text,
+      email: emailControllers[index]!.text,
+      phone: phoneControllers[index]!.text,
+      reason: reasonControllers[index]!.text,
+      organization: selectedOrgIds[index] ?? '',
     );
 
     final registrationState =
@@ -46,6 +67,8 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
   @override
   void initState() {
     super.initState();
+    // Initialize controllers for the first nominee
+    _initializeControllersForNominee(1);
     fetchOrganizations();
   }
 
@@ -61,8 +84,8 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          organizationOptions =
-              data.map((org) => org['org_name'].toString()).toList();
+          organizations = Map.fromEntries(data.map((org) =>
+              MapEntry(org['org_id'].toString(), org['org_name'].toString())));
         });
       } else {
         throw Exception('Failed to load organizations');
@@ -127,62 +150,68 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                       }
                                       return null;
                                     },
-                                    onSaved: (value) {
-                                      setState(() {
-                                        nameController.text = value ?? '';
-                                      });
+                                    onChanged: (value) {
+                                      nameControllers[index]!.text =
+                                          value ?? '';
                                     },
-                                    controller: nameController,
+                                    controller: nameControllers[index],
                                   ),
                                   FormTextfield(
                                     keyboardType: TextInputType.emailAddress,
                                     labelText: 'Email',
                                     hintText: 'xxx@gmail.com',
-                                    validator: (String? email) {
+                                    validator: (email) {
                                       if (email == null ||
-                                          !email.contains('@') ||
-                                          email.isEmpty) {
+                                          !email.contains('@')) {
                                         return "Enter a valid email address";
                                       }
                                       return null;
                                     },
-                                    onSaved: (value) {
-                                      setState(() {
-                                        emailController.text = value ?? '';
-                                      });
+                                    onChanged: (value) {
+                                      emailControllers[index]!.text =
+                                          value ?? '';
                                     },
+                                    controller: emailControllers[index],
                                   ),
                                   FormTextfield(
                                     keyboardType: TextInputType.phone,
-                                    labelText: 'Phone',
-                                    hintText: '+60xxxxxxxxx',
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(11),
+                                    ],
+                                    labelText: 'Phone Number',
+                                    hintText:
+                                        'Phone Number (11 digits, No space or dash-)',
                                     validator: (String? number) {
                                       if (number == null || number.isEmpty) {
                                         return "Enter a valid phone number";
                                       }
                                       return null;
                                     },
-                                    onSaved: (value) {
-                                      setState(() {
-                                        phoneController.text = value ?? '';
-                                      });
+                                    onChanged: (value) {
+                                      phoneControllers[index]!.text =
+                                          value ?? '';
                                     },
-                                    controller: phoneController,
+                                    controller: phoneControllers[index],
                                   ),
                                   DropdownBtn(
                                     labelText: 'Organization',
-                                    value: selectedOption,
-                                    items: organizationOptions
-                                        .map(
-                                          (option) => DropdownMenuItem(
-                                              value: option,
-                                              child: Text(option)),
-                                        )
+                                    value: selectedOrgIds[index],
+                                    items: organizations.entries
+                                        .map((org) => DropdownMenuItem(
+                                            value: org.key,
+                                            child: Text(org.value)))
                                         .toList(),
                                     onChanged: (value) {
                                       setState(() {
-                                        selectedOption = value as String;
+                                        selectedOrgIds[index] = value as String;
                                       });
+                                    },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Select an organization";
+                                      }
+                                      return null;
                                     },
                                   ),
                                   FormTextfield(
@@ -196,12 +225,11 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                                       }
                                       return null;
                                     },
-                                    onSaved: (value) {
-                                      setState(() {
-                                        reasonController.text = value ?? '';
-                                      });
+                                    onChanged: (value) {
+                                      reasonControllers[index]!.text =
+                                          value ?? '';
                                     },
-                                    controller: reasonController,
+                                    controller: reasonControllers[index],
                                   ),
                                 ],
                               ))
@@ -211,7 +239,9 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             setState(() {
-                              nominees.add(nominees.length + 1);
+                              int newIndex = nominees.length + 1;
+                              nominees.add(newIndex);
+                              _initializeControllersForNominee(newIndex);
                             });
                           },
                           icon: const Icon(Icons.add),
@@ -231,13 +261,6 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                 ),
               ),
             ),
-            ElevatedBtn(
-              btnText: 'Back',
-              hasSize: false,
-              btnColorWhite: false,
-              width: 160,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
             bottomBtn(),
           ],
         ),
@@ -251,77 +274,58 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              ElevatedBtn(
-                btnText: 'Save',
-                hasSize: false,
-                btnColorWhite: false,
-                width: 150,
-                onPressed: () async {
-                  try {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
-                      );
-
-                      onAddNominee(); // Save to state first
-                      final registrationState = Provider.of<RegistrationState>(
-                          context,
-                          listen: false);
-                      await registrationState.saveStep4Data();
-
-                      Navigator.of(context).pop(); // Close loading dialog
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Nominee information saved successfully!'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                      Navigator.pushNamed(
-                          context, RouteList.registerCandidateFifth);
-                    }
-                  } catch (e) {
-                    Navigator.of(context).pop(); // Close loading dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error: ${e.toString()}'),
-                        backgroundColor: Theme.of(context).hintColor,
-                      ),
-                    );
+          ElevatedBtn(
+            btnText: 'Back',
+            hasSize: false,
+            btnColorWhite: false,
+            width: 160,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedBtn(
+            btnText: 'Save',
+            hasSize: false,
+            width: 160,
+            onPressed: () async {
+              try {
+                if (_formKey.currentState?.validate() ?? false) {
+                  for (int index in nominees) {
+                    onAddNominee(index);
                   }
-                },
-              ),
-              const SizedBox(width: 16),
-              ElevatedBtn(
-                btnText: 'Next',
-                hasSize: false,
-                width: 150,
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    onAddNominee();
-                    Navigator.pushNamed(
-                        context, RouteList.registerCandidateFifth);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Please fill out all fields before proceeding.',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  );
+
+                  final registrationState =
+                      Provider.of<RegistrationState>(context, listen: false);
+                  await registrationState.submitNominationData();
+
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          const Text('Nominee information saved successfully!'),
+                      backgroundColor: Theme.of(context).focusColor,
+                    ),
+                  );
+                  Navigator.pushNamed(
+                      context, RouteList.registerCandidateFifth);
+                }
+              } catch (e) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error: ${e.toString()}'),
+                    backgroundColor: Theme.of(context).hintColor,
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

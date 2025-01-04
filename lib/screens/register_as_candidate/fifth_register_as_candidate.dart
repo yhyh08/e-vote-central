@@ -1,13 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../network_utlis/api_constant.dart';
 import '../../providers/registration_state.dart';
 import '../../routes/route.dart';
 import '../../widgets/elevated_button.dart';
@@ -32,19 +25,6 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
 
   Future<void> uploadDocumentFile() async {
     try {
-      if (selectedFiles.length >= maxFiles) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Maximum $maxFiles files allowed',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            backgroundColor: Theme.of(context).hintColor,
-          ),
-        );
-        return;
-      }
-
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowMultiple: true,
@@ -53,130 +33,58 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
       );
 
       if (result != null) {
-        int remainingSlots = maxFiles - selectedFiles.length;
-        List<PlatformFile> filesToAdd =
-            result.files.take(remainingSlots).toList();
+        final registrationState =
+            Provider.of<RegistrationState>(context, listen: false);
 
-        List<PlatformFile> validFiles = [];
-        for (var file in filesToAdd) {
-          if (file.size > 5 * 1024 * 1024) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'File ${file.name} is too large. Maximum size is 5MB.',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                backgroundColor: Theme.of(context).hintColor,
-              ),
-            );
-            continue;
+        for (var file in result.files) {
+          if (file.path != null) {
+            print('DEBUG: Adding document to provider: ${file.name}');
+            print('DEBUG: Document path: ${file.path}');
+            print('DEBUG: Document size: ${file.size}');
+            registrationState.addDocument(file);
           }
-
-          if (selectedFiles.any((existing) => existing.name == file.name)) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'File ${file.name} already selected.',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                backgroundColor: Theme.of(context).hintColor,
-              ),
-            );
-            continue;
-          }
-
-          validFiles.add(file);
         }
 
-        setState(() {
-          selectedFiles.addAll(validFiles);
-        });
+        // Force UI update
+        setState(() {});
 
-        if (selectedFiles.length == maxFiles) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Maximum number of files reached',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${maxFiles - selectedFiles.length} more files can be added',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-          );
-        }
+        // Show feedback to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Added ${result.files.length} document(s)')),
+        );
       }
     } catch (e) {
-      print("Error picking file: $e");
+      print("DEBUG: Error picking file: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error selecting files: $e',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          backgroundColor: Theme.of(context).hintColor,
-        ),
+        SnackBar(content: Text('Error selecting files: $e')),
       );
     }
   }
 
-  Future<void> uploadDocuments(String candidateId) async {
-    try {
-      for (PlatformFile file in selectedFiles) {
-        final fileName = file.name;
-        final bytes = await File(file.path!).readAsBytes();
-        final multipartFile = http.MultipartFile.fromBytes(
-          'file',
-          bytes,
-          filename: fileName,
-        );
+  // Future<void> debugPrintAllStepData() async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final step1Data = prefs.getString('step1_data');
+  //     final step2Data = prefs.getString('step2_data');
+  //     final step3Data = prefs.getString('short_biography');
+  //     final step3Manifesto = prefs.getString('manifesto');
+  //     final step4Data = prefs.getString('step4_data');
 
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.parse('$serverApiUrl/save-candidate-documents'),
-        );
-
-        request.files.add(multipartFile);
-        request.fields['candidate_id'] = candidateId;
-        request.fields['document_type'] = 'supporting_document';
-
-        final response = await request.send();
-        if (response.statusCode != 201) {
-          throw Exception('Failed to upload document: $fileName');
-        }
-      }
-    } catch (e) {
-      throw Exception('Error uploading documents: $e');
-    }
-  }
-
-  Future<void> debugPrintAllStepData() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final step1Data = prefs.getString('step1_data');
-      final step2Data = prefs.getString('step2_data');
-      final step3Data = prefs.getString('short_biography');
-      final step3Manifesto = prefs.getString('manifesto');
-      final step4Data = prefs.getString('step4_data');
-
-      print('DEBUG: Step 1 Data: $step1Data');
-      print('DEBUG: Step 2 Data: $step2Data');
-      print('DEBUG: Step 3 Biography: $step3Data');
-      print('DEBUG: Step 3 Manifesto: $step3Manifesto');
-      print('DEBUG: Step 4 Data: $step4Data');
-    } catch (e) {
-      print('DEBUG: Error retrieving step data: $e');
-    }
-  }
+  //     print('DEBUG: Step 1 Data: $step1Data');
+  //     print('DEBUG: Step 2 Data: $step2Data');
+  //     print('DEBUG: Step 3 Biography: $step3Data');
+  //     print('DEBUG: Step 3 Manifesto: $step3Manifesto');
+  //     print('DEBUG: okStep 4 Data: $step4Data');
+  //   } catch (e) {
+  //     print('DEBUG: Error retrieving step data: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final registrationState = Provider.of<RegistrationState>(context);
+    final hasDocuments = registrationState.documents.isNotEmpty;
+
     return TopBar(
       title: 'Register as Candidate',
       index: 4,
@@ -184,9 +92,7 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const StepIcon(
-              activeIndex: 4,
-            ),
+            const StepIcon(activeIndex: 4),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerLeft,
@@ -205,26 +111,17 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
                       ElevatedBtn(
                         btnText: 'Upload Document',
                         btnColorWhite: false,
-                        onPressed:
-                            //() {},
-                            () async {
+                        onPressed: () async {
                           await uploadDocumentFile();
                         },
                       ),
                       const SizedBox(height: 20),
-                      if (selectedFiles.isNotEmpty) ...[
+                      if (hasDocuments) ...[
                         const SizedBox(height: 16),
                         buildFileList(),
                       ],
                       bottomBtn(),
                       const SizedBox(height: 20),
-                      ElevatedBtn(
-                        btnText: 'Debug Print All Step Data',
-                        btnColorWhite: false,
-                        onPressed: () async {
-                          await debugPrintAllStepData();
-                        },
-                      ),
                     ],
                   ),
                 ),
@@ -256,13 +153,12 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
             ElevatedBtn(
               btnText: 'Submit',
               hasSize: false,
-              btnColorWhite: false,
-              width: 150,
+              width: 160,
               onPressed: () async {
                 final registrationState =
                     Provider.of<RegistrationState>(context, listen: false);
 
-                await registrationState.submitAllData();
+                await registrationState.submitDocuments();
 
                 Navigator.of(context).pop();
 
@@ -276,7 +172,10 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
   }
 
   Widget buildFileList() {
-    if (selectedFiles.isEmpty) {
+    final registrationState = Provider.of<RegistrationState>(context);
+    final documents = registrationState.documents;
+
+    if (documents.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -293,15 +192,14 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Selected Files (${selectedFiles.length}/$maxFiles):',
+                'Selected Files (${documents.length}/$maxFiles):',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               TextButton(
-                onPressed: selectedFiles.isNotEmpty
+                onPressed: documents.isNotEmpty
                     ? () {
-                        setState(() {
-                          selectedFiles.clear();
-                        });
+                        registrationState.clearDocuments();
+                        setState(() {});
                       }
                     : null,
                 child: const Text('Clear All'),
@@ -309,7 +207,7 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
             ],
           ),
           const SizedBox(height: 8),
-          ...selectedFiles.map((file) => Padding(
+          ...documents.map((file) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
@@ -337,9 +235,8 @@ class _RegisterCandidateFifthState extends State<RegisterCandidateFifth> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
-                        setState(() {
-                          selectedFiles.remove(file);
-                        });
+                        registrationState.removeDocument(file);
+                        setState(() {});
                       },
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),

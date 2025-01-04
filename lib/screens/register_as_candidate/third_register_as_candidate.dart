@@ -97,10 +97,9 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           ElevatedBtn(
-            btnText: 'Save',
+            btnText: 'Next',
             hasSize: false,
-            btnColorWhite: false,
-            width: 150,
+            width: 160,
             onPressed: () async {
               try {
                 if (_formKey.currentState?.validate() ?? false) {
@@ -112,12 +111,13 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                     },
                   );
                   Navigator.of(context).pop();
-                  // Save step 3 data
+
                   final registrationState =
                       Provider.of<RegistrationState>(context, listen: false);
                   registrationState.setBio(bioController.text);
                   registrationState.setManifesto(manifestoController.text);
-                  await registrationState.saveStep3Data();
+
+                  await registrationState.submitCandidateData();
 
                   Navigator.pushNamed(
                       context, RouteList.registerCandidateForth);

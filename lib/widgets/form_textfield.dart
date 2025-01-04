@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FormTextfield extends StatelessWidget {
   final TextInputType keyboardType;
@@ -9,6 +10,7 @@ class FormTextfield extends StatelessWidget {
   final Function(String? value)? onChanged;
   final Function(String?)? onSaved;
   final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   const FormTextfield({
     required this.keyboardType,
@@ -19,6 +21,7 @@ class FormTextfield extends StatelessWidget {
     this.onChanged,
     this.onSaved,
     this.maxLines,
+    this.inputFormatters,
     super.key,
   });
 
@@ -28,6 +31,7 @@ class FormTextfield extends StatelessWidget {
       children: [
         TextFormField(
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           maxLines: maxLines,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(

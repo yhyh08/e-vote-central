@@ -8,7 +8,6 @@ class CandidateDetail {
   final String nationality;
   final String religion;
   final String job;
-  final String dob;
   final String biography;
   final String manifesto;
   final String image;
@@ -24,7 +23,6 @@ class CandidateDetail {
     required this.nationality,
     required this.religion,
     required this.job,
-    required this.dob,
     required this.biography,
     required this.manifesto,
     required this.image,
@@ -41,7 +39,6 @@ class CandidateDetail {
         nationality = json['nationality'] ?? '',
         religion = json['religion'] ?? '',
         job = json['job'] ?? '',
-        dob = json['candidate_dob'] ?? '',
         biography = json['short_biography'] ?? '',
         manifesto = json['manifesto'] ?? '',
         image = json['candidate_image'] ?? '',

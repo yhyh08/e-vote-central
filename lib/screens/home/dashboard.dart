@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import '../../gen/assets.gen.dart';
 // import '../../models/result_list.dart';
+import '../../models/result_list.dart';
 import '../../network_utlis/api.dart';
 import '../../routes/route.dart';
 import '../result/result_listtile.dart';
@@ -25,12 +29,15 @@ class DashboardState extends State<Dashboard> {
   String _latestElectionTitle = 'Loading...';
   Map<String, dynamic> _latestElection = {};
   bool _isDisposed = false;
+  List<ResultList> results = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _initializeUserInfo();
     _fetchLatestElection();
+    fetchElectionResults();
   }
 
   @override
@@ -93,6 +100,35 @@ class DashboardState extends State<Dashboard> {
           _latestElection = {};
         });
       }
+    }
+  }
+
+  Future<void> fetchElectionResults() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://172.20.10.2:8000/api/v1/election/results'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        final List<dynamic> electionsList = jsonData['elections'] ?? [];
+
+        setState(() {
+          results = electionsList
+              .map((data) => ResultList(
+                    resultTitle: data['election_topic'] ?? '',
+                    resultImage: null,
+                    startDate: DateTime.parse(data['start_date'] ?? ''),
+                    endDate: DateTime.parse(data['end_date'] ?? ''),
+                    electionId: data['election_id'] ?? 0,
+                  ))
+              .toList();
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching results: $e');
+      setState(() => isLoading = false);
     }
   }
 
@@ -204,13 +240,13 @@ class DashboardState extends State<Dashboard> {
   Widget resultList() {
     return Column(
       children: [
-        // ListView.builder(
-        //   shrinkWrap: true,
-        //   itemCount: 2,
-        //   itemBuilder: (context, index) {
-        //     return ResultListTile(result: results[index]);
-        //   },
-        // ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: results.length,
+          itemBuilder: (context, index) {
+            return ResultListTile(result: results[index]);
+          },
+        ),
       ],
     );
   }

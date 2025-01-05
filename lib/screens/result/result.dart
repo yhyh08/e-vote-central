@@ -1,9 +1,13 @@
+import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import '../../models/result_list.dart';
-import '../../widgets/result_listtile.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
+import 'result_listtile.dart';
 
 class Result extends StatefulWidget {
   const Result({super.key});
@@ -14,18 +18,38 @@ class Result extends StatefulWidget {
 
 class ResultState extends State<Result> {
   List<ResultList> filteredData = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => afterBuildFunction(context));
+    fetchElectionResults();
   }
 
-  Future<void> afterBuildFunction(BuildContext context) async {
-    setState(() {
-      filteredData = results;
-    });
+  Future<void> fetchElectionResults() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$serverApiUrl/election/results'),
+      );
+
+      print('API Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        final List<dynamic> electionsList = jsonData['elections'] ?? [];
+
+        setState(() {
+          filteredData =
+              electionsList.map((data) => ResultList.fromJson(data)).toList();
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load election results');
+      }
+    } catch (e) {
+      debugPrint('Error fetching results: $e');
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -43,7 +67,7 @@ class ResultState extends State<Result> {
                 debugPrint(searchText);
                 setState(
                   () {
-                    filteredData = results
+                    filteredData = filteredData
                         .where((data) => data.resultTitle
                             .toLowerCase()
                             .contains(searchText.toLowerCase()))
@@ -61,13 +85,15 @@ class ResultState extends State<Result> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: filteredData.length,
-              itemBuilder: (context, index) {
-                return ResultListTile(result: filteredData[index]);
-              },
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredData.length,
+                    itemBuilder: (context, index) {
+                      return ResultListTile(result: filteredData[index]);
+                    },
+                  ),
           ),
         ],
       ),

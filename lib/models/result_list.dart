@@ -4,27 +4,31 @@ import '../gen/assets.gen.dart';
 
 class ResultList {
   final String resultTitle;
-  final String resultPassDay;
-  final ImageProvider<Object> resultImage;
-  // final void Function()? onPressed;
+  final ImageProvider<Object>? resultImage;
+  final DateTime startDate;
+  final DateTime endDate;
 
   ResultList({
     required this.resultTitle,
-    required this.resultPassDay,
-    required this.resultImage,
-    // required this.onPressed,
+    this.resultImage,
+    required this.startDate,
+    required this.endDate,
   });
-}
 
-final List<ResultList> results = [
-  ResultList(
-    resultTitle: 'Election 5',
-    resultPassDay: '1 day ago',
-    resultImage: Assets.images.logo.image().image,
-  ),
-  ResultList(
-    resultTitle: 'Election 6',
-    resultPassDay: '1 day ago',
-    resultImage: Assets.images.logo.image().image,
-  ),
-];
+  factory ResultList.fromJson(Map<String, dynamic> json) {
+    return ResultList(
+      resultTitle: json['election_topic'] ?? '',
+      resultImage: Assets.images.logo.image().image,
+      startDate: DateTime.parse(json['start_date'] ?? ''),
+      endDate: DateTime.parse(json['end_date'] ?? ''),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'election_topic': resultTitle,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate.toIso8601String(),
+    };
+  }
+}

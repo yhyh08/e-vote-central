@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../models/result_list.dart';
-import '../routes/route.dart';
+import '../../models/result_list.dart';
+import '../../routes/route.dart';
 
 class ResultListTile extends StatelessWidget {
   final ResultList result;
@@ -13,11 +14,15 @@ class ResultListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat dateFormatter = DateFormat('dd/MM/yyyy');
+    final String startDateFormatted = dateFormatter.format(result.startDate);
+    final String endDateFormatted = dateFormatter.format(result.endDate);
+
     return Column(
       children: [
         ListTile(
           leading: Image(
-            image: result.resultImage,
+            image: result.resultImage!,
             width: 70,
           ),
           title: Text(
@@ -25,7 +30,7 @@ class ResultListTile extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           subtitle: Text(
-            result.resultPassDay,
+            '$startDateFormatted - $endDateFormatted',
             style: Theme.of(context).textTheme.labelSmall,
           ),
           trailing: ElevatedButton(

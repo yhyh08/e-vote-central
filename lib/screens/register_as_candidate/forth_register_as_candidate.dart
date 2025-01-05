@@ -284,7 +284,7 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
             },
           ),
           ElevatedBtn(
-            btnText: 'Save',
+            btnText: 'Next',
             hasSize: false,
             width: 160,
             onPressed: () async {
@@ -306,13 +306,7 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
                   await registrationState.submitNominationData();
 
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content:
-                          const Text('Nominee information saved successfully!'),
-                      backgroundColor: Theme.of(context).focusColor,
-                    ),
-                  );
+
                   Navigator.pushNamed(
                       context, RouteList.registerCandidateFifth);
                 }

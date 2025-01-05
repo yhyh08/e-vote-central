@@ -2,10 +2,8 @@ import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:date_field/date_field.dart';
 
 import '../../network_utlis/api_constant.dart';
 import '../../providers/registration_state.dart';

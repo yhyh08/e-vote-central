@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../gen/assets.gen.dart';
-import '../../models/result_list.dart';
+// import '../../models/result_list.dart';
 import '../../network_utlis/api.dart';
 import '../../routes/route.dart';
-import '../../widgets/result_listtile.dart';
+import '../result/result_listtile.dart';
 import '../../widgets/title_btn.dart';
 import '../../../widgets/bottom_navigation.dart';
 import '../election/election_detail/election_detail.dart';
@@ -204,13 +204,13 @@ class DashboardState extends State<Dashboard> {
   Widget resultList() {
     return Column(
       children: [
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: 2,
-          itemBuilder: (context, index) {
-            return ResultListTile(result: results[index]);
-          },
-        ),
+        // ListView.builder(
+        //   shrinkWrap: true,
+        //   itemCount: 2,
+        //   itemBuilder: (context, index) {
+        //     return ResultListTile(result: results[index]);
+        //   },
+        // ),
       ],
     );
   }

@@ -41,10 +41,16 @@ class ResultCard extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: candidate.image,
-                  ),
+                  if (candidate.image != null)
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: candidate.image,
+                    )
+                  else
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: Assets.images.logo.image().image,
+                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Column(
@@ -56,7 +62,12 @@ class ResultCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          candidate.role,
+                          candidate.position,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          candidate.job,
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                         const SizedBox(height: 5),
@@ -67,10 +78,17 @@ class ResultCard extends StatelessWidget {
                                 .bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.bold),
                             children: [
-                              TextSpan(text: '${candidate.votes} ballot - '),
-                              TextSpan(
-                                text: '${candidate.percentage}%',
-                              ),
+                              TextSpan(text: '${candidate.voteCount} ballot'),
+                              // TextSpan(
+                              //   text:
+                              //       '${candidate.percentage.toStringAsFixed(1)}%',
+                              //   style: Theme.of(context)
+                              //       .textTheme
+                              //       .bodyMedium
+                              //       ?.copyWith(
+                              //         color: Theme.of(context).primaryColor,
+                              //       ),
+                              // ),
                             ],
                           ),
                         ),

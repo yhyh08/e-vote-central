@@ -1,10 +1,9 @@
-import 'package:e_vote/network_utlis/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../../models/result_list.dart';
+import '../../network_utlis/api_constant.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
 import 'result_listtile.dart';
@@ -32,19 +31,22 @@ class ResultState extends State<Result> {
         Uri.parse('$serverApiUrl/election/results'),
       );
 
-      print('API Response: ${response.body}');
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         final List<dynamic> electionsList = jsonData['elections'] ?? [];
 
         setState(() {
-          filteredData =
-              electionsList.map((data) => ResultList.fromJson(data)).toList();
+          filteredData = electionsList
+              .map((data) => ResultList(
+                    resultTitle: data['election_topic'] ?? '',
+                    resultImage: null,
+                    startDate: DateTime.parse(data['start_date'] ?? ''),
+                    endDate: DateTime.parse(data['end_date'] ?? ''),
+                    electionId: data['election_id'] ?? 0,
+                  ))
+              .toList();
           isLoading = false;
         });
-      } else {
-        throw Exception('Failed to load election results');
       }
     } catch (e) {
       debugPrint('Error fetching results: $e');

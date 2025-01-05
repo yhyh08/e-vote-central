@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-
-import '../gen/assets.gen.dart';
-
 class CandidateResult {
   final String name;
   final String position;
   final String job;
   final int voteCount;
-  final ImageProvider<Object>? image;
+  final double percentage;
+  final String? image;
 
   CandidateResult({
     required this.name,
     required this.position,
     required this.job,
     required this.voteCount,
+    required this.percentage,
     this.image,
   });
 
@@ -22,8 +20,9 @@ class CandidateResult {
       name: json['candidate_name'] ?? '',
       position: position,
       job: json['job'] ?? '',
-      voteCount: json['vote_count'] ?? 0,
-      image: Assets.images.voteday.image().image,
+      voteCount: json['votes_count'] ?? 0,
+      percentage: (json['percentage'] ?? 0).toDouble(),
+      image: json['candidate_image'],
     );
   }
 }

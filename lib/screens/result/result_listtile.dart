@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../gen/assets.gen.dart';
 import '../../models/result_list.dart';
-import '../../routes/route.dart';
+import 'result_detail.dart';
 
 class ResultListTile extends StatelessWidget {
   final ResultList result;
 
   const ResultListTile({
-    required this.result,
     super.key,
+    required this.result,
   });
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat dateFormatter = DateFormat('dd/MM/yyyy');
-    final String startDateFormatted = dateFormatter.format(result.startDate);
-    final String endDateFormatted = dateFormatter.format(result.endDate);
-
     return Column(
       children: [
         ListTile(
           leading: Image(
-            image: result.resultImage!,
+            image: Assets.images.logo.image().image,
             width: 70,
           ),
           title: Text(
@@ -30,7 +27,7 @@ class ResultListTile extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           subtitle: Text(
-            '$startDateFormatted - $endDateFormatted',
+            '${DateFormat('dd/MM/yyyy').format(result.startDate)} - ${DateFormat('dd/MM/yyyy').format(result.endDate)}',
             style: Theme.of(context).textTheme.labelSmall,
           ),
           trailing: ElevatedButton(
@@ -45,7 +42,15 @@ class ResultListTile extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(RouteList.resultDetail);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ResultDetail(),
+                  settings: RouteSettings(
+                    arguments: result,
+                  ),
+                ),
+              );
             },
             child: Text(
               'View',

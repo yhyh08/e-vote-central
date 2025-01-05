@@ -17,6 +17,7 @@ class Result extends StatefulWidget {
 
 class ResultState extends State<Result> {
   List<ResultList> filteredData = [];
+  List<ResultList> allData = [];
   bool isLoading = true;
 
   @override
@@ -36,7 +37,7 @@ class ResultState extends State<Result> {
         final List<dynamic> electionsList = jsonData['elections'] ?? [];
 
         setState(() {
-          filteredData = electionsList
+          allData = electionsList
               .map((data) => ResultList(
                     resultTitle: data['election_topic'] ?? '',
                     resultImage: null,
@@ -45,6 +46,7 @@ class ResultState extends State<Result> {
                     electionId: data['election_id'] ?? 0,
                   ))
               .toList();
+          filteredData = List.from(allData);
           isLoading = false;
         });
       }
@@ -66,16 +68,17 @@ class ResultState extends State<Result> {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
             child: SearchCol(
               onChanged: (String searchText) {
-                debugPrint(searchText);
-                setState(
-                  () {
-                    filteredData = filteredData
+                setState(() {
+                  if (searchText.isEmpty) {
+                    filteredData = List.from(allData);
+                  } else {
+                    filteredData = allData
                         .where((data) => data.resultTitle
                             .toLowerCase()
                             .contains(searchText.toLowerCase()))
                         .toList();
-                  },
-                );
+                  }
+                });
               },
             ),
           ),

@@ -6,10 +6,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../gen/assets.gen.dart';
+import '../../models/election_data.dart';
 import '../../network_utlis/api_constant.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
 import 'election_detail/election_detail.dart';
+import '../../utils/malaysia_time.dart';
 
 class Election extends StatefulWidget {
   const Election({super.key});
@@ -62,12 +64,13 @@ class ElectionState extends State<Election> {
   }
 
   void updateFilteredData() {
-    DateTime now = DateTime.now();
+    DateTime now = MalaysiaTime.now();
+    print('Current time: $now');
 
     setState(() {
       if (selectedSegment == 1) {
         filteredData = electionData
-            .where((e) => e.startDate.isBefore(now) && e.endDate.isAfter(now))
+            .where((e) => e.endDate.isAfter(now) && e.startDate.isBefore(now))
             .toList();
       } else if (selectedSegment == 2) {
         filteredData =
@@ -263,20 +266,4 @@ class ElectionState extends State<Election> {
       ),
     );
   }
-}
-
-class ElectionData {
-  final String title;
-  final DateTime startDate;
-  final DateTime endDate;
-  final int orgId;
-  final int id;
-
-  ElectionData(
-    this.title,
-    this.startDate,
-    this.endDate,
-    this.orgId,
-    this.id,
-  );
 }

@@ -163,7 +163,7 @@ class CandidateProfileState extends State<CandidateProfile> {
                     value: widget.candidate.phone,
                   ),
                   InfoRow(
-                    icon: Icons.work,
+                    icon: Icons.work_outline,
                     label: 'Job',
                     value: widget.candidate.job,
                   ),

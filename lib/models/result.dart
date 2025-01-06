@@ -22,7 +22,7 @@ class CandidateResult {
       name: json['candidate_name'] ?? '',
       position: position,
       job: json['job'] ?? '',
-      voteCount: json['vote_count'] ?? 0,
+      voteCount: json['votes_count'] ?? 0,
       image: Assets.images.voteday.image().image,
     );
   }

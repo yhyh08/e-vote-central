@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../network_utlis/api_constant.dart';
+import '../../../utils/malaysia_time.dart';
 import '../../../widgets/top_bar.dart';
 import '../../../models/candidate_detail.dart';
 import 'election_info.dart';
@@ -24,7 +25,7 @@ class ElectionDetail extends StatefulWidget {
 
 class ElectionDetailState extends State<ElectionDetail>
     with SingleTickerProviderStateMixin {
-  final DateTime now = DateTime.now();
+  final DateTime now = MalaysiaTime.now();
   late TabController _tabController;
   Map<String, dynamic> electionDetail = {};
   Map<String, dynamic> organizationData = {};
@@ -218,7 +219,7 @@ class ElectionDetailState extends State<ElectionDetail>
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: Image(
-            image: Assets.images.voteday.image().image,
+            image: Assets.images.voteday1.image().image,
             height: 120,
             fit: BoxFit.cover,
           ),

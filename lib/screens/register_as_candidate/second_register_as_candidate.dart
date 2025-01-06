@@ -537,12 +537,6 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
 
                   Navigator.of(context).pop();
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Basic information saved successfully!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
                   Navigator.pushNamed(
                       context, RouteList.registerCandidateThird);
                 } else {

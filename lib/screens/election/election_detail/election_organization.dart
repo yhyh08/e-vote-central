@@ -38,7 +38,7 @@ class ElectionOrganization extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '3+ Years of experience',
+                '3+ Years of experience in this field',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 20),

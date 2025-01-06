@@ -105,11 +105,7 @@ class _LoginPinState extends State<LoginPin> {
                           if (verified) {
                             Navigator.of(context)
                                 .pushReplacementNamed(RouteList.dashboard);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Invalid OTP')),
-                            );
-                          }
+                          } else {}
                         }
                       },
                       btnText: 'Sign in',

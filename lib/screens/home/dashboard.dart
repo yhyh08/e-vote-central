@@ -8,6 +8,7 @@ import '../../gen/assets.gen.dart';
 // import '../../models/result_list.dart';
 import '../../models/result_list.dart';
 import '../../network_utlis/api.dart';
+import '../../network_utlis/api_constant.dart';
 import '../../routes/route.dart';
 import '../result/result_listtile.dart';
 import '../../widgets/title_btn.dart';
@@ -106,7 +107,7 @@ class DashboardState extends State<Dashboard> {
   Future<void> fetchElectionResults() async {
     try {
       final response = await http.get(
-        Uri.parse('http://172.20.10.2:8000/api/v1/election/results'),
+        Uri.parse('$serverApiUrl/election/results'),
       );
 
       if (response.statusCode == 200) {
@@ -144,16 +145,16 @@ class DashboardState extends State<Dashboard> {
             Homeheader(
               username: _userInfo.capitalize(),
             ),
-            TitleBtn(
-              leftText: 'Update Profile Information',
-              leftText1: 'For future voting',
-              left: false,
-              rightText: 'Update',
-              onTap: () {
-                // Navigator.of(context).pushNamed(RouteList.register);
-              },
-            ),
-            const Divider(),
+            // TitleBtn(
+            //   leftText: 'Update Profile Information',
+            //   leftText1: 'For future voting',
+            //   left: false,
+            //   rightText: 'Update',
+            //   onTap: () {
+            //     // Navigator.of(context).pushNamed(RouteList.register);
+            //   },
+            // ),
+            // const Divider(),
             Column(
               children: [
                 TitleBtn(

@@ -78,7 +78,7 @@ class AuthController extends ChangeNotifier {
         // Store the debug OTP if provided
         if (data['debug_otp'] != 'Wait') {
           print('Debug OTP received: ${data['debug_otp']}');
-          otpController.text = data['debug_otp'].toString();
+          // otpController.text = data['debug_otp'].toString();
         }
 
         isCodeSent = true;

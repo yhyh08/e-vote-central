@@ -32,7 +32,6 @@ class StepIcon extends StatelessWidget {
 
           // Step 5
           stepIcon(Icons.dangerous, 4, context),
-          stepDivider(context),
         ],
       ),
     );

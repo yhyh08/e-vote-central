@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../network_utlis/api_constant.dart';
-import '../../../utils/malaysia_time.dart';
+import '../../../common/constants/malaysia_time.dart';
 import '../../../widgets/top_bar.dart';
 import '../../../models/candidate_detail.dart';
 import 'election_info.dart';

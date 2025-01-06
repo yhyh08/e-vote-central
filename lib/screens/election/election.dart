@@ -11,7 +11,7 @@ import '../../network_utlis/api_constant.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/top_bar.dart';
 import 'election_detail/election_detail.dart';
-import '../../utils/malaysia_time.dart';
+import '../../common/constants/malaysia_time.dart';
 
 class Election extends StatefulWidget {
   const Election({super.key});

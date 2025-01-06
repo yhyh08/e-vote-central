@@ -336,7 +336,7 @@ class RegistrationState extends ChangeNotifier {
         'status': 'pending',
         'votes_count': 0,
         'reason': 'pending review',
-        'candidate_image': 'default.jpg',
+        'candidate_image': 'defaultProfile.jpg',
         'sign': 'sign.jpg',
         'user_id': userId,
         'nominee_id': [1, 2],

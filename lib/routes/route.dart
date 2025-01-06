@@ -1,8 +1,8 @@
-import 'package:e_vote/screens/register_as_candidate/signature.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../models/candidate_detail.dart';
+import '../screens/account/view_profile.dart';
 import '../screens/election/election_detail/candidate/candidate_profile.dart';
 import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';
@@ -13,6 +13,7 @@ import '../screens/register_as_candidate/fifth_register_as_candidate.dart';
 import '../screens/register_as_candidate/register_status.dart';
 import '../screens/register_as_candidate/forth_register_as_candidate.dart';
 import '../screens/register_as_candidate/second_register_as_candidate.dart';
+import '../screens/register_as_candidate/signature.dart';
 import '../screens/register_as_candidate/third_register_as_candidate.dart';
 import '../screens/result/result.dart';
 import '../screens/result/result_detail.dart';
@@ -67,6 +68,8 @@ class RouteGenerator {
             builder: (_) => const RegisterCandidateFifth());
       case RouteList.signatureCandidate:
         return MaterialPageRoute(builder: (_) => const SignatureCandidate());
+      case RouteList.profile:
+        return MaterialPageRoute(builder: (_) => const Profile());
       default:
         return MaterialPageRoute(builder: (_) => const MyApp());
     }
@@ -92,4 +95,5 @@ class RouteList {
   static const String registerCandidateForth = '/RegisterCandidateForth';
   static const String registerCandidateFifth = '/RegisterCandidateFifth';
   static const String signatureCandidate = '/SignatureCandidate';
+  static const String profile = '/Profile';
 }

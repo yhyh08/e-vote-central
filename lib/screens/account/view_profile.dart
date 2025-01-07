@@ -17,7 +17,6 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   Future<void> handleLogout(BuildContext context) async {
     try {
-      // Show confirmation dialog
       final bool? confirm = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -58,9 +57,9 @@ class ProfileState extends State<Profile> {
 
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Signed out successfully'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Signed out successfully'),
+            backgroundColor: Theme.of(context).focusColor,
           ),
         );
       }
@@ -70,7 +69,7 @@ class ProfileState extends State<Profile> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to sign out: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).hintColor,
         ),
       );
     }
@@ -89,7 +88,6 @@ class ProfileState extends State<Profile> {
         return TopBar(
           title: "Profile",
           index: 4,
-          isBack: true,
           body: SingleChildScrollView(
             child: Column(
               children: [

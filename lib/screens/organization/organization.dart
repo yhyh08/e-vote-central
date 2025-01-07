@@ -69,6 +69,7 @@ class _OrganizationState extends State<Organization> {
     return TopBar(
       title: 'Organization',
       index: 4,
+      isBack: true,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

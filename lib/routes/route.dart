@@ -8,6 +8,7 @@ import '../screens/election/election.dart';
 import '../screens/election/voted/voted.dart';
 import '../screens/home/dashboard.dart';
 import '../screens/no use/register_pin.dart';
+import '../screens/organization/organization.dart';
 import '../screens/register_as_candidate/first_register_as_candidate.dart';
 import '../screens/register_as_candidate/fifth_register_as_candidate.dart';
 import '../screens/register_as_candidate/register_status.dart';
@@ -70,6 +71,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SignatureCandidate());
       case RouteList.profile:
         return MaterialPageRoute(builder: (_) => const Profile());
+      case RouteList.organization:
+        return MaterialPageRoute(builder: (_) => const Organization());
       default:
         return MaterialPageRoute(builder: (_) => const MyApp());
     }
@@ -96,4 +99,5 @@ class RouteList {
   static const String registerCandidateFifth = '/RegisterCandidateFifth';
   static const String signatureCandidate = '/SignatureCandidate';
   static const String profile = '/Profile';
+  static const String organization = '/Organization';
 }

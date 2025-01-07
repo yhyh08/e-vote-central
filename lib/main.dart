@@ -9,6 +9,7 @@ import 'screens/home/dashboard.dart';
 import 'screens/splash_screen.dart';
 import 'services/vote_service.dart';
 import 'providers/registration_state.dart';
+import 'providers/user_provider.dart';
 
 void main() {
   runApp(
@@ -20,6 +21,7 @@ void main() {
           ),
         ),
         ChangeNotifierProvider(create: (_) => RegistrationState()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),
     ),

@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../gen/assets.gen.dart';
+import '../../widgets/top_bar.dart';
+import '../../models/organization.dart';
+
 class OrganizationDetail extends StatefulWidget {
-  const OrganizationDetail({super.key});
+  final OrganizationData organizations;
+
+  const OrganizationDetail({
+    super.key,
+    required this.organizations,
+  });
 
   @override
   State<OrganizationDetail> createState() => _OrganizationDetailState();
@@ -10,161 +19,130 @@ class OrganizationDetail extends StatefulWidget {
 class _OrganizationDetailState extends State<OrganizationDetail> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: const Text(
-          'Organization',
-          style: TextStyle(color: Colors.white),
-        ),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () {
-              // Handle edit action
-            },
-          ),
-        ],
-      ),
+    return TopBar(
+      title: 'Organization',
+      index: 4,
+      isBack: true,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Organization Header
-            Stack(
-              children: [
-                Image.asset(
-                  'assets/images/header_image.jpg', // Replace with your image path
-                  width: double.infinity,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
-                const Positioned(
-                  top: 100,
-                  left: 16,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            SizedBox(
+              height: 230,
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.black,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 30,
+                      ClipRRect(
+                        child: Image(
+                          image: Assets.images.voteday1.image().image,
+                          height: 85,
+                          fit: BoxFit.cover,
                         ),
-                      ),
-                      SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Organization 1',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Category',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Date and Address
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                  SizedBox(width: 8),
-                  Text(
-                    'Date of Establishment',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.location_on, size: 16, color: Colors.grey),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Jalan Perniagaan Setia Utama, Kampung Baru Sri Aman, Johor Bahru, Johor',
-                      style: TextStyle(color: Colors.grey),
+                  Positioned(
+                    top: 100,
+                    left: 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        widget.organizations.imageUrl.isNotEmpty
+                            ? ClipOval(
+                                child: Image.network(
+                                  widget.organizations.imageUrl,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.apartment_outlined,
+                                      color: Theme.of(context).iconTheme.color,
+                                      size: 35,
+                                    );
+                                  },
+                                ),
+                              )
+                            : const Icon(
+                                Icons.apartment_outlined,
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.organizations.name,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                widget.organizations.category,
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                              const SizedBox(height: 5),
+                              SizedBox(
+                                width: 300,
+                                child: Text(
+                                  widget.organizations.description,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  softWrap: true,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 10),
             const Divider(),
-            // Experience Section
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
-                '3+ Years of Experience',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                'Organization Details',
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  ExperienceCard(
-                    company: 'WizeVue',
-                    role: 'Self-employed',
-                    duration: '3 yrs 11 mos',
-                    skills: [],
-                  ),
-                  SizedBox(height: 16),
-                  ExperienceCard(
-                    company: 'Founder and CEO',
-                    role: '',
-                    duration: 'Oct 2022 - Present (7 mos)',
-                    skills: ['Managing', 'Strategic', 'Human Resource'],
-                  ),
-                  SizedBox(height: 16),
-                  ExperienceCard(
-                    company: 'Founder',
-                    role: '',
-                    duration: 'Jun 2019 - Present (3 yrs 11 mos)',
-                    skills: ['Customer Relationship Management (CRM)'],
-                  ),
-                ],
+            _buildDetailRow(
+              Icons.people,
+              'Organization Size',
+              widget.organizations.size.toString(),
+            ),
+            if (widget.organizations.website.isNotEmpty)
+              _buildDetailRow(
+                Icons.language,
+                'Website',
+                widget.organizations.website,
               ),
+            _buildDetailRow(
+              Icons.email,
+              'Email',
+              widget.organizations.email,
+            ),
+            _buildDetailRow(
+              Icons.location_on,
+              'Address',
+              widget.organizations.address,
             ),
             const Divider(),
-            // Person in Charge Section
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
                 'Person in charge',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
             Padding(
@@ -174,48 +152,35 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 elevation: 2,
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleAvatar(
                         radius: 20,
-                        backgroundColor: Colors.blue,
-                        child: Icon(Icons.person, color: Colors.white),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: Icon(Icons.person,
+                            color: Theme.of(context).secondaryHeaderColor),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'James Tan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              widget.organizations.picName,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
+                            const SizedBox(height: 8),
                             Text(
-                              'Software Engineer',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
+                              widget.organizations.picEmail,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
-                              'james@gmail.com',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              '016-2658253',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
+                              widget.organizations.picPhone,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -225,79 +190,41 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
-}
 
-class ExperienceCard extends StatelessWidget {
-  final String company;
-  final String role;
-  final String duration;
-  final List<String> skills;
-
-  const ExperienceCard({
-    super.key,
-    required this.company,
-    required this.role,
-    required this.duration,
-    required this.skills,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(Icons.flash_on, color: Colors.blue),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                company,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              if (role.isNotEmpty)
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: Colors.grey),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  role,
+                  label,
                   style: const TextStyle(
-                    fontSize: 14,
                     color: Colors.grey,
+                    fontSize: 12,
                   ),
                 ),
-              Text(
-                duration,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              if (skills.isNotEmpty)
-                Wrap(
-                  spacing: 8.0,
-                  children: skills
-                      .map(
-                        (skill) => Chip(
-                          label: Text(
-                            skill,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          backgroundColor: Colors.purple.shade50,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                Text(
+                  value,
+                  style: const TextStyle(fontSize: 14),
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

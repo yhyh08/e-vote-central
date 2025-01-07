@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../../models/organization.dart';
+import '../../models/organization_data.dart';
 import '../../network_utlis/api_constant.dart';
 import '../../widgets/top_bar.dart';
 import 'organization_add.dart';
 import 'organization_card.dart';
+import 'organization_form.dart';
 
 class Organization extends StatefulWidget {
   const Organization({super.key});
@@ -16,8 +17,9 @@ class Organization extends StatefulWidget {
 }
 
 class _OrganizationState extends State<Organization> {
-  List<OrganizationData> organizations = [];
+  List<OrganizationData> organizationData = [];
   bool isLoading = true;
+  List<String> organizationNames = [];
 
   @override
   void initState() {
@@ -31,11 +33,25 @@ class _OrganizationState extends State<Organization> {
         Uri.parse('$serverApiUrl/all-organizations'),
       );
 
+      print('Response status: ${response.statusCode}');
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        print('Raw data from API: $data'); // Debug print
+
         setState(() {
-          organizations =
-              data.map((json) => OrganizationData.fromJson(json)).toList();
+          organizationData = data
+              .map((json) {
+                try {
+                  return OrganizationData.fromJson(json);
+                } catch (e) {
+                  print('Error parsing organization: $e');
+                  print('Problematic JSON: $json');
+                  return null;
+                }
+              })
+              .whereType<OrganizationData>()
+              .toList();
+
           isLoading = false;
         });
       } else {
@@ -43,6 +59,7 @@ class _OrganizationState extends State<Organization> {
       }
     } catch (e) {
       print('Error fetching organizations: $e');
+      print('Stack trace: ${StackTrace.current}');
       setState(() => isLoading = false);
     }
   }
@@ -73,16 +90,22 @@ class _OrganizationState extends State<Organization> {
                         mainAxisSpacing: 16.0,
                         childAspectRatio: 9 / 10,
                       ),
-                      itemCount: organizations.length + 1,
+                      itemCount: organizationData.length + 1,
                       itemBuilder: (context, index) {
-                        if (index < organizations.length) {
+                        if (index < organizationData.length) {
                           return OrganizationCard(
-                            organization: organizations[index],
+                            organization: organizationData[index],
                           );
                         } else {
                           return AddOrganizationCard(
                             onTap: () {
-                              // Handle add organization logic
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const OrganizationForm(),
+                                ),
+                              );
                             },
                           );
                         }

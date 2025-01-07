@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/organization.dart';
+import '../../models/organization_data.dart';
 import 'organization_detail.dart';
 
 class OrganizationCard extends StatelessWidget {
@@ -18,7 +18,7 @@ class OrganizationCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => OrganizationDetail(
-              organizations: organization,
+              organization: organization,
             ),
           ),
         );
@@ -31,17 +31,17 @@ class OrganizationCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 20,
+                radius: 25,
                 backgroundColor: Theme.of(context).primaryColor,
                 child: organization.imageUrl.isNotEmpty
                     ? ClipOval(
                         child: Image.network(
                           organization.imageUrl,
-                          width: 40,
-                          height: 40,
+                          width: 50,
+                          height: 50,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -72,12 +72,16 @@ class OrganizationCard extends StatelessWidget {
                   vertical: 4.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade50,
+                  color: Theme.of(context).primaryColorLight,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: Text(
                   organization.isActive ? 'Active' : 'Inactive',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: organization.isActive
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.error,
+                      ),
                 ),
               ),
               const SizedBox(height: 8),

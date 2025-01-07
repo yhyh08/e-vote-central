@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../widgets/top_bar.dart';
-import '../../models/organization.dart';
+import '../../models/organization_data.dart';
 
 class OrganizationDetail extends StatefulWidget {
-  final OrganizationData organizations;
+  final OrganizationData organization;
 
   const OrganizationDetail({
     super.key,
-    required this.organizations,
+    required this.organization,
   });
 
   @override
@@ -20,7 +20,7 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
   @override
   Widget build(BuildContext context) {
     return TopBar(
-      title: 'Organization',
+      title: 'Organization Details',
       index: 4,
       isBack: true,
       body: SingleChildScrollView(
@@ -50,10 +50,10 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        widget.organizations.imageUrl.isNotEmpty
+                        widget.organization.imageUrl.isNotEmpty
                             ? ClipOval(
                                 child: Image.network(
-                                  widget.organizations.imageUrl,
+                                  widget.organization.imageUrl,
                                   width: 60,
                                   height: 60,
                                   fit: BoxFit.cover,
@@ -77,19 +77,19 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.organizations.name,
+                                widget.organization.name,
                                 style: Theme.of(context).textTheme.titleSmall,
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                widget.organizations.category,
+                                widget.organization.category,
                                 style: Theme.of(context).textTheme.labelSmall,
                               ),
                               const SizedBox(height: 5),
                               SizedBox(
                                 width: 300,
                                 child: Text(
-                                  widget.organizations.description,
+                                  widget.organization.description,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   softWrap: true,
                                   maxLines: 2,
@@ -118,23 +118,23 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
             _buildDetailRow(
               Icons.people,
               'Organization Size',
-              widget.organizations.size.toString(),
+              widget.organization.size.toString(),
             ),
-            if (widget.organizations.website.isNotEmpty)
+            if (widget.organization.website.isNotEmpty)
               _buildDetailRow(
                 Icons.language,
                 'Website',
-                widget.organizations.website,
+                widget.organization.website,
               ),
             _buildDetailRow(
               Icons.email,
               'Email',
-              widget.organizations.email,
+              widget.organization.email,
             ),
             _buildDetailRow(
               Icons.location_on,
               'Address',
-              widget.organizations.address,
+              widget.organization.address.line1,
             ),
             const Divider(),
             Padding(
@@ -169,17 +169,17 @@ class _OrganizationDetailState extends State<OrganizationDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.organizations.picName,
+                              widget.organization.picName,
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              widget.organizations.picEmail,
+                              widget.organization.picEmail,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              widget.organizations.picPhone,
+                              widget.organization.picPhone,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],

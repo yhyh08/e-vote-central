@@ -26,11 +26,15 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
+	<key>UIMainStoryboardFile</key>s
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<key>NSFaceIDUsageDescription</key>
     <string>We need to access your Face ID for authentication</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photo library to select organization logo</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to camera to take organization logo photo</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

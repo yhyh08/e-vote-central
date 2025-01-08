@@ -113,19 +113,20 @@ class DashboardState extends State<Dashboard> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         final List<dynamic> electionsList = jsonData['elections'] ?? [];
-
-        setState(() {
-          results = electionsList
-              .map((data) => ResultList(
-                    resultTitle: data['election_topic'] ?? '',
-                    resultImage: null,
-                    startDate: DateTime.parse(data['start_date'] ?? ''),
-                    endDate: DateTime.parse(data['end_date'] ?? ''),
-                    electionId: data['election_id'] ?? 0,
-                  ))
-              .toList();
-          isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            results = electionsList
+                .map((data) => ResultList(
+                      resultTitle: data['election_topic'] ?? '',
+                      resultImage: null,
+                      startDate: DateTime.parse(data['start_date'] ?? ''),
+                      endDate: DateTime.parse(data['end_date'] ?? ''),
+                      electionId: data['election_id'] ?? 0,
+                    ))
+                .toList();
+            isLoading = false;
+          });
+        }
       }
     } catch (e) {
       debugPrint('Error fetching results: $e');

@@ -99,19 +99,19 @@ class Homeheader extends StatelessWidget {
                       )
                     ],
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.logout,
-                          color: Theme.of(context).dividerColor,
-                          size: 28,
-                        ),
-                        onPressed: () => _handleLogout(context),
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Align(
+                  //     alignment: Alignment.centerRight,
+                  //     child: IconButton(
+                  //       icon: Icon(
+                  //         Icons.logout,
+                  //         color: Theme.of(context).dividerColor,
+                  //         size: 28,
+                  //       ),
+                  //       onPressed: () => _handleLogout(context),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ],

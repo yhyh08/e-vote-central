@@ -117,7 +117,7 @@ class ProfileState extends State<Profile> {
                             CircleAvatar(
                               radius: 35,
                               backgroundImage:
-                                  Assets.images.voteday.image().image,
+                                  Assets.images.userlogo.image().image,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),

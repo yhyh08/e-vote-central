@@ -25,7 +25,6 @@ class _RegisterCandidateForthState extends State<RegisterCandidateForth> {
   final List<int> nominees = [1];
   Map<String, String> organizations = {};
 
-  // Create maps to store controllers for each nominee
   final Map<int, TextEditingController> nameControllers = {};
   final Map<int, TextEditingController> emailControllers = {};
   final Map<int, TextEditingController> phoneControllers = {};

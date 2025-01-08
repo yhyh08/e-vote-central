@@ -34,7 +34,7 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
     try {
       final response =
           await http.get(Uri.parse('$serverApiUrl/all-elections/'));
-      print('Raw API Response: ${response.body}'); // Print raw response
+      print('Raw API Response: ${response.body}');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -44,21 +44,31 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
           electionOptions.clear();
           electionIds.clear();
 
+          final now = DateTime.now();
+
           for (var election in data) {
-            print(
-                'Processing election: $election'); // Print each election object
+            print('Processing election: $election');
 
-            String topic = election['election_topic']?.toString() ?? '';
-            String id = election['election_id']?.toString() ??
-                election['id']?.toString() ??
-                '';
+            DateTime? startDate;
+            try {
+              startDate = DateTime.parse(election['start_date'].toString());
+            } catch (e) {
+              print('Error parsing date: $e');
+              continue;
+            }
 
-            print(
-                'Extracted - Topic: $topic, ID: $id'); // Print extracted values
+            if (startDate.isAfter(now)) {
+              String topic = election['election_topic']?.toString() ?? '';
+              String id = election['election_id']?.toString() ??
+                  election['id']?.toString() ??
+                  '';
 
-            if (topic.isNotEmpty) {
-              electionOptions.add(topic);
-              electionIds[topic] = id;
+              print('Extracted - Topic: $topic, ID: $id');
+
+              if (topic.isNotEmpty) {
+                electionOptions.add(topic);
+                electionIds[topic] = id;
+              }
             }
           }
 
@@ -98,7 +108,7 @@ class _RegisterCandidateFirstState extends State<RegisterCandidateFirst> {
           'election_id': selectedElectionId,
           'position': selectedOption,
           'status': 'pending',
-          'user_id': '2', // You should get this from user authentication
+          'user_id': '2',
         }),
       );
 

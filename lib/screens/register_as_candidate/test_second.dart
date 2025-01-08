@@ -51,7 +51,6 @@ class _RegisterNominationState extends State<RegisterNomination> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Stepper icons (can be replaced with your custom widget)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -125,20 +124,17 @@ class _RegisterNominationState extends State<RegisterNomination> {
 
               const SizedBox(height: 20),
 
-              // Bottom Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      // Back action
                       Navigator.of(context).pop();
                     },
                     child: const Text('Back'),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Next action
                       if (nominees.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -148,7 +144,6 @@ class _RegisterNominationState extends State<RegisterNomination> {
                         );
                         return;
                       }
-                      // Navigate to the next step or save data
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Proceeding to the next step...'),

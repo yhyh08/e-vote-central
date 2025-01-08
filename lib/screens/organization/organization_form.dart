@@ -111,7 +111,6 @@ class _OrganizationFormState extends State<OrganizationForm> {
       ));
     }
 
-    // Format address as a single string
     final address = [
       orgAddressLine1Controller.text,
       orgAddressLine2Controller.text,
@@ -124,7 +123,7 @@ class _OrganizationFormState extends State<OrganizationForm> {
     request.fields.addAll({
       'org_name': orgNameController.text,
       'org_desc': orgDescriptionController.text,
-      'org_address': address, // Now sending address as a simple string
+      'org_address': address,
       'org_website': orgWebsiteController.text,
       'org_email': orgEmailController.text,
       'pic_name': orgPicNameController.text,

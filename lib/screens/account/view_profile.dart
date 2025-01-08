@@ -129,7 +129,7 @@ class ProfileState extends State<Profile> {
                                       return Text(
                                         userProvider.username.isNotEmpty
                                             ? userProvider.username
-                                            : 'Guest',
+                                            : 'Yih huei',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall,

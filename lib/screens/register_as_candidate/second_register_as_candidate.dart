@@ -551,12 +551,12 @@ class _RegisterCandidateSecondState extends State<RegisterCandidateSecond> {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop();
                 }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Error: ${e.toString()}'),
-                    backgroundColor: Theme.of(context).hintColor,
-                  ),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Error: ${e.toString()}'),
+                //     backgroundColor: Theme.of(context).hintColor,
+                //   ),
+                // );
               }
             },
           ),

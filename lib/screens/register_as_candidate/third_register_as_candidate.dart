@@ -126,12 +126,12 @@ class _RegisterCandidateThirdState extends State<RegisterCandidateThird> {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(); // Close loading dialog
                 }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Error: ${e.toString()}'),
-                    backgroundColor: Theme.of(context).hintColor,
-                  ),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Error: ${e.toString()}'),
+                //     backgroundColor: Theme.of(context).hintColor,
+                //   ),
+                // );
               }
             },
           ),

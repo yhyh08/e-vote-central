@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
       theme: theme,
       // home: const Dashboard(),
       home: const CheckAuth(),
+      debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+// import 'package:base64/base64.dart';
+import 'package:provider/provider.dart';
+import '../../providers/registration_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -44,14 +48,24 @@ class _SignatureCandidateState extends State<SignatureCandidate> {
 
   Future<void> saveSignature(Uint8List data) async {
     try {
+      // Save locally first
       final directory = await getApplicationDocumentsDirectory();
       final path = '${directory.path}/signature.png';
       final file = File(path);
       await file.writeAsBytes(data);
 
+      // Convert image to base64 with data URL prefix
+      final String base64Image = 'data:image/png;base64,${base64Encode(data)}';
+
+      // Save to registration state
+      if (!mounted) return;
+      final registrationState =
+          Provider.of<RegistrationState>(context, listen: false);
+      await registrationState.setSignature(base64Image);
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Signature saved to $path'),
+        const SnackBar(
+          content: Text('Signature saved successfully'),
         ),
       );
 

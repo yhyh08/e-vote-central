@@ -14,6 +14,7 @@ class RegistrationState extends ChangeNotifier {
   List<PlatformFile> get documents => List<PlatformFile>.from(_documents);
   String? _bio;
   String? _manifesto;
+  String? _signature;
   String? get electionId => _electionId;
   String? get electionTopic => _electionTopic;
   List<NomineeData> get nominee => nominees;
@@ -22,6 +23,7 @@ class RegistrationState extends ChangeNotifier {
   String? get getElectionId => _selectedElectionId;
   String? get selectedElectionId => _selectedElectionId;
   bool get hasDocuments => _documents.isNotEmpty;
+  String? get signature => _signature;
 
   void setSelectedElectionId(String? electionId) {
     _selectedElectionId = electionId;
@@ -450,6 +452,11 @@ class RegistrationState extends ChangeNotifier {
       print('DEBUG: Error in submitNominationData: $e');
       throw Exception('Failed to submit nominations: $e');
     }
+  }
+
+  Future<void> setSignature(String base64Image) async {
+    _signature = base64Image;
+    notifyListeners();
   }
 }
 
